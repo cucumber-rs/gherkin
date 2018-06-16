@@ -1,7 +1,6 @@
 nl = _{ "\n" | "\r\n" }
 space = _{ " " | "\t" }
-nl_eoi = _{ nl | eoi }
-comment = _{ "#" ~ (!nl_eoi ~ any)* ~ nl }
+comment = _{ "#" ~ (!nl ~ any)* ~ nl }
 whitespace = _{ " " }
 
 docstring_quote = _{ "\"\"\"" }
@@ -66,7 +65,7 @@ step_kw = {
 
 step_body = {
     (
-        !(nl_eoi)
+        !(nl)
         ~ any
     )+
 }
@@ -75,23 +74,26 @@ step = {
     step_kw
     ~ space*
     ~ step_body
-    ~ nl_eoi
+    ~ nl
     ~ space*
     ~ (
         (datatable | docstring)
         ~ space*
-        ~ nl_eoi
+        ~ nl
     )?
 }
 
 scenario_kw = _{
-    ("Scenario Outline" | "Scenario" | "Example")
+    ("Scenario" | "Example")
     ~ ":" ~ space*
 }
 
+scenario_outline_kw = _{ "Scenario Outline:" ~ space* }
+examples_kw = _{ "Examples:" }
+
 scenario_name = {
     (
-        !(nl_eoi)
+        !(nl)
         ~ any
     )+
 }
@@ -103,7 +105,14 @@ scenario_steps = {
 scenario = {
     (space | nl)*
     ~ scenario_kw ~ scenario_name ~ nl
-    ~ scenario_steps ~ nl_eoi
+    ~ scenario_steps ~ nl?
+}
+
+scenario_outline = {
+    (space | nl)*
+    ~ scenario_outline_kw ~ scenario_name ~ nl
+    ~ scenario_steps ~ nl+
+    ~ examples_kw ~ datatable ~ nl
 }
 
 background_kw = _{
@@ -111,9 +120,9 @@ background_kw = _{
 }
 
 background = {
-    space*
+    (space | nl)*
     ~ background_kw ~ nl
-    ~ (step)+ ~ nl_eoi
+    ~ (step)+ ~ nl
 }
 
 feature_kw = {
@@ -122,7 +131,7 @@ feature_kw = {
 
 feature_body = {
     (
-        !(nl_eoi)
+        !(nl)
         ~ any
     )+
 }
@@ -131,7 +140,7 @@ feature = {
     space*
     ~ feature_kw ~ feature_body ~ nl+
     ~ background?
-    ~ scenario*
+    ~ (scenario_outline | scenario)*
 }
 
 main = {

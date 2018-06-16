@@ -42,11 +42,19 @@ struct Scenario {
 }
 
 #[derive(Debug, Clone, Builder)]
+struct ScenarioOutline {
+    pub name: String,
+    pub steps: Vec<Step>,
+    pub examples: Table
+}
+
+#[derive(Debug, Clone, Builder)]
 struct Feature {
     name: String,
     #[builder(default)]
     background: Option<Background>,
-    scenarios: Vec<Scenario>
+    scenarios: Vec<Scenario>,
+    scenario_outlines: Vec<ScenarioOutline>
 }
 
 impl StepType {
@@ -121,21 +129,29 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
     fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
         let mut builder = FeatureBuilder::default();
         let mut scenarios = vec![];
+        let mut scenario_outlines = vec![];
         
         for pair in rule.into_inner() {
-            eprintln!("{:?}", pair.as_rule());
             match pair.as_rule() {
                 parser::Rule::feature_body => { builder.name(pair.clone().into_span().as_str().to_string()); },
                 parser::Rule::background => { builder.background(Some(Background::from(pair))); },
                 parser::Rule::scenario => {
                     let scenario = Scenario::from(pair);
                     scenarios.push(scenario);
+                },
+                parser::Rule::scenario_outline => {
+                    let scenario_outline = ScenarioOutline::from(pair);
+                    scenario_outlines.push(scenario_outline);
                 }
                 _ => {}
             }
         }
 
-        builder.scenarios(scenarios).build().expect("feature to be built")
+        builder
+            .scenarios(scenarios)
+            .scenario_outlines(scenario_outlines)
+            .build()
+            .expect("feature to be built")
     }
 }
 
@@ -208,6 +224,23 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Scenario {
     }
 }
 
+impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for ScenarioOutline {
+    fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
+        let mut builder = ScenarioOutlineBuilder::default();
+        
+        for pair in rule.into_inner() {
+            match pair.as_rule() {
+                parser::Rule::scenario_name => { builder.name(pair.clone().into_span().as_str().to_string()); },
+                parser::Rule::scenario_steps => { builder.steps(Step::vec_from_rule(pair)); }
+                parser::Rule::datatable => { builder.examples(Table::from(pair)); }
+                _ => {}
+            }
+        }
+
+        builder.build().expect("scenario outline to be built")
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -215,7 +248,7 @@ mod tests {
     #[test]
     fn test_e2e() {
         let s = include_str!("./test.feature");
-        let f = Feature::from(s);
-        println!("{:?}", f);
+        let _f = Feature::from(s);
+        // println!("{:?}", f);
     }
 }
