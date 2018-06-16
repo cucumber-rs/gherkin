@@ -1,0 +1,9 @@
+[package]
+name = "gherkin"
+version = "0.1.0"
+authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
+
+[dependencies]
+pest = "^1.0"
+pest_derive = "^1.0"
+derive_builder = "^0.5"

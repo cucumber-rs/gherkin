@@ -1,0 +1,130 @@
+nl = _{ "\n" | "\r\n" }
+space = _{ " " | "\t" }
+nl_eoi = _{ nl | eoi }
+comment = _{ "#" ~ (!nl_eoi ~ any)* ~ nl }
+whitespace = _{ " " }
+
+docstring_quote = _{ "\"\"\"" }
+
+docstring = {
+    docstring_quote
+    ~ nl ~ space*
+    ~ docstring_value
+    ~ space*
+    ~ docstring_quote
+}
+
+docstring_value = {
+    (
+        !(
+            (space)*
+            ~ docstring_quote
+        )
+        ~ any
+    )*
+}
+
+table_field = {
+    (
+        !("|")
+        ~ any
+    )+
+}
+
+table_row = {
+    nl?
+    ~ space*
+    ~ "|"
+    ~ (
+        !nl ~
+        table_field
+        ~ "|"
+    )+
+}
+
+datatable = {
+    (
+        table_row
+    )+
+}
+
+step_kw = {
+    ("Given" | "When" | "Then" | "And" | "But")
+}
+
+step_body = {
+    (
+        !(nl_eoi)
+        ~ any
+    )+
+}
+
+step = {
+    step_kw
+    ~ space*
+    ~ step_body
+    ~ nl_eoi
+    ~ space*
+    ~ (
+        (datatable | docstring)
+        ~ space*
+        ~ nl_eoi
+    )?
+}
+
+scenario_kw = _{
+    ("Scenario Outline" | "Scenario" | "Example")
+    ~ ":" ~ space*
+}
+
+scenario_name = {
+    (
+        !(nl_eoi)
+        ~ any
+    )+
+}
+
+scenario_steps = {
+    (step)+
+}
+
+scenario = {
+    (space | nl)*
+    ~ scenario_kw ~ scenario_name ~ nl
+    ~ scenario_steps ~ nl_eoi
+}
+
+background_kw = _{
+    "Background:" ~ space*
+}
+
+background = {
+    space*
+    ~ background_kw ~ nl
+    ~ (step)+ ~ nl_eoi
+}
+
+feature_kw = {
+    "Feature:" ~ space*
+}
+
+feature_body = {
+    (
+        !(nl_eoi)
+        ~ any
+    )+
+}
+
+feature = {
+    space*
+    ~ feature_kw ~ feature_body ~ nl+
+    ~ background?
+    ~ scenario*
+}
+
+main = {
+    soi
+    ~ (space | nl)*
+    ~ feature
+    ~ eoi
+}
