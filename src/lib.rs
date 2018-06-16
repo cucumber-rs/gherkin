@@ -160,9 +160,9 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
         
         for pair in rule.into_inner() {
             match pair.as_rule() {
-                // parser::Rule::table_header => {
-                //     builder.header(row_from_inner(pair.into_inner()));
-                //  },
+                parser::Rule::table_header => {
+                    builder.header(row_from_inner(pair.into_inner()));
+                 },
                 parser::Rule::table_row => {
                     rows.push(row_from_inner(pair.into_inner()));
                 }
@@ -170,10 +170,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
             }
         }
 
-        let header = rows.remove(0);
-
         builder
-            .header(header)
             .rows(rows)
             .build().expect("table to be build")
     }

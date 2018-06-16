@@ -31,6 +31,17 @@ table_field = {
     )+
 }
 
+table_header = {
+    nl?
+    ~ space*
+    ~ "|"
+    ~ (
+        !nl ~
+        table_field
+        ~ "|"
+    )+
+}
+
 table_row = {
     nl?
     ~ space*
@@ -43,7 +54,8 @@ table_row = {
 }
 
 datatable = {
-    (
+    table_header
+    ~ (
         table_row
     )+
 }
