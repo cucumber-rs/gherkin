@@ -184,7 +184,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
             for pair in inner {
                 match pair.as_rule() {
                     parser::Rule::table_field => {
-                        rows.push(pair.clone().into_span().as_str().to_string());
+                        rows.push(pair.clone().into_span().as_str().trim().to_string());
                     },
                     _ => {}
                 }
