@@ -1,6 +1,6 @@
 [package]
-name = "gherkin"
-version = "0.1.0"
+name = "gherkin_rust"
+version = "0.0.1"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
 
 [[test]]
@@ -13,4 +13,4 @@ pest_derive = "^1.0"
 derive_builder = "^0.5"
 
 [dev-dependencies]
-cucumber = { git = "https://github.com/bbqsrc/cucumber-rust.git", branch = "master" }
+cucumber_rust = { git = "https://github.com/bbqsrc/cucumber-rust.git", branch = "master" }

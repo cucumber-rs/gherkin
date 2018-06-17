@@ -1,5 +1,5 @@
 #[macro_use]
-extern crate cucumber;
+extern crate cucumber_rust;
 use std::default::Default;
 
 
