@@ -111,7 +111,6 @@ scenario_kw = _{
     ~ ":" ~ space*
 }
 
-// scenario_outline_kw = _{ "Scenario Outline:" ~ space* }
 examples_kw = _{ "Examples:" }
 
 examples = {
@@ -140,13 +139,6 @@ scenario = {
     ~ scenario_steps
     ~ (nl+ ~ examples)?
 }
-
-// scenario_outline = {
-//     (space | nl)*
-//     ~ scenario_outline_kw ~ scenario_name ~ nl
-//     ~ scenario_steps ~ nl+
-//     ~ examples_kw ~ datatable ~ nl
-// }
 
 background_kw = _{
     "Background:" ~ space*
