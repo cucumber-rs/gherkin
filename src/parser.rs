@@ -7,9 +7,8 @@ const _GRAMMAR: &'static str = include_str!("./feature.pest"); // relative to th
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use pest::Parser;
-    use super::FeatureParser;
-    use super::Rule;
 
     #[test]
     fn parse_tag() {

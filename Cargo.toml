@@ -3,7 +3,14 @@ name = "gherkin"
 version = "0.1.0"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
 
+[[test]]
+name = "cucumber"
+harness = false
+
 [dependencies]
 pest = "^1.0"
 pest_derive = "^1.0"
 derive_builder = "^0.5"
+
+[dev-dependencies]
+cucumber = { git = "https://github.com/bbqsrc/cucumber-rust.git", branch = "master" }
