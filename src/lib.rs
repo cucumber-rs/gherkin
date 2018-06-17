@@ -7,54 +7,53 @@ extern crate derive_builder;
 mod parser;
 
 #[derive(Debug, Clone, Copy)]
-enum StepType {
+pub enum StepType {
     Given,
     When,
     Then
 }
 
-
 #[derive(Debug, Clone, Builder)]
-struct Table {
-    header: Vec<String>,
-    rows: Vec<Vec<String>>
+pub struct Table {
+    pub header: Vec<String>,
+    pub rows: Vec<Vec<String>>
 }
 
 #[derive(Debug, Clone, Builder)]
-struct Step {
-    ty: StepType,
-    value: String,
+pub struct Step {
+    pub ty: StepType,
+    pub value: String,
     #[builder(default)]
-    docstring: Option<String>,
+    pub docstring: Option<String>,
     #[builder(default)]
-    table: Option<Table>
+    pub table: Option<Table>
 }
 
 #[derive(Debug, Clone, Builder)]
-struct Background {
-    steps: Vec<Step>
+pub struct Background {
+    pub steps: Vec<Step>
 }
 
 #[derive(Debug, Clone, Builder)]
-struct Scenario {
+pub struct Scenario {
     pub name: String,
     pub steps: Vec<Step>
 }
 
 #[derive(Debug, Clone, Builder)]
-struct ScenarioOutline {
+pub struct ScenarioOutline {
     pub name: String,
     pub steps: Vec<Step>,
     pub examples: Table
 }
 
 #[derive(Debug, Clone, Builder)]
-struct Feature {
-    name: String,
+pub struct Feature {
+    pub name: String,
     #[builder(default)]
-    background: Option<Background>,
-    scenarios: Vec<Scenario>,
-    scenario_outlines: Vec<ScenarioOutline>
+    pub background: Option<Background>,
+    pub scenarios: Vec<Scenario>,
+    pub scenario_outlines: Vec<ScenarioOutline>
 }
 
 impl StepType {
