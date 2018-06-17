@@ -1,6 +1,6 @@
 [package]
 name = "gherkin_rust"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
 description = "A pure Rust implementation of the Gherkin (`.feature` file) language for the Cucumber testing framework"
 license = "MIT/Apache-2.0"
@@ -19,4 +19,4 @@ pest_derive = "^1.0"
 derive_builder = "^0.5"
 
 [dev-dependencies]
-cucumber_rust = "^0.0.1"
+cucumber_rust = "^0.1"

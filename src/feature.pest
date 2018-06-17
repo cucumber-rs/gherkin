@@ -97,7 +97,7 @@ step = {
     step_kw
     ~ space*
     ~ step_body
-    ~ nl
+    ~ (nl | eoi)
     ~ space*
     ~ (
         (datatable | docstring)

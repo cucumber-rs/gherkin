@@ -39,6 +39,11 @@ mod tests {
     }
 
     #[test]
+    fn parse_scenario_without_nl() {
+        let _ = FeatureParser::parse(Rule::scenario, "@tag\nScenario: thingo\nGiven what what").unwrap_or_else(|e| panic!("{}", e));
+    }
+
+    #[test]
     fn parse_step() {
         let _pairs = FeatureParser::parse(Rule::step, "Given you disappoint me\n").unwrap_or_else(|e| panic!("{}", e));
         
