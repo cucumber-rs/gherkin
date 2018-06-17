@@ -13,6 +13,16 @@ pub enum StepType {
     Then
 }
 
+impl StepType {
+    pub fn as_str(&self) -> &str {
+        match self {
+            StepType::Given => "Given",
+            StepType::When => "When",
+            StepType::Then => "Then"
+        }
+    }
+}
+
 #[derive(Debug, Clone, Builder)]
 pub struct Table {
     pub header: Vec<String>,
@@ -22,11 +32,18 @@ pub struct Table {
 #[derive(Debug, Clone, Builder)]
 pub struct Step {
     pub ty: StepType,
+    pub raw_type: String,
     pub value: String,
     #[builder(default)]
     pub docstring: Option<String>,
     #[builder(default)]
     pub table: Option<Table>
+}
+
+impl Step {
+    pub fn to_string(&self) -> String {
+        format!("{} {}", &self.raw_type, &self.value)
+    }
 }
 
 #[derive(Debug, Clone, Builder)]
@@ -97,8 +114,10 @@ impl Step {
         for rule in outer_rule.into_inner() {
             match rule.as_rule() {
                 parser::Rule::step_kw => {
-                    let ty = StepType::new_with_context(rule.clone().into_span().as_str(), context);
+                    let raw_type = rule.clone().into_span().as_str();
+                    let ty = StepType::new_with_context(raw_type, context);
                     builder.ty(ty);
+                    builder.raw_type(raw_type.to_string());
                 },
                 parser::Rule::step_body => {
                     let value = rule.clone().into_span().as_str().to_string();
@@ -280,6 +299,6 @@ mod tests {
     fn test_e2e() {
         let s = include_str!("./test.feature");
         let _f = Feature::from(s);
-        // println!("{:?}", f);
+        println!("{:#?}", _f);
     }
 }
