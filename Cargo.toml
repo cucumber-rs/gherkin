@@ -1,7 +1,13 @@
 [package]
 name = "gherkin_rust"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
+description = "A pure Rust implementation of the Gherkin (`.feature` file) language for the Cucumber testing framework"
+license = "MIT/Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/bbqsrc/gherkin-rust"
+documentation = "https://docs.rs/gherkin_rust"
+homepage = "https://github.com/bbqsrc/gherkin-rust"
 
 [[test]]
 name = "cucumber"
@@ -13,4 +19,4 @@ pest_derive = "^1.0"
 derive_builder = "^0.5"
 
 [dev-dependencies]
-cucumber_rust = { git = "https://github.com/bbqsrc/cucumber-rust.git", branch = "master" }
+cucumber_rust = "^0.0.1"
