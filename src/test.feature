@@ -1,5 +1,5 @@
 
-
+@feature-tag
 Feature: This is a feature file
 
 
@@ -18,7 +18,7 @@ Background:
     | a thingo 2 | another thingo 2 | final thingo 2 |
   And then it was fun
 
-
+@tag1 @tag2 @tag-life_woo
 Scenario: A second scenario test
   Given I have not been testing much
   Then I should probably start doing it
@@ -28,11 +28,13 @@ Scenario: A second scenario test
     Given I am lightly tabbed
     Then handle how tabbed I am
 
+@taglife
 Scenario Outline: eating
   Given there are <start> cucumbers
   When I eat <eat> cucumbers
   Then I should have <left> cucumbers
 
+  @another-misfeature-of-cucumber
   Examples:
     | start | eat | left |
     |    12 |   5 |    7 |

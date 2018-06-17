@@ -2,8 +2,23 @@ nl = _{ "\n" | "\r\n" }
 space = _{ " " | "\t" }
 comment = _{ "#" ~ (!nl ~ any)* ~ nl }
 whitespace = _{ " " }
-
+tag_prefix = _{ "@" }
 docstring_quote = _{ "\"\"\"" }
+
+tag = {
+    tag_prefix
+    ~ (
+        !(space | nl | tag_prefix)
+        ~ any
+    )+
+}
+
+tags = {
+    (
+        !nl
+        ~ tag
+    )+
+}
 
 docstring = {
     docstring_quote
@@ -84,12 +99,20 @@ step = {
 }
 
 scenario_kw = _{
-    ("Scenario" | "Example")
+    ("Scenario Outline" | "Scenario" | "Example")
     ~ ":" ~ space*
 }
 
-scenario_outline_kw = _{ "Scenario Outline:" ~ space* }
+// scenario_outline_kw = _{ "Scenario Outline:" ~ space* }
 examples_kw = _{ "Examples:" }
+
+examples = {
+    (space | nl)*
+    ~ (tags ~ nl)?
+    ~ examples_kw
+    ~ datatable
+    ~ nl
+}
 
 scenario_name = {
     (
@@ -104,16 +127,18 @@ scenario_steps = {
 
 scenario = {
     (space | nl)*
+    ~ (tags ~ nl)?
     ~ scenario_kw ~ scenario_name ~ nl
-    ~ scenario_steps ~ nl?
+    ~ scenario_steps
+    ~ (nl+ ~ examples)?
 }
 
-scenario_outline = {
-    (space | nl)*
-    ~ scenario_outline_kw ~ scenario_name ~ nl
-    ~ scenario_steps ~ nl+
-    ~ examples_kw ~ datatable ~ nl
-}
+// scenario_outline = {
+//     (space | nl)*
+//     ~ scenario_outline_kw ~ scenario_name ~ nl
+//     ~ scenario_steps ~ nl+
+//     ~ examples_kw ~ datatable ~ nl
+// }
 
 background_kw = _{
     "Background:" ~ space*
@@ -137,10 +162,10 @@ feature_body = {
 }
 
 feature = {
-    space*
+    (tags ~ nl)?
     ~ feature_kw ~ feature_body ~ nl+
     ~ background?
-    ~ (scenario_outline | scenario)*
+    ~ scenario*
 }
 
 main = {

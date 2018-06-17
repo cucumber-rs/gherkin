@@ -12,6 +12,26 @@ mod tests {
     use super::Rule;
 
     #[test]
+    fn parse_tag() {
+        let _ = FeatureParser::parse(Rule::tag, "@tag").unwrap_or_else(|e| panic!("{}", e));
+    }
+
+    #[test]
+    fn parse_tags() {
+        let _ = FeatureParser::parse(Rule::tag, "@tag @tag2\t@tag3").unwrap_or_else(|e| panic!("{}", e));
+    }
+
+    #[test]
+    fn parse_tagged_scenario() {
+        let _ = FeatureParser::parse(Rule::scenario, "@tag\nScenario: thingo\nGiven what what\n\n").unwrap_or_else(|e| panic!("{}", e));
+    }
+
+    #[test]
+    fn parse_tagged_feature() {
+        let _ = FeatureParser::parse(Rule::feature, "@tag\nFeature: thingo\n\n").unwrap_or_else(|e| panic!("{}", e));
+    }
+
+    #[test]
     fn parse_step() {
         let _pairs = FeatureParser::parse(Rule::step, "Given you disappoint me\n").unwrap_or_else(|e| panic!("{}", e));
         
