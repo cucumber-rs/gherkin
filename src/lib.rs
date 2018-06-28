@@ -49,6 +49,13 @@ pub struct Step {
 }
 
 impl Step {
+    pub fn docstring(&self) -> Option<&String> {
+        match &self.docstring {
+            Some(v) => Some(&v),
+            None => None
+        }
+    }
+
     pub fn to_string(&self) -> String {
         format!("{} {}", &self.raw_type, &self.value)
     }
