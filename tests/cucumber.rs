@@ -3,23 +3,33 @@ extern crate cucumber_rust;
 use std::default::Default;
 
 
-pub struct World { }
+pub struct MyWorld { }
 
-impl Default for World {
-    fn default() -> World {
-        World {}
+impl cucumber_rust::World for MyWorld {}
+impl Default for MyWorld {
+    fn default() -> MyWorld {
+        MyWorld {}
     }
 }
-    
+
+mod t {    
+    steps! {
+        world: ::MyWorld;
+
+        given "I just started" |world, step| {
+            println!("HELO");
+        };
+
+        when "Hello" |world, step| {
+
+        };
+    }
+}
+
 cucumber! {
     features: "./tests/features";
-    world: World;
-
-    given "I just started" |world| {
-        println!("HELO");
-    };
-
-    when "Hello" |world| {
-
-    };
+    world: ::MyWorld;
+    steps: &[
+        t::steps
+    ]
 }
