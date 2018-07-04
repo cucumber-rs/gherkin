@@ -14,7 +14,7 @@ extern crate derive_builder;
 
 mod parser;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Hash, Eq)]
 pub enum StepType {
     Given,
     When,
@@ -31,14 +31,14 @@ impl StepType {
     }
 }
 
-#[derive(Debug, Clone, Builder)]
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
 pub struct Table {
     pub header: Vec<String>,
     pub rows: Vec<Vec<String>>,
     pub position: (usize, usize)
 }
 
-#[derive(Debug, Clone, Builder)]
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
 pub struct Step {
     pub ty: StepType,
     pub raw_type: String,
@@ -63,13 +63,13 @@ impl Step {
     }
 }
 
-#[derive(Debug, Clone, Builder)]
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
 pub struct Background {
     pub steps: Vec<Step>,
     pub position: (usize, usize)
 }
 
-#[derive(Debug, Clone, Builder)]
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
 pub struct Examples {
     pub table: Table,
     #[builder(default)]
@@ -77,7 +77,7 @@ pub struct Examples {
     pub position: (usize, usize)
 }
 
-#[derive(Debug, Clone, Builder)]
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
 pub struct Scenario {
     pub name: String,
     pub steps: Vec<Step>,
@@ -88,7 +88,7 @@ pub struct Scenario {
     pub position: (usize, usize)
 }
 
-#[derive(Debug, Clone, Builder)]
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
 pub struct Feature {
     pub name: String,
     #[builder(default)]
