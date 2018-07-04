@@ -30,13 +30,14 @@ tags = {
 
 docstring = {
     docstring_quote
-    ~ nl ~ space*
     ~ docstring_value
     ~ space*
     ~ docstring_quote
 }
 
-docstring_value = {
+docstring_value = @{
+    nl ~
+    " "* ~
     (
         !(
             (space)*

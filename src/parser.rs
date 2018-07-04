@@ -84,9 +84,8 @@ Then attempt to kill Shia LeBoeuf
     #[test]
     fn parse_docstring() {
         let s = r#""""
-This is a docstring
-"""
-"#;
+    This is a docstring
+""""#;
         let _pairs = FeatureParser::parse(Rule::docstring, &s).unwrap_or_else(|e| panic!("{}", e));
     }
 
