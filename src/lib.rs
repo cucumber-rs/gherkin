@@ -115,6 +115,19 @@ fn parse_tags<'a>(outer_rule: pest::iterators::Pair<'a, parser::Rule>) -> Vec<St
     tags
 }
 
+impl Feature {
+    pub fn try_from<'a>(s: &'a str) -> Result<Feature, Error> {
+        use pest::Parser;
+        use parser::*;
+
+        let mut pairs = FeatureParser::parse(Rule::main, &s)?;
+        let pair = pairs.next().expect("pair to exist");
+        let inner_pair = pair.into_inner().next().expect("feature to exist");
+
+        Ok(Feature::from(inner_pair))
+    }
+}
+
 impl StepType {
     pub fn new_with_context(s: &str, context: Option<StepType>) -> Self {
         match (s, context) {
@@ -265,17 +278,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
 
 impl<'a> From<&'a str> for Feature {
     fn from(s: &'a str) -> Self {
-        use pest::Parser;
-        use parser::*;
-
-        let mut pairs = FeatureParser::parse(Rule::main, &s)
-            .unwrap_or_else(|e| panic!("{}", e));
-
-        Feature::from(pairs.next()
-            .expect("pair to exist")
-            .into_inner()
-            .next()
-            .expect("feature to exist"))
+        Feature::try_from(s).unwrap()
     }
 }
 
@@ -330,6 +333,23 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Scenario {
     }
 }
 
+pub type Error<'a> = pest::Error<'a, parser::Rule>;
+
+pub fn error_position<'a>(error: &Error<'a>) -> (usize, usize) {
+    match error {
+        pest::Error::ParsingError {
+            pos,
+            positives: _,
+            negatives: _
+        } => pos.line_col(),
+        pest::Error::CustomErrorPos {
+            pos,
+            message: _
+        } => pos.line_col(),
+        _ => (0, 0)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -341,3 +361,4 @@ mod tests {
         println!("{:#?}", _f);
     }
 }
+
