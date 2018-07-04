@@ -2,13 +2,13 @@
 
 A pure Rust implementation of the Gherkin (`.feature` file) language for the Cucumber testing framework.
 
-There is a native [cucumber-rust](https://github.com/bbqsrc/cucumber-rust) test running using this crate.
+If you want to run Cucumber tests in Rust, try [cucumber-rust](https://github.com/bbqsrc/cucumber-rust)!
 
 ## Usage
 
 ```toml
 [dependencies]
-gherkin-rust = "^0.1"
+gherkin-rust = "^0.3"
 ```
 
 ## License
