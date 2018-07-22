@@ -6,6 +6,30 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! A Gherkin parser for the Cucumber test framework.
+//! 
+//! It is intended to parse the full gamut of Cucumber .feature files that exist in the wild,
+//! as there is only a _de facto_ standard for these files.
+//! 
+//! ### .feature file structure
+//! 
+//! The basic structure of a feature file is:
+//! 
+//! - Optionally one or more tags
+//! - Optionally `#`-prefixed comments on their own line
+//! - The feature definition
+//! - An optional description
+//! - An optional background
+//! - One or more scenarios (also taggable), each including:
+//!   - One or more steps
+//!   - Optionally data tables or docstrings per step
+//!   - Optionally examples, which can also be tagged
+//! 
+//! ### Unparsed elements
+//! 
+//! Indentation and comments are ignored by the parser. Most other things can be accessed via
+//! properties of the relevant struct.
+
 extern crate pest;
 #[macro_use]
 extern crate pest_derive;
@@ -14,11 +38,101 @@ extern crate derive_builder;
 
 mod parser;
 
+/// A feature background
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
+pub struct Background {
+    /// The parsed steps from the background directive.
+    pub steps: Vec<Step>,
+    /// The `(line, col)` position the background directive was found in the .feature file.
+    pub position: (usize, usize)
+}
+
+
+/// Examples for a scenario
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
+pub struct Examples {
+    /// The data table from the examples directive.
+    pub table: Table,
+    /// The tags for the examples directive if provided.
+    #[builder(default)]
+    pub tags: Option<Vec<String>>,
+    /// The `(line, col)` position the examples directive was found in the .feature file.
+    pub position: (usize, usize)
+}
+
+/// A feature
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
+pub struct Feature {
+    /// The name of the feature.
+    pub name: String,
+    /// The description of the feature, if found.
+    #[builder(default)]
+    pub description: Option<String>,
+    /// The background of the feature, if found.
+    #[builder(default)]
+    pub background: Option<Background>,
+    /// The scenarios for the feature.
+    pub scenarios: Vec<Scenario>,
+    /// The tags for the feature if provided.
+    #[builder(default)]
+    pub tags: Option<Vec<String>>,
+    /// The `(line, col)` position the feature directive was found in the .feature file.
+    pub position: (usize, usize)
+}
+
+/// A scenario
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
+pub struct Scenario {
+    /// The name of the scenario.
+    pub name: String,
+    /// The parsed steps from the scenario directive.
+    pub steps: Vec<Step>,
+    // The parsed examples from the scenario directive if found.
+    #[builder(default)]
+    pub examples: Option<Examples>,
+    /// The tags for the scenarios directive if provided.
+    #[builder(default)]
+    pub tags: Option<Vec<String>>,
+    /// The `(line, col)` position the scenario directive was found in the .feature file.
+    pub position: (usize, usize)
+}
+
+/// A scenario step
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
+pub struct Step {
+    /// The step type for the step after parsed in context.
+    pub ty: StepType,
+    /// The original raw step type, including `But` and `And`.
+    pub raw_type: String,
+    /// The value of the step after the type.
+    pub value: String,
+    /// A docstring, if provided.
+    #[builder(default)]
+    pub docstring: Option<String>,
+    /// A data table, if provided.
+    #[builder(default)]
+    pub table: Option<Table>,
+    /// The `(line, col)` position the step directive was found in the .feature file.
+    pub position: (usize, usize)
+}
+
+/// The fundamental Gherkin step type after contextually handling `But` and `And`
 #[derive(Debug, Clone, Copy, PartialEq, Hash, Eq)]
 pub enum StepType {
     Given,
     When,
     Then
+}
+
+/// A data table
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
+pub struct Table {
+    /// The headers of the data table.
+    pub header: Vec<String>,
+    /// The rows of the data table. Each row is always the same length as the `header` field.
+    pub rows: Vec<Vec<String>>,
+    /// The `(line, col)` position the table directive was found in the .feature file.
+    pub position: (usize, usize)
 }
 
 impl StepType {
@@ -29,25 +143,6 @@ impl StepType {
             StepType::Then => "Then"
         }
     }
-}
-
-#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
-pub struct Table {
-    pub header: Vec<String>,
-    pub rows: Vec<Vec<String>>,
-    pub position: (usize, usize)
-}
-
-#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
-pub struct Step {
-    pub ty: StepType,
-    pub raw_type: String,
-    pub value: String,
-    #[builder(default)]
-    pub docstring: Option<String>,
-    #[builder(default)]
-    pub table: Option<Table>,
-    pub position: (usize, usize)
 }
 
 impl Step {
@@ -70,43 +165,6 @@ impl Step {
     }
 }
 
-#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
-pub struct Background {
-    pub steps: Vec<Step>,
-    pub position: (usize, usize)
-}
-
-#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
-pub struct Examples {
-    pub table: Table,
-    #[builder(default)]
-    pub tags: Option<Vec<String>>,
-    pub position: (usize, usize)
-}
-
-#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
-pub struct Scenario {
-    pub name: String,
-    pub steps: Vec<Step>,
-    #[builder(default)]
-    pub examples: Option<Examples>,
-    #[builder(default)]
-    pub tags: Option<Vec<String>>,
-    pub position: (usize, usize)
-}
-
-#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
-pub struct Feature {
-    pub name: String,
-    #[builder(default)]
-    pub description: Option<String>,
-    #[builder(default)]
-    pub background: Option<Background>,
-    pub scenarios: Vec<Scenario>,
-    #[builder(default)]
-    pub tags: Option<Vec<String>>,
-    pub position: (usize, usize)
-}
 
 fn parse_tags<'a>(outer_rule: pest::iterators::Pair<'a, parser::Rule>) -> Vec<String> {
     let mut tags = vec![];
@@ -206,7 +264,7 @@ fn dedent(s: &str) -> String {
 }
 
 impl Step {
-    pub fn from_rule_with_context<'a>(outer_rule: pest::iterators::Pair<'a, parser::Rule>, context: Option<StepType>) -> Self {
+    fn from_rule_with_context<'a>(outer_rule: pest::iterators::Pair<'a, parser::Rule>, context: Option<StepType>) -> Self {
         let mut builder = StepBuilder::default();
 
         for rule in outer_rule.into_inner() {
@@ -245,7 +303,7 @@ impl Step {
         builder.build().expect("step to be built")
     }
 
-    pub fn vec_from_rule<'a>(rule: pest::iterators::Pair<'a, parser::Rule>) -> Vec<Step> {
+    fn vec_from_rule<'a>(rule: pest::iterators::Pair<'a, parser::Rule>) -> Vec<Step> {
         let mut steps: Vec<Step> = vec![];
 
         for pair in rule.into_inner() {
@@ -406,6 +464,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Scenario {
     }
 }
 
+/// Re-exported `pest::Error` wrapped around the `Rule` type
 pub type Error<'a> = pest::Error<'a, parser::Rule>;
 
 #[doc(hidden)]
