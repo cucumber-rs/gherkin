@@ -162,9 +162,20 @@ feature_body = {
     )+
 }
 
+feature_description = {
+    (
+        !(background_kw | scenario_kw)
+        ~ any
+    )+
+}
+
 feature = {
-    (tags ~ nl)?
-    ~ feature_kw ~ feature_body ~ nl+
+    (space | nl)*
+    ~ (tags ~ nl)?
+    ~ feature_kw
+    ~ feature_body
+    ~ nl
+    ~ feature_description?
     ~ background?
     ~ scenario*
 }
@@ -173,5 +184,6 @@ main = {
     soi
     ~ (space | nl)*
     ~ feature
+    ~ (space | nl)*
     ~ eoi
 }

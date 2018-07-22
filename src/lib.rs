@@ -99,6 +99,8 @@ pub struct Scenario {
 pub struct Feature {
     pub name: String,
     #[builder(default)]
+    pub description: Option<String>,
+    #[builder(default)]
     pub background: Option<Background>,
     pub scenarios: Vec<Scenario>,
     #[builder(default)]
@@ -283,6 +285,9 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
                 parser::Rule::feature_body => {
                     builder.name(pair.clone().into_span().as_str().to_string());
                 },
+                parser::Rule::feature_description => {
+                    builder.description(Some(pair.clone().into_span().as_str().to_string()));
+                },
                 parser::Rule::background => {
                     builder.background(Some(Background::from(pair)));
                 },
@@ -403,6 +408,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Scenario {
 
 pub type Error<'a> = pest::Error<'a, parser::Rule>;
 
+#[doc(hidden)]
 pub fn error_position<'a>(error: &Error<'a>) -> (usize, usize) {
     match error {
         pest::Error::ParsingError {
@@ -426,7 +432,6 @@ mod tests {
     fn test_e2e() {
         let s = include_str!("./test.feature");
         let _f = Feature::from(s);
-        println!("{:#?}", _f);
+        // println!("{:#?}", _f);
     }
 }
-

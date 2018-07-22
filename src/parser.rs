@@ -110,4 +110,52 @@ Then attempt to kill Shia LeBoeuf
 "#;
         let _pairs = FeatureParser::parse(Rule::datatable, &s).unwrap_or_else(|e| panic!("{}", e));
     }
+
+    #[test]
+    fn parse_feature_with_prepended_newlines() {
+        let s = r#"
+
+
+
+Feature: This is some feature
+
+"#;
+        let _ = FeatureParser::parse(Rule::feature, &s).unwrap_or_else(|e| panic!("{}", e));
+    }
+
+    #[test]
+    fn parse_pointless_lines_after_feature() {
+        let s = r#"Feature: This is some feature
+  As a user
+  I want to be able to do a thing
+  So that I can complete a derp
+
+Scenario: bah
+  Then it worked
+"#;
+        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", rout);
+
+        let out = ::Feature::try_from(s);
+        println!("{:#?}", out);
+    }
+
+    #[test]
+    fn parse_bad_line_endings_and_whitespace() {
+        let s = r#"Feature: This is some feature
+        
+Scenario: bah
+  Then it worked
+
+      
+          
+
+
+"#;
+        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", rout);
+
+        let out = ::Feature::try_from(s);
+        println!("{:#?}", out);
+    }
 }

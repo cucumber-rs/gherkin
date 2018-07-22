@@ -1,3 +1,4 @@
+#![feature(fnbox)]
 #[macro_use]
 extern crate cucumber_rust;
 use std::default::Default;
