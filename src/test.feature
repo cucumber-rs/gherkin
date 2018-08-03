@@ -39,3 +39,9 @@ Scenario Outline: eating
     | start | eat | left |
     |    12 |   5 |    7 |
     |    20 |   5 |   15 |
+
+Scenario: A step with a doc comment and no new line at the end of the doc
+Given a
+"""
+there's no newline following this docstring
+"""

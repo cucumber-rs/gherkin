@@ -103,7 +103,7 @@ step = {
     ~ (
         (datatable | docstring)
         ~ space*
-        ~ nl
+        ~ (nl | eoi)
     )?
 }
 
