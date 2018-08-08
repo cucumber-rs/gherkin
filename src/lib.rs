@@ -73,10 +73,26 @@ pub struct Feature {
     pub background: Option<Background>,
     /// The scenarios for the feature.
     pub scenarios: Vec<Scenario>,
+    /// The rules for the feature.
+    pub rules: Vec<Rule>,
     /// The tags for the feature if provided.
     #[builder(default)]
     pub tags: Option<Vec<String>>,
     /// The `(line, col)` position the feature directive was found in the .feature file.
+    pub position: (usize, usize)
+}
+
+/// A rule, as introduced in Gherkin 6.
+#[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
+pub struct Rule {
+    /// The name of the scenario.
+    pub name: String,
+    /// The parsed scenarios from the rule directive.
+    pub scenarios: Vec<Scenario>,
+    /// The tags for the rule directive if provided.
+    #[builder(default)]
+    pub tags: Option<Vec<String>>,
+    /// The `(line, col)` position the rule directive was found in the .feature file.
     pub position: (usize, usize)
 }
 
@@ -320,6 +336,36 @@ impl Step {
     }
 }
 
+impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Rule {
+    fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
+        let mut builder = RuleBuilder::default();
+        let mut scenarios = vec![];
+        
+        for pair in rule.into_inner() {
+            match pair.as_rule() {
+                parser::Rule::rule_name => {
+                    let span = pair.clone().into_span();
+                    builder.name(span.as_str().to_string());
+                    builder.position(span.start_pos().line_col());
+                },
+                parser::Rule::scenario => {
+                    let scenario = Scenario::from(pair);
+                    scenarios.push(scenario);
+                },
+                parser::Rule::tags => {
+                    let tags = parse_tags(pair);
+                    builder.tags(Some(tags));
+                },
+                _ => {}
+            }
+        }
+
+        builder.scenarios(scenarios)
+            .build()
+            .expect("scenario to be built")
+    }
+}
+
 impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Background {
     fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
         let pos = rule.clone().into_span().start_pos().line_col();
@@ -334,6 +380,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
     fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
         let mut builder = FeatureBuilder::default();
         let mut scenarios = vec![];
+        let mut rules = vec![];
         
         for pair in rule.into_inner() {
             match pair.as_rule() {
@@ -358,6 +405,10 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
                     let scenario = Scenario::from(pair);
                     scenarios.push(scenario);
                 },
+                parser::Rule::rule => {
+                    let rule = Rule::from(pair);
+                    rules.push(rule);
+                }
                 parser::Rule::tags => {
                     let tags = parse_tags(pair);
                     builder.tags(Some(tags));
@@ -368,6 +419,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
 
         builder
             .scenarios(scenarios)
+            .rules(rules)
             .build()
             .expect("feature to be built")
     }

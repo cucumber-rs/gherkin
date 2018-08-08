@@ -218,4 +218,33 @@ Scenario: bah
         assert!(out.scenarios[0].tags.is_none());
         assert_eq!(out.description.unwrap().trim(), "This is some description with a Scenario: inside it.");
     }
+
+    #[test]
+    fn test_rule_parsing() {
+        let s = r#"Feature: Test
+  This is some description with a Scenario: inside it.
+  
+  Scenario: a top level scenario
+    Given something happens
+
+  Rule: a rule
+    Scenario: a scenario under the first rule
+      Given something happens
+    Scenario: a second scenario under the first rule
+      Given something happens
+
+  @taglife
+  Rule: a second rule
+    Background:
+      Given background is supported under rule
+    Scenario: a scenario in the second rule
+      Given something happens
+"#;
+        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", rout);
+
+        let out = ::Feature::try_from(s);
+        println!("{:#?}", out);
+        let out = out.unwrap();
+    }
 }

@@ -114,6 +114,17 @@ scenario_kw = _{
 
 examples_kw = _{ "Examples:" }
 
+rule_kw = _{ "Rule:" ~ space* }
+rule_name = { (!nl ~ any)+ }
+rule = {
+    (space | nl)*
+    ~ (tags ~ nl)?
+    ~ rule_kw
+    ~ rule_name
+    ~ background?
+    ~ scenario*
+}
+
 examples = {
     (space | nl)*
     ~ (tags ~ nl)?
@@ -148,7 +159,7 @@ background_kw = _{
 background = {
     (space | nl)*
     ~ background_kw ~ nl
-    ~ (step)+ ~ nl
+    ~ (step)+
 }
 
 feature_kw = {
@@ -188,6 +199,7 @@ feature = {
     ~ feature_description?
     ~ background?
     ~ scenario*
+    ~ rule*
 }
 
 main = {
