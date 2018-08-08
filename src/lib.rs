@@ -345,7 +345,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
                 },
                 parser::Rule::feature_description => {
                     let description = dedent(pair.clone().into_span().as_str());
-                    if description != "" {
+                    if description == "" {
                         builder.description(None);
                     } else {
                         builder.description(Some(description));

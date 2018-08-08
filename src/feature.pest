@@ -162,10 +162,21 @@ feature_body = {
     )+
 }
 
-feature_description = {
+feature_description_line = _{
+    (space | nl)* ~
+    !(tag_prefix | background_kw | scenario_kw) ~
     (
-        !(background_kw | scenario_kw)
-        ~ any
+        !(nl) ~
+        any
+    )+
+}
+
+feature_description = {
+    (space | nl)* ~
+    !(tag_prefix | background_kw | scenario_kw) ~
+    (
+        !(tag_prefix | background_kw | scenario_kw) ~
+        feature_description_line
     )+
 }
 
@@ -174,7 +185,6 @@ feature = {
     ~ (tags ~ nl)?
     ~ feature_kw
     ~ feature_body
-    ~ nl
     ~ feature_description?
     ~ background?
     ~ scenario*
