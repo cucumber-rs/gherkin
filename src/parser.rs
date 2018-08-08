@@ -159,4 +159,42 @@ Scenario: bah
         let out = ::Feature::try_from(s);
         println!("{:#?}", out);
     }
+
+    #[test]
+    fn test_tags_on_scenario() {
+        let s = r#"Feature: Test
+
+  @thing1
+  Scenario: a scenario
+    Given something happens
+"#;
+        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", rout);
+
+        let out = ::Feature::try_from(s);
+        println!("{:#?}", out);
+        let out = out.unwrap();
+
+        assert!(out.scenarios[0].tags.is_some());
+        assert!(out.description.is_none());
+    }
+
+    #[test]
+    fn test_taglike_in_description() {
+        let s = r#"Feature: Test
+  This is some description with a @tag inside it.
+  
+  Scenario: a scenario
+    Given something happens
+"#;
+        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", rout);
+
+        let out = ::Feature::try_from(s);
+        println!("{:#?}", out);
+        let out = out.unwrap();
+
+        assert!(out.scenarios[0].tags.is_none());
+        assert_eq!(out.description.unwrap().trim(), "This is some description with a @tag inside it.");
+    }
 }
