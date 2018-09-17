@@ -8,7 +8,7 @@
 
 nl = _{ "\n" | "\r\n" }
 space = _{ " " | "\t" }
-comment = _{ "#" ~ (!nl ~ any)* ~ nl }
+comment = _{ space* ~ "#" ~ (!nl ~ any)* ~ (nl | eoi) }
 whitespace = _{ " " }
 tag_prefix = _{ "@" }
 docstring_quote = _{ "\"\"\"" }

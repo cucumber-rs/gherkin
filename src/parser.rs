@@ -247,4 +247,23 @@ Scenario: bah
         println!("{:#?}", out);
         let out = out.unwrap();
     }
+
+    #[test]
+    fn test_indented_comments_no_newline() {
+        let s = r#"Feature: Basic functionality
+
+  Scenario: foo
+    Given a thing
+    When nothing
+    
+  # Scenario: bar
+    # Given a thing
+    # When something goes wrong"#;
+        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", rout);
+
+        let out = ::Feature::try_from(s);
+        println!("{:#?}", out);
+        let out = out.unwrap();
+    }
 }
