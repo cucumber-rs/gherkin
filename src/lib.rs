@@ -24,6 +24,9 @@
 //!   - One or more steps
 //!   - Optionally data tables or docstrings per step
 //!   - Optionally examples, which can also be tagged
+//! - One or more rules (also taggable), each including:
+//!   - An optional background
+//!   - One or more scenarios
 //! 
 //! ### Unparsed elements
 //! 
