@@ -113,6 +113,22 @@ Then attempt to kill Shia LeBoeuf
     }
 
     #[test]
+    fn parse_datatable_with_no_header() {
+        let s = r#"| a thingo | another thingo | final thingo |
+"#;
+        let _pairs = FeatureParser::parse(Rule::datatable, &s).unwrap_or_else(|e| panic!("{}", e));
+    }
+
+    #[test]
+    fn parse_datatable_with_empty_field() {
+        let s = r#"|       | second | third |
+| a thingo | another thingo | final thingo |
+| a thingo | another thingo | final thingo |
+"#;
+        let _pairs = FeatureParser::parse(Rule::datatable, &s).unwrap_or_else(|e| panic!("{}", e));
+    }
+
+    #[test]
     fn parse_feature_with_prepended_newlines() {
         let s = r#"
 
