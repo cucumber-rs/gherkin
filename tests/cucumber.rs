@@ -17,11 +17,11 @@ mod t {
     steps! {
         world: ::MyWorld;
 
-        given "I just started" |world, step| {
+        given "I just started" |_world, _step| {
             println!("HELO");
         };
 
-        when "Hello" |world, step| {
+        when "Hello" |_world, _step| {
 
         };
     }
