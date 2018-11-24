@@ -245,7 +245,7 @@ Scenario: bah
 
         let out = ::Feature::try_from(s);
         println!("{:#?}", out);
-        let out = out.unwrap();
+        let _out = out.unwrap();
     }
 
     #[test]
@@ -264,6 +264,6 @@ Scenario: bah
 
         let out = ::Feature::try_from(s);
         println!("{:#?}", out);
-        let out = out.unwrap();
+        let _out = out.unwrap();
     }
 }
