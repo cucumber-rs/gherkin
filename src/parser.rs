@@ -165,7 +165,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
 
         assert!(out.unwrap().description.is_some());
@@ -186,7 +186,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
     }
 
@@ -201,7 +201,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let out = out.unwrap();
 
@@ -220,7 +220,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let out = out.unwrap();
 
@@ -242,7 +242,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let out = out.unwrap();
 
@@ -277,7 +277,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let _out = out.unwrap();
     }
@@ -296,7 +296,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let _out = out.unwrap();
     }

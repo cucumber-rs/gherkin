@@ -8,6 +8,7 @@ readme = "README.md"
 repository = "https://github.com/bbqsrc/gherkin-rust"
 documentation = "https://docs.rs/gherkin_rust"
 homepage = "https://github.com/bbqsrc/gherkin-rust"
+edition = "2018"
 
 [[test]]
 name = "cucumber"

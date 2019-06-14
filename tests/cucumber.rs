@@ -12,7 +12,7 @@ impl Default for MyWorld {
 }
 
 mod t {
-    steps!(::MyWorld => {
+    steps!(crate::MyWorld => {
         given "I just started" |_world, _step| {
             println!("HELO");
         };
@@ -25,7 +25,7 @@ mod t {
 
 cucumber! {
     features: "./tests/features",
-    world: ::MyWorld,
+    world: crate::MyWorld,
     steps: &[
         t::steps
     ]
