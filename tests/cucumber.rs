@@ -3,8 +3,7 @@
 extern crate cucumber_rust;
 use std::default::Default;
 
-
-pub struct MyWorld { }
+pub struct MyWorld {}
 
 impl cucumber_rust::World for MyWorld {}
 impl Default for MyWorld {
@@ -13,7 +12,7 @@ impl Default for MyWorld {
     }
 }
 
-mod t {    
+mod t {
     steps! {
         world: ::MyWorld;
 

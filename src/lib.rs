@@ -7,14 +7,14 @@
 // except according to those terms.
 
 //! A Gherkin parser for the Cucumber test framework.
-//! 
+//!
 //! It is intended to parse the full gamut of Cucumber .feature files that exist in the wild,
 //! as there is only a _de facto_ standard for these files.
-//! 
+//!
 //! ### .feature file structure
-//! 
+//!
 //! The basic structure of a feature file is:
-//! 
+//!
 //! - Optionally one or more tags
 //! - Optionally `#`-prefixed comments on their own line
 //! - The feature definition
@@ -27,9 +27,9 @@
 //! - One or more rules (also taggable), each including:
 //!   - An optional background
 //!   - One or more scenarios
-//! 
+//!
 //! ### Unparsed elements
-//! 
+//!
 //! Indentation and comments are ignored by the parser. Most other things can be accessed via
 //! properties of the relevant struct.
 
@@ -47,9 +47,8 @@ pub struct Background {
     /// The parsed steps from the background directive.
     pub steps: Vec<Step>,
     /// The `(line, col)` position the background directive was found in the .feature file.
-    pub position: (usize, usize)
+    pub position: (usize, usize),
 }
-
 
 /// Examples for a scenario
 #[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
@@ -60,7 +59,7 @@ pub struct Examples {
     #[builder(default)]
     pub tags: Option<Vec<String>>,
     /// The `(line, col)` position the examples directive was found in the .feature file.
-    pub position: (usize, usize)
+    pub position: (usize, usize),
 }
 
 /// A feature
@@ -82,7 +81,7 @@ pub struct Feature {
     #[builder(default)]
     pub tags: Option<Vec<String>>,
     /// The `(line, col)` position the feature directive was found in the .feature file.
-    pub position: (usize, usize)
+    pub position: (usize, usize),
 }
 
 /// A rule, as introduced in Gherkin 6.
@@ -96,7 +95,7 @@ pub struct Rule {
     #[builder(default)]
     pub tags: Option<Vec<String>>,
     /// The `(line, col)` position the rule directive was found in the .feature file.
-    pub position: (usize, usize)
+    pub position: (usize, usize),
 }
 
 /// A scenario
@@ -113,7 +112,7 @@ pub struct Scenario {
     #[builder(default)]
     pub tags: Option<Vec<String>>,
     /// The `(line, col)` position the scenario directive was found in the .feature file.
-    pub position: (usize, usize)
+    pub position: (usize, usize),
 }
 
 /// A scenario step
@@ -132,7 +131,7 @@ pub struct Step {
     #[builder(default)]
     pub table: Option<Table>,
     /// The `(line, col)` position the step directive was found in the .feature file.
-    pub position: (usize, usize)
+    pub position: (usize, usize),
 }
 
 /// The fundamental Gherkin step type after contextually handling `But` and `And`
@@ -140,7 +139,7 @@ pub struct Step {
 pub enum StepType {
     Given,
     When,
-    Then
+    Then,
 }
 
 /// A data table
@@ -151,7 +150,7 @@ pub struct Table {
     /// The rows of the data table. Each row is always the same length as the `header` field.
     pub rows: Vec<Vec<String>>,
     /// The `(line, col)` position the table directive was found in the .feature file.
-    pub position: (usize, usize)
+    pub position: (usize, usize),
 }
 
 impl StepType {
@@ -159,7 +158,7 @@ impl StepType {
         match self {
             StepType::Given => "Given",
             StepType::When => "When",
-            StepType::Then => "Then"
+            StepType::Then => "Then",
         }
     }
 }
@@ -168,14 +167,14 @@ impl Step {
     pub fn docstring(&self) -> Option<&String> {
         match &self.docstring {
             Some(v) => Some(&v),
-            None => None
+            None => None,
         }
     }
 
     pub fn table(&self) -> Option<&Table> {
         match &self.table {
             Some(v) => Some(&v),
-            None => None
+            None => None,
         }
     }
 
@@ -183,7 +182,6 @@ impl Step {
         format!("{} {}", &self.raw_type, &self.value)
     }
 }
-
 
 fn parse_tags<'a>(outer_rule: pest::iterators::Pair<'a, parser::Rule>) -> Vec<String> {
     let mut tags = vec![];
@@ -193,7 +191,7 @@ fn parse_tags<'a>(outer_rule: pest::iterators::Pair<'a, parser::Rule>) -> Vec<St
             parser::Rule::tag => {
                 let tag = rule.clone().into_span().as_str().to_string();
                 tags.push(tag);
-            },
+            }
             _ => {}
         }
     }
@@ -203,8 +201,8 @@ fn parse_tags<'a>(outer_rule: pest::iterators::Pair<'a, parser::Rule>) -> Vec<St
 
 impl Feature {
     pub fn try_from<'a>(s: &'a str) -> Result<Feature, Error> {
-        use pest::Parser;
         use parser::*;
+        use pest::Parser;
 
         let mut pairs = FeatureParser::parse(Rule::main, &s)?;
         let pair = pairs.next().expect("pair to exist");
@@ -222,7 +220,7 @@ impl StepType {
             ("Then", _) => StepType::Then,
             ("And", Some(v)) => v,
             ("But", Some(v)) => v,
-            _ => panic!("Invalid input: {:?}", s)
+            _ => panic!("Invalid input: {:?}", s),
         }
     }
 }
@@ -235,7 +233,8 @@ fn dedent(s: &str) -> String {
 
     // We first search for a non-empty line to find a prefix.
     for line in s.lines() {
-        let whitespace = line.chars()
+        let whitespace = line
+            .chars()
             .take_while(|c| c.is_whitespace())
             .collect::<String>();
         // Check if the line had anything but whitespace
@@ -251,7 +250,8 @@ fn dedent(s: &str) -> String {
     // We then continue looking through the remaining lines to
     // possibly shorten the prefix.
     for line in lines {
-        let whitespace = line.chars()
+        let whitespace = line
+            .chars()
             .zip(prefix.chars())
             .take_while(|&(a, b)| a == b)
             .map(|(_, b)| b)
@@ -263,7 +263,8 @@ fn dedent(s: &str) -> String {
     }
 
     // We now go over the lines a second time to build the result.
-    let mut result = s.lines()
+    let mut result = s
+        .lines()
         .map(|line| {
             if line.starts_with(&prefix) && line.chars().any(|c| !c.is_whitespace()) {
                 line.split_at(prefix.len()).1
@@ -283,7 +284,10 @@ fn dedent(s: &str) -> String {
 }
 
 impl Step {
-    fn from_rule_with_context<'a>(outer_rule: pest::iterators::Pair<'a, parser::Rule>, context: Option<StepType>) -> Self {
+    fn from_rule_with_context<'a>(
+        outer_rule: pest::iterators::Pair<'a, parser::Rule>,
+        context: Option<StepType>,
+    ) -> Self {
         let mut builder = StepBuilder::default();
 
         for rule in outer_rule.into_inner() {
@@ -295,15 +299,18 @@ impl Step {
                     builder.ty(ty);
                     builder.position(span.start_pos().line_col());
                     builder.raw_type(raw_type.to_string());
-                },
+                }
                 parser::Rule::step_body => {
                     let value = rule.clone().into_span().as_str().to_string();
                     builder.value(value);
-                },
+                }
                 parser::Rule::docstring => {
-                    let r = rule.into_inner()
-                            .next().expect("docstring value")
-                            .into_span().as_str();
+                    let r = rule
+                        .into_inner()
+                        .next()
+                        .expect("docstring value")
+                        .into_span()
+                        .as_str();
                     let r = dedent(r);
                     let docstring = r
                         .trim_right()
@@ -315,10 +322,10 @@ impl Step {
                     let datatable = Table::from(rule);
                     builder.table(Some(datatable));
                 }
-                _ => panic!("unhandled rule for Step: {:?}", rule)
+                _ => panic!("unhandled rule for Step: {:?}", rule),
             }
         }
-        
+
         builder.build().expect("step to be built")
     }
 
@@ -330,7 +337,7 @@ impl Step {
                 parser::Rule::step => {
                     let s = Step::from_rule_with_context(pair, steps.last().map(|x| x.ty));
                     steps.push(s);
-                },
+                }
                 _ => {}
             }
         }
@@ -343,27 +350,28 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Rule {
     fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
         let mut builder = RuleBuilder::default();
         let mut scenarios = vec![];
-        
+
         for pair in rule.into_inner() {
             match pair.as_rule() {
                 parser::Rule::rule_name => {
                     let span = pair.clone().into_span();
                     builder.name(span.as_str().to_string());
                     builder.position(span.start_pos().line_col());
-                },
+                }
                 parser::Rule::scenario => {
                     let scenario = Scenario::from(pair);
                     scenarios.push(scenario);
-                },
+                }
                 parser::Rule::tags => {
                     let tags = parse_tags(pair);
                     builder.tags(Some(tags));
-                },
+                }
                 _ => {}
             }
         }
 
-        builder.scenarios(scenarios)
+        builder
+            .scenarios(scenarios)
             .build()
             .expect("scenario to be built")
     }
@@ -374,7 +382,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Background {
         let pos = rule.clone().into_span().start_pos().line_col();
         Background {
             steps: Step::vec_from_rule(rule),
-            position: pos
+            position: pos,
         }
     }
 }
@@ -384,15 +392,15 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
         let mut builder = FeatureBuilder::default();
         let mut scenarios = vec![];
         let mut rules = vec![];
-        
+
         for pair in rule.into_inner() {
             match pair.as_rule() {
                 parser::Rule::feature_kw => {
                     builder.position(pair.clone().into_span().start_pos().line_col());
-                },
+                }
                 parser::Rule::feature_body => {
                     builder.name(pair.clone().into_span().as_str().to_string());
-                },
+                }
                 parser::Rule::feature_description => {
                     let description = dedent(pair.clone().into_span().as_str());
                     if description == "" {
@@ -400,14 +408,14 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
                     } else {
                         builder.description(Some(description));
                     }
-                },
+                }
                 parser::Rule::background => {
                     builder.background(Some(Background::from(pair)));
-                },
+                }
                 parser::Rule::scenario => {
                     let scenario = Scenario::from(pair);
                     scenarios.push(scenario);
-                },
+                }
                 parser::Rule::rule => {
                     let rule = Rule::from(pair);
                     rules.push(rule);
@@ -415,7 +423,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
                 parser::Rule::tags => {
                     let tags = parse_tags(pair);
                     builder.tags(Some(tags));
-                },
+                }
                 _ => {}
             }
         }
@@ -427,7 +435,6 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
             .expect("feature to be built")
     }
 }
-
 
 impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
     fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
@@ -442,7 +449,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
                 match pair.as_rule() {
                     parser::Rule::table_field => {
                         rows.push(pair.clone().into_span().as_str().trim().to_string());
-                    },
+                    }
                     _ => {}
                 }
             }
@@ -469,9 +476,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
             builder.header(h);
         }
 
-        builder
-            .rows(rows)
-            .build().expect("table to be build")
+        builder.rows(rows).build().expect("table to be build")
     }
 }
 
@@ -485,7 +490,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Examples {
     fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
         let mut builder = ExamplesBuilder::default();
         builder.position(rule.clone().into_span().start_pos().line_col());
-        
+
         for pair in rule.into_inner() {
             match pair.as_rule() {
                 parser::Rule::datatable => {
@@ -495,7 +500,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Examples {
                 parser::Rule::tags => {
                     let tags = parse_tags(pair);
                     builder.tags(Some(tags));
-                },
+                }
                 _ => {}
             }
         }
@@ -507,15 +512,17 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Examples {
 impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Scenario {
     fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
         let mut builder = ScenarioBuilder::default();
-        
+
         for pair in rule.into_inner() {
             match pair.as_rule() {
                 parser::Rule::scenario_name => {
                     let span = pair.clone().into_span();
                     builder.name(span.as_str().to_string());
                     builder.position(span.start_pos().line_col());
-                },
-                parser::Rule::scenario_steps => { builder.steps(Step::vec_from_rule(pair)); }
+                }
+                parser::Rule::scenario_steps => {
+                    builder.steps(Step::vec_from_rule(pair));
+                }
                 parser::Rule::examples => {
                     let examples = Examples::from(pair);
                     builder.examples(Some(examples));
@@ -523,7 +530,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Scenario {
                 parser::Rule::tags => {
                     let tags = parse_tags(pair);
                     builder.tags(Some(tags));
-                },
+                }
                 _ => {}
             }
         }
@@ -541,13 +548,10 @@ pub fn error_position<'a>(error: &Error<'a>) -> (usize, usize) {
         pest::Error::ParsingError {
             pos,
             positives: _,
-            negatives: _
+            negatives: _,
         } => pos.line_col(),
-        pest::Error::CustomErrorPos {
-            pos,
-            message: _
-        } => pos.line_col(),
-        _ => (0, 0)
+        pest::Error::CustomErrorPos { pos, message: _ } => pos.line_col(),
+        _ => (0, 0),
     }
 }
 
