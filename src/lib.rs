@@ -188,7 +188,7 @@ fn parse_tags(outer_rule: pest::iterators::Pair<'_, parser::Rule>) -> Vec<String
 
     for rule in outer_rule.into_inner() {
         if rule.as_rule() == parser::Rule::tag {
-            let tag = rule.clone().into_span().as_str().to_string();
+            let tag = rule.as_span().as_str().to_string();
             tags.push(tag);
         }
     }
@@ -290,7 +290,7 @@ impl Step {
         for rule in outer_rule.into_inner() {
             match rule.as_rule() {
                 parser::Rule::step_kw => {
-                    let span = rule.clone().into_span();
+                    let span = rule.as_span();
                     let raw_type = span.as_str();
                     let ty = StepType::new_with_context(raw_type, context);
                     builder.ty(ty);
@@ -298,7 +298,7 @@ impl Step {
                     builder.raw_type(raw_type.to_string());
                 }
                 parser::Rule::step_body => {
-                    let value = rule.clone().into_span().as_str().to_string();
+                    let value = rule.as_span().as_str().to_string();
                     builder.value(value);
                 }
                 parser::Rule::docstring => {
@@ -306,7 +306,7 @@ impl Step {
                         .into_inner()
                         .next()
                         .expect("docstring value")
-                        .into_span()
+                        .as_span()
                         .as_str();
                     let r = dedent(r);
                     let docstring = r
@@ -319,6 +319,7 @@ impl Step {
                     let datatable = Table::from(rule);
                     builder.table(Some(datatable));
                 }
+                parser::Rule::space | parser::Rule::nl | parser::Rule::EOI => (),
                 _ => panic!("unhandled rule for Step: {:?}", rule),
             }
         }
@@ -348,7 +349,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Rule {
         for pair in rule.into_inner() {
             match pair.as_rule() {
                 parser::Rule::rule_name => {
-                    let span = pair.clone().into_span();
+                    let span = pair.as_span();
                     builder.name(span.as_str().to_string());
                     builder.position(span.start_pos().line_col());
                 }
@@ -373,7 +374,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Rule {
 
 impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Background {
     fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
-        let pos = rule.clone().into_span().start_pos().line_col();
+        let pos = rule.as_span().start_pos().line_col();
         Background {
             steps: Step::vec_from_rule(rule),
             position: pos,
@@ -390,13 +391,13 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
         for pair in rule.into_inner() {
             match pair.as_rule() {
                 parser::Rule::feature_kw => {
-                    builder.position(pair.clone().into_span().start_pos().line_col());
+                    builder.position(pair.as_span().start_pos().line_col());
                 }
                 parser::Rule::feature_body => {
-                    builder.name(pair.clone().into_span().as_str().to_string());
+                    builder.name(pair.as_span().as_str().to_string());
                 }
                 parser::Rule::feature_description => {
-                    let description = dedent(pair.clone().into_span().as_str());
+                    let description = dedent(pair.as_span().as_str());
                     if description == "" {
                         builder.description(None);
                     } else {
@@ -435,13 +436,13 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
         let mut builder = TableBuilder::default();
         let mut rows = vec![];
 
-        builder.position(rule.clone().into_span().start_pos().line_col());
+        builder.position(rule.as_span().start_pos().line_col());
 
         fn row_from_inner(inner: pest::iterators::Pairs<'_, parser::Rule>) -> Vec<String> {
             let mut rows = vec![];
             for pair in inner {
                 if pair.as_rule() == parser::Rule::table_field {
-                    rows.push(pair.clone().into_span().as_str().trim().to_string());
+                    rows.push(pair.as_span().as_str().trim().to_string());
                 }
             }
             rows
@@ -477,7 +478,7 @@ impl<'a> From<&'a str> for Feature {
 impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Examples {
     fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
         let mut builder = ExamplesBuilder::default();
-        builder.position(rule.clone().into_span().start_pos().line_col());
+        builder.position(rule.as_span().start_pos().line_col());
 
         for pair in rule.into_inner() {
             match pair.as_rule() {
@@ -504,7 +505,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Scenario {
         for pair in rule.into_inner() {
             match pair.as_rule() {
                 parser::Rule::scenario_name => {
-                    let span = pair.clone().into_span();
+                    let span = pair.as_span();
                     builder.name(span.as_str().to_string());
                     builder.position(span.start_pos().line_col());
                 }
@@ -528,16 +529,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Scenario {
 }
 
 /// Re-exported `pest::Error` wrapped around the `Rule` type
-pub type Error<'a> = pest::Error<'a, parser::Rule>;
-
-#[doc(hidden)]
-pub fn error_position<'a>(error: &Error<'a>) -> (usize, usize) {
-    match error {
-        pest::Error::ParsingError { pos, .. } => pos.line_col(),
-        pest::Error::CustomErrorPos { pos, .. } => pos.line_col(),
-        _ => (0, 0),
-    }
-}
+pub type Error = pest::error::Error<parser::Rule>;
 
 #[cfg(test)]
 mod tests {

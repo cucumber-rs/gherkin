@@ -15,9 +15,9 @@ name = "cucumber"
 harness = false
 
 [dependencies]
-pest = "^1.0"
-pest_derive = "^1.0"
-derive_builder = "^0.5"
+pest = "2.1"
+pest_derive = "2.1"
+derive_builder = "0.7"
 
 [dev-dependencies]
 cucumber_rust = { git = "https://github.com/bbqsrc/cucumber-rust.git" }

@@ -8,8 +8,8 @@
 
 nl = _{ "\n" | "\r\n" }
 space = _{ " " | "\t" }
-comment = _{ space* ~ "#" ~ (!nl ~ any)* ~ (nl | eoi) }
-whitespace = _{ " " }
+COMMENT = _{ space* ~ "#" ~ (!nl ~ ANY)* ~ (nl | EOI) }
+WHITESPACE = _{ " " }
 tag_prefix = _{ "@" }
 docstring_quote = _{ "\"\"\"" }
 
@@ -17,7 +17,7 @@ tag = {
     tag_prefix
     ~ (
         !(space | nl | tag_prefix)
-        ~ any
+        ~ ANY
     )+
 }
 
@@ -43,14 +43,14 @@ docstring_value = @{
             (space)*
             ~ docstring_quote
         )
-        ~ any
+        ~ ANY
     )*
 }
 
 table_field = {
     (
         !("|")
-        ~ any
+        ~ ANY
     )+
 }
 
@@ -78,7 +78,7 @@ step_kw = {
 step_body = {
     (
         !(nl)
-        ~ any
+        ~ ANY
     )+
 }
 
@@ -86,12 +86,12 @@ step = {
     step_kw
     ~ space*
     ~ step_body
-    ~ (nl | eoi)
+    ~ (nl | EOI)
     ~ space*
     ~ (
         (datatable | docstring)
         ~ space*
-        ~ (nl | eoi)
+        ~ (nl | EOI)
     )?
 }
 
@@ -103,7 +103,7 @@ scenario_kw = _{
 examples_kw = _{ "Examples:" }
 
 rule_kw = _{ "Rule:" ~ space* }
-rule_name = { (!nl ~ any)+ }
+rule_name = { (!nl ~ ANY)+ }
 rule = {
     (space | nl)*
     ~ (tags ~ nl)?
@@ -124,7 +124,7 @@ examples = {
 scenario_name = {
     (
         !(nl)
-        ~ any
+        ~ ANY
     )+
 }
 
@@ -157,7 +157,7 @@ feature_kw = {
 feature_body = {
     (
         !(nl)
-        ~ any
+        ~ ANY
     )+
 }
 
@@ -166,7 +166,7 @@ feature_description_line = _{
     !(tag_prefix | background_kw | scenario_kw) ~
     (
         !(nl) ~
-        any
+        ANY
     )+
 }
 
@@ -191,9 +191,9 @@ feature = {
 }
 
 main = {
-    soi
+    SOI
     ~ (space | nl)*
     ~ feature
     ~ (space | nl)*
-    ~ eoi
+    ~ EOI
 }
