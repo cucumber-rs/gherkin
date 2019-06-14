@@ -12,7 +12,7 @@ pub struct FeatureParser;
 
 // This ensures that when the .pest file is changed during dev, a new build will occur.
 #[cfg(debug_assertions)]
-const _GRAMMAR: &'static str = include_str!("./feature.pest");
+const _GRAMMAR: &str = include_str!("./feature.pest");
 
 #[cfg(test)]
 mod tests {
