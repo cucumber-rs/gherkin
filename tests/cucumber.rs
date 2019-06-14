@@ -1,4 +1,3 @@
-#![feature(fnbox)]
 #[macro_use]
 extern crate cucumber_rust;
 use std::default::Default;
@@ -13,9 +12,7 @@ impl Default for MyWorld {
 }
 
 mod t {
-    steps! {
-        world: ::MyWorld;
-
+    steps!(::MyWorld => {
         given "I just started" |_world, _step| {
             println!("HELO");
         };
@@ -23,12 +20,12 @@ mod t {
         when "Hello" |_world, _step| {
 
         };
-    }
+    });
 }
 
 cucumber! {
-    features: "./tests/features";
-    world: ::MyWorld;
+    features: "./tests/features",
+    world: ::MyWorld,
     steps: &[
         t::steps
     ]

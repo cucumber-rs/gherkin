@@ -19,4 +19,4 @@ pest_derive = "^1.0"
 derive_builder = "^0.5"
 
 [dev-dependencies]
-cucumber_rust = "^0.3"
+cucumber_rust = { git = "https://github.com/bbqsrc/cucumber-rust.git" }
