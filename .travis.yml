@@ -1,0 +1,19 @@
+sudo: false
+
+language: rust
+
+rust:
+  - stable
+  - nightly
+
+matrix:
+  allow_failures:
+    - rust: nightly
+
+before_script:
+  - rustup component add clippy rustfmt
+
+script:
+  - cargo clippy --verbose --all-targets -- --deny warnings
+  - cargo test
+  - cargo fmt -- --check
