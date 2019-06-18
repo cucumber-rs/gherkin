@@ -12,7 +12,7 @@ pub struct FeatureParser;
 
 // This ensures that when the .pest file is changed during dev, a new build will occur.
 #[cfg(debug_assertions)]
-const _GRAMMAR: &'static str = include_str!("./feature.pest");
+const _GRAMMAR: &str = include_str!("./feature.pest");
 
 #[cfg(test)]
 mod tests {
@@ -26,28 +26,36 @@ mod tests {
 
     #[test]
     fn parse_tags() {
-        let _ = FeatureParser::parse(Rule::tag, "@tag @tag2\t@tag3").unwrap_or_else(|e| panic!("{}", e));
+        let _ = FeatureParser::parse(Rule::tag, "@tag @tag2\t@tag3")
+            .unwrap_or_else(|e| panic!("{}", e));
     }
 
     #[test]
     fn parse_tagged_scenario() {
-        let _ = FeatureParser::parse(Rule::scenario, "@tag\nScenario: thingo\nGiven what what\n\n").unwrap_or_else(|e| panic!("{}", e));
+        let _ = FeatureParser::parse(
+            Rule::scenario,
+            "@tag\nScenario: thingo\nGiven what what\n\n",
+        )
+        .unwrap_or_else(|e| panic!("{}", e));
     }
 
     #[test]
     fn parse_tagged_feature() {
-        let _ = FeatureParser::parse(Rule::feature, "@tag\nFeature: thingo\n\n").unwrap_or_else(|e| panic!("{}", e));
+        let _ = FeatureParser::parse(Rule::feature, "@tag\nFeature: thingo\n\n")
+            .unwrap_or_else(|e| panic!("{}", e));
     }
 
     #[test]
     fn parse_scenario_without_nl() {
-        let _ = FeatureParser::parse(Rule::scenario, "@tag\nScenario: thingo\nGiven what what").unwrap_or_else(|e| panic!("{}", e));
+        let _ = FeatureParser::parse(Rule::scenario, "@tag\nScenario: thingo\nGiven what what")
+            .unwrap_or_else(|e| panic!("{}", e));
     }
 
     #[test]
     fn parse_step() {
-        let _pairs = FeatureParser::parse(Rule::step, "Given you disappoint me\n").unwrap_or_else(|e| panic!("{}", e));
-        
+        let _pairs = FeatureParser::parse(Rule::step, "Given you disappoint me\n")
+            .unwrap_or_else(|e| panic!("{}", e));
+
         // for pair in pairs {
         //     for inner_pair in pair.into_inner() {
         //         // let span = inner_pair.clone().into_span();
@@ -64,7 +72,7 @@ When you encounter Shia LeBoeuf
 Then attempt to kill Shia LeBoeuf
 "#;
         let pairs = FeatureParser::parse(Rule::scenario, &s).unwrap_or_else(|e| panic!("{}", e));
-        
+
         for pair in pairs {
             // println!("<{:?}>", pair.as_rule());
             for inner_pair in pair.into_inner() {
@@ -93,8 +101,12 @@ Then attempt to kill Shia LeBoeuf
     #[test]
     fn parse_table_row() {
         let s = r#"| first | second | third |"#;
-        let pairs = FeatureParser::parse(Rule::table_row, &s).unwrap_or_else(|e| panic!("{}", e)).next().unwrap().into_inner();
-        
+        let pairs = FeatureParser::parse(Rule::table_row, &s)
+            .unwrap_or_else(|e| panic!("{}", e))
+            .next()
+            .unwrap()
+            .into_inner();
+
         let mut c = 0usize;
         for _pair in pairs {
             // println!("{:?}", pair.clone().into_span().as_str());
@@ -153,7 +165,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
 
         assert!(out.unwrap().description.is_some());
@@ -174,7 +186,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
     }
 
@@ -189,7 +201,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let out = out.unwrap();
 
@@ -208,12 +220,15 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let out = out.unwrap();
 
         assert!(out.scenarios[0].tags.is_none());
-        assert_eq!(out.description.unwrap().trim(), "This is some description with a @tag inside it.");
+        assert_eq!(
+            out.description.unwrap().trim(),
+            "This is some description with a @tag inside it."
+        );
     }
 
     #[test]
@@ -227,12 +242,15 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let out = out.unwrap();
 
         assert!(out.scenarios[0].tags.is_none());
-        assert_eq!(out.description.unwrap().trim(), "This is some description with a Scenario: inside it.");
+        assert_eq!(
+            out.description.unwrap().trim(),
+            "This is some description with a Scenario: inside it."
+        );
     }
 
     #[test]
@@ -259,7 +277,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let _out = out.unwrap();
     }
@@ -278,7 +296,7 @@ Scenario: bah
         let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", rout);
 
-        let out = ::Feature::try_from(s);
+        let out = crate::Feature::try_from(s);
         println!("{:#?}", out);
         let _out = out.unwrap();
     }
