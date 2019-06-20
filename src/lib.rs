@@ -47,6 +47,7 @@ pub struct Background {
     /// The parsed steps from the background directive.
     pub steps: Vec<Step>,
     /// The `(line, col)` position the background directive was found in the .feature file.
+    #[builder(default)]
     pub position: (usize, usize),
 }
 
@@ -59,6 +60,7 @@ pub struct Examples {
     #[builder(default)]
     pub tags: Option<Vec<String>>,
     /// The `(line, col)` position the examples directive was found in the .feature file.
+    #[builder(default)]
     pub position: (usize, usize),
 }
 
@@ -81,6 +83,7 @@ pub struct Feature {
     #[builder(default)]
     pub tags: Option<Vec<String>>,
     /// The `(line, col)` position the feature directive was found in the .feature file.
+    #[builder(default)]
     pub position: (usize, usize),
 }
 
@@ -95,6 +98,7 @@ pub struct Rule {
     #[builder(default)]
     pub tags: Option<Vec<String>>,
     /// The `(line, col)` position the rule directive was found in the .feature file.
+    #[builder(default)]
     pub position: (usize, usize),
 }
 
@@ -112,6 +116,7 @@ pub struct Scenario {
     #[builder(default)]
     pub tags: Option<Vec<String>>,
     /// The `(line, col)` position the scenario directive was found in the .feature file.
+    #[builder(default)]
     pub position: (usize, usize),
 }
 
@@ -131,6 +136,7 @@ pub struct Step {
     #[builder(default)]
     pub table: Option<Table>,
     /// The `(line, col)` position the step directive was found in the .feature file.
+    #[builder(default)]
     pub position: (usize, usize),
 }
 
@@ -150,6 +156,7 @@ pub struct Table {
     /// The rows of the data table. Each row is always the same length as the `header` field.
     pub rows: Vec<Vec<String>>,
     /// The `(line, col)` position the table directive was found in the .feature file.
+    #[builder(default)]
     pub position: (usize, usize),
 }
 
@@ -222,64 +229,6 @@ impl StepType {
     }
 }
 
-// https://github.com/bbqsrc/textwrap/blob/master/src/lib.rs#L900
-// License: MIT
-#[doc(hidden)]
-fn dedent(s: &str) -> String {
-    let mut prefix = String::new();
-
-    // We first search for a non-empty line to find a prefix.
-    for line in s.lines() {
-        let whitespace = line
-            .chars()
-            .take_while(|c| c.is_whitespace())
-            .collect::<String>();
-        // Check if the line had anything but whitespace
-        if whitespace.len() < line.len() {
-            prefix = whitespace;
-            break;
-        }
-    }
-
-    // Filter out all whitespace-only lines
-    let lines = s.lines().filter(|l| !l.chars().all(|c| c.is_whitespace()));
-
-    // We then continue looking through the remaining lines to
-    // possibly shorten the prefix.
-    for line in lines {
-        let whitespace = line
-            .chars()
-            .zip(prefix.chars())
-            .take_while(|&(a, b)| a == b)
-            .map(|(_, b)| b)
-            .collect::<String>();
-        // Check if we have found a shorter prefix
-        if whitespace.len() < prefix.len() {
-            prefix = whitespace;
-        }
-    }
-
-    // We now go over the lines a second time to build the result.
-    let mut result = s
-        .lines()
-        .map(|line| {
-            if line.starts_with(&prefix) && line.chars().any(|c| !c.is_whitespace()) {
-                line.split_at(prefix.len()).1
-            } else {
-                ""
-            }
-        })
-        .collect::<Vec<&str>>()
-        .join("\n");
-
-    // Reappend missing newline if found
-    if s.ends_with('\n') {
-        result.push('\n');
-    }
-
-    result
-}
-
 impl Step {
     fn from_rule_with_context(
         outer_rule: pest::iterators::Pair<'_, parser::Rule>,
@@ -308,7 +257,7 @@ impl Step {
                         .expect("docstring value")
                         .as_span()
                         .as_str();
-                    let r = dedent(r);
+                    let r = textwrap::dedent(r);
                     let docstring = r
                         .trim_end()
                         .trim_matches(|c| c == '\r' || c == '\n')
@@ -397,7 +346,7 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
                     builder.name(pair.as_span().as_str().to_string());
                 }
                 parser::Rule::feature_description => {
-                    let description = dedent(pair.as_span().as_str());
+                    let description = textwrap::dedent(pair.as_span().as_str());
                     if description == "" {
                         builder.description(None);
                     } else {
