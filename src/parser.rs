@@ -16,6 +16,7 @@ const _GRAMMAR: &str = include_str!("./feature.pest");
 
 #[cfg(test)]
 mod tests {
+    use std::convert::TryFrom;
     use super::*;
     use pest::Parser;
 

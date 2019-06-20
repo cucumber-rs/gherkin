@@ -41,6 +41,8 @@ extern crate derive_builder;
 
 mod parser;
 
+use pest::iterators::{Pair, Pairs};
+
 /// A feature background
 #[derive(Debug, Clone, Builder, PartialEq, Hash, Eq)]
 pub struct Background {
@@ -190,7 +192,7 @@ impl Step {
     }
 }
 
-fn parse_tags(outer_rule: pest::iterators::Pair<'_, parser::Rule>) -> Vec<String> {
+fn parse_tags(outer_rule: Pair<'_, parser::Rule>) -> Vec<String> {
     let mut tags = vec![];
 
     for rule in outer_rule.into_inner() {
@@ -203,8 +205,10 @@ fn parse_tags(outer_rule: pest::iterators::Pair<'_, parser::Rule>) -> Vec<String
     tags
 }
 
-impl Feature {
-    pub fn try_from(s: &str) -> Result<Feature, Error> {
+impl<'a> std::convert::TryFrom<&'a str> for Feature {
+    type Error = Error;
+
+    fn try_from(s: &'a str) -> Result<Feature, Error> {
         use parser::*;
         use pest::Parser;
 
@@ -213,6 +217,21 @@ impl Feature {
         let inner_pair = pair.into_inner().next().expect("feature to exist");
 
         Ok(Feature::from(inner_pair))
+    }
+}
+
+#[derive(Debug)]
+pub enum TryFromError {
+  Parsing(Error),
+  Reading(std::io::Error)
+}
+
+impl<'a> std::convert::TryFrom<&'a std::path::Path> for Feature {
+    type Error = TryFromError;
+
+    fn try_from(p: &'a std::path::Path) -> Result<Feature, TryFromError> {
+        let s = std::fs::read_to_string(p).map_err(|e| TryFromError::Reading(e))?;
+        Feature::try_from(&*s).map_err(|e| TryFromError::Parsing(e))
     }
 }
 
@@ -231,7 +250,7 @@ impl StepType {
 
 impl Step {
     fn from_rule_with_context(
-        outer_rule: pest::iterators::Pair<'_, parser::Rule>,
+        outer_rule: Pair<'_, parser::Rule>,
         context: Option<StepType>,
     ) -> Self {
         let mut builder = StepBuilder::default();
@@ -276,7 +295,7 @@ impl Step {
         builder.build().expect("step to be built")
     }
 
-    fn vec_from_rule(rule: pest::iterators::Pair<'_, parser::Rule>) -> Vec<Step> {
+    fn vec_from_rule(rule: Pair<'_, parser::Rule>) -> Vec<Step> {
         let mut steps: Vec<Step> = vec![];
 
         for pair in rule.into_inner() {
@@ -290,8 +309,8 @@ impl Step {
     }
 }
 
-impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Rule {
-    fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
+impl<'a> From<Pair<'a, parser::Rule>> for Rule {
+    fn from(rule: Pair<'a, parser::Rule>) -> Self {
         let mut builder = RuleBuilder::default();
         let mut scenarios = vec![];
 
@@ -321,8 +340,8 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Rule {
     }
 }
 
-impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Background {
-    fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
+impl<'a> From<Pair<'a, parser::Rule>> for Background {
+    fn from(rule: Pair<'a, parser::Rule>) -> Self {
         let pos = rule.as_span().start_pos().line_col();
         Background {
             steps: Step::vec_from_rule(rule),
@@ -331,8 +350,8 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Background {
     }
 }
 
-impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
-    fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
+impl<'a> From<Pair<'a, parser::Rule>> for Feature {
+    fn from(rule: Pair<'a, parser::Rule>) -> Self {
         let mut builder = FeatureBuilder::default();
         let mut scenarios = vec![];
         let mut rules = vec![];
@@ -380,14 +399,14 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Feature {
     }
 }
 
-impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
-    fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
+impl<'a> From<Pair<'a, parser::Rule>> for Table {
+    fn from(rule: Pair<'a, parser::Rule>) -> Self {
         let mut builder = TableBuilder::default();
         let mut rows = vec![];
 
         builder.position(rule.as_span().start_pos().line_col());
 
-        fn row_from_inner(inner: pest::iterators::Pairs<'_, parser::Rule>) -> Vec<String> {
+        fn row_from_inner(inner: Pairs<'_, parser::Rule>) -> Vec<String> {
             let mut rows = vec![];
             for pair in inner {
                 if pair.as_rule() == parser::Rule::table_field {
@@ -418,14 +437,8 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Table {
     }
 }
 
-impl<'a> From<&'a str> for Feature {
-    fn from(s: &'a str) -> Self {
-        Feature::try_from(s).unwrap()
-    }
-}
-
-impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Examples {
-    fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
+impl<'a> From<Pair<'a, parser::Rule>> for Examples {
+    fn from(rule: Pair<'a, parser::Rule>) -> Self {
         let mut builder = ExamplesBuilder::default();
         builder.position(rule.as_span().start_pos().line_col());
 
@@ -447,8 +460,8 @@ impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Examples {
     }
 }
 
-impl<'a> From<pest::iterators::Pair<'a, parser::Rule>> for Scenario {
-    fn from(rule: pest::iterators::Pair<'a, parser::Rule>) -> Self {
+impl<'a> From<Pair<'a, parser::Rule>> for Scenario {
+    fn from(rule: Pair<'a, parser::Rule>) -> Self {
         let mut builder = ScenarioBuilder::default();
 
         for pair in rule.into_inner() {
@@ -483,11 +496,12 @@ pub type Error = pest::error::Error<parser::Rule>;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::convert::TryFrom;
 
     #[test]
     fn test_e2e() {
         let s = include_str!("./test.feature");
-        let _f = Feature::from(s);
+        let _f = Feature::try_from(s);
         // println!("{:#?}", _f);
     }
 }
