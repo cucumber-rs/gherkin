@@ -431,6 +431,10 @@ impl<'a> From<Pair<'a, parser::Rule>> for Table {
         }
         if let Some(h) = header {
             builder.header(h);
+        } else {
+            let mut h = Vec::new();
+            h.resize(rows[0].len(), String::new());
+            builder.header(h);
         }
 
         builder.rows(rows).build().expect("table to be build")
