@@ -17,6 +17,7 @@ Background:
     | a thingo   | another thingo   | final thingo   |
     | a thingo 2 | another thingo 2 | final thingo 2 |
   And then it was fun
+    | value1 | value2 |
 
 @tag1 @tag2 @tag-life_woo
 Scenario: A second scenario test
