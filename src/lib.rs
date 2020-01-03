@@ -186,9 +186,11 @@ impl Step {
             None => None,
         }
     }
+}
 
-    pub fn to_string(&self) -> String {
-        format!("{} {}", &self.raw_type, &self.value)
+impl std::fmt::Display for Step {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} {}", &self.raw_type, &self.value)
     }
 }
 
@@ -222,16 +224,16 @@ impl<'a> std::convert::TryFrom<&'a str> for Feature {
 
 #[derive(Debug)]
 pub enum TryFromError {
-  Parsing(Error),
-  Reading(std::io::Error)
+    Parsing(Error),
+    Reading(std::io::Error),
 }
 
 impl<'a> std::convert::TryFrom<&'a std::path::Path> for Feature {
     type Error = TryFromError;
 
     fn try_from(p: &'a std::path::Path) -> Result<Feature, TryFromError> {
-        let s = std::fs::read_to_string(p).map_err(|e| TryFromError::Reading(e))?;
-        Feature::try_from(&*s).map_err(|e| TryFromError::Parsing(e))
+        let s = std::fs::read_to_string(p).map_err(TryFromError::Reading)?;
+        Feature::try_from(&*s).map_err(TryFromError::Parsing)
     }
 }
 

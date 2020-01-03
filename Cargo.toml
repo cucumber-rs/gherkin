@@ -3,7 +3,7 @@ name = "gherkin_rust"
 version = "0.6.0"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
 description = "A pure Rust implementation of the Gherkin (`.feature` file) language for the Cucumber testing framework"
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/bbqsrc/gherkin-rust"
 documentation = "https://docs.rs/gherkin_rust"
@@ -17,7 +17,7 @@ harness = false
 [dependencies]
 pest = "2.1"
 pest_derive = "2.1"
-derive_builder = "0.7"
+derive_builder = "0.9"
 textwrap = "0.11"
 
 [dev-dependencies]
