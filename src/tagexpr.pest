@@ -1,0 +1,47 @@
+// Copyright (c) 2020  Brendan Molloy <brendan@bbqsrc.net>
+//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
+
+WHITESPACE = _{ (" " | "\t" | "\n") }
+tag_prefix = _{ "@" }
+
+tag = @{
+    tag_prefix ~
+    (
+        !WHITESPACE ~
+        !tag_prefix ~
+        !")" ~
+        ANY
+    )+
+}
+
+op_not = { "not" }
+op_and = { "and" }
+op_or = { "or" }
+op_infix = _{ (op_and | op_or) }
+
+expression = _{
+  op_not? ~ (braced | tag) ~
+  (
+    op_infix ~ expression
+  )*
+}
+
+braced = {
+  "(" ~
+  (
+    !")" ~
+    expression
+  ) ~
+  ")"
+}
+
+main = _{
+  SOI ~
+  expression ~
+  EOI
+}

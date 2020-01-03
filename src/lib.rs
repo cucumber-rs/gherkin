@@ -40,6 +40,7 @@ extern crate pest_derive;
 extern crate derive_builder;
 
 mod parser;
+pub mod tagexpr;
 
 use pest::iterators::{Pair, Pairs};
 
