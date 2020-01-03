@@ -225,18 +225,19 @@ impl<'a> std::convert::TryFrom<&'a str> for Feature {
     }
 }
 
+/// Error type for `TryFrom<Path>` for a `Feature`
 #[derive(Debug)]
-pub enum TryFromError {
+pub enum TryFromPathError {
     Parsing(Error),
-    Reading(std::io::Error),
+    Io(std::io::Error),
 }
 
 impl<'a> std::convert::TryFrom<&'a std::path::Path> for Feature {
-    type Error = TryFromError;
+    type Error = TryFromPathError;
 
-    fn try_from(p: &'a std::path::Path) -> Result<Feature, TryFromError> {
-        let s = std::fs::read_to_string(p).map_err(TryFromError::Reading)?;
-        Feature::try_from(&*s).map_err(TryFromError::Parsing)
+    fn try_from(p: &'a std::path::Path) -> Result<Feature, Self::Error> {
+        let s = std::fs::read_to_string(p).map_err(TryFromPathError::Io)?;
+        Feature::try_from(&*s).map_err(TryFromPathError::Parsing)
     }
 }
 
