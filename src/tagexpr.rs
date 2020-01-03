@@ -6,16 +6,33 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! ### Tag expressions
+//! 
+//! You can read about tag expressions in the [Cucumber documentation](https://cucumber.io/docs/cucumber/api/#tag-expressions).
+//! 
+//! This implements the parsing apparatus for these expressions so that other crates like [cucumber_rust](https://github.com/bbqsrc/cucumber-rust)
+//! may take advantage of them.
+//! 
+//! #### Usage
+//! 
+//! ```
+//! let op: TagOperation = "@a and @b".parse()?;
+//! ```
+
 use pest::iterators::Pairs;
 use std::str::FromStr;
 
-#[derive(Parser)]
-#[grammar = "tagexpr.pest"]
-pub struct TagExprParser;
+pub(crate) mod parser {
+    #[derive(Parser)]
+    #[grammar = "tagexpr.pest"]
+    pub struct TagExprParser;
 
-// This ensures that when the .pest file is changed during dev, a new build will occur.
-#[cfg(debug_assertions)]
-const _GRAMMAR: &str = include_str!("./tagexpr.pest");
+    // This ensures that when the .pest file is changed during dev, a new build will occur.
+    #[cfg(debug_assertions)]
+    const _GRAMMAR: &str = include_str!("./tagexpr.pest");
+}
+
+use parser::Rule;
 
 /// Re-exported `pest::Error` wrapped around the `Rule` type
 pub type Error = pest::error::Error<Rule>;
@@ -26,11 +43,12 @@ impl FromStr for TagOperation {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use pest::Parser;
 
-        let pairs = TagExprParser::parse(Rule::main, s)?;
+        let pairs = parser::TagExprParser::parse(Rule::main, s)?;
         Ok(TagOperation::new(pairs))
     }
 }
 
+/// A parsed tree of operations for Gherkin tags. 
 #[derive(Debug, Clone)]
 pub enum TagOperation {
     And(Box<TagOperation>, Box<TagOperation>),

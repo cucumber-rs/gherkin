@@ -33,7 +33,9 @@
 //! Indentation and comments are ignored by the parser. Most other things can be accessed via
 //! properties of the relevant struct.
 
+#[doc(hidden)]
 pub extern crate pest;
+
 #[macro_use]
 extern crate pest_derive;
 #[macro_use]
