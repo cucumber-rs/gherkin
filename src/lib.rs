@@ -32,10 +32,16 @@
 //! Indentation and comments are ignored by the parser. Most other things can be accessed via
 //! properties of the relevant struct.
 
-use typed_builder::TypedBuilder;
-
 mod parser;
 pub mod tagexpr;
+
+// Re-export for convenience
+pub use peg::error::ParseError;
+pub use peg::str::LineCol;
+
+use typed_builder::TypedBuilder;
+
+use std::path::Path;
 
 /// A feature background
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Hash, Eq)]
@@ -83,6 +89,18 @@ pub struct Feature {
     /// The `(start, end)` offset the feature directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+}
+
+impl PartialOrd for Feature {
+    fn partial_cmp(&self, other: &Feature) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Feature {
+    fn cmp(&self, other: &Feature) -> std::cmp::Ordering {
+        self.name.cmp(&other.name)
+    }
 }
 
 /// A rule, as introduced in Gherkin 6.
@@ -154,6 +172,33 @@ pub struct Table {
     /// The `(start, end)` offset the table directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum ParseFileError {
+    #[error("Could not read path: {0}")]
+    Reading(std::path::PathBuf, #[source] std::io::Error),
+
+    #[error("Could not parse feature file: {0}")]
+    Parsing(
+        std::path::PathBuf,
+        #[source] peg::error::ParseError<peg::str::LineCol>,
+    ),
+}
+
+impl Feature {
+    #[inline]
+    pub fn parse_path<P: AsRef<Path>>(path: P) -> Result<Feature, ParseFileError> {
+        let s = std::fs::read_to_string(path.as_ref())
+            .map_err(|e| ParseFileError::Reading(path.as_ref().to_path_buf(), e))?;
+        parser::gherkin_parser::feature(&s, &Default::default())
+            .map_err(|e| ParseFileError::Parsing(path.as_ref().to_path_buf(), e))
+    }
+
+    #[inline]
+    pub fn parse<S: AsRef<str>>(input: S) -> Result<Feature, ParseError<LineCol>> {
+        parser::gherkin_parser::feature(input.as_ref(), &Default::default())
+    }
 }
 
 impl Step {

@@ -9,7 +9,7 @@
 use std::cell::RefCell;
 
 use crate::tagexpr::TagOperation;
-use crate::{Background, Feature, Rule, Scenario, Step, StepType, Table, Examples};
+use crate::{Background, Examples, Feature, Rule, Scenario, Step, StepType, Table};
 
 struct Keywords<'a> {
     feature: &'a [&'a str],
