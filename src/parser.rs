@@ -143,7 +143,7 @@ impl GherkinEnv {
     }
 
     fn last_step(&self) -> Option<StepType> {
-        self.last_step.borrow().clone()
+        *self.last_step.borrow()
     }
 }
 
@@ -174,7 +174,7 @@ rule keyword1(list: &[&'static str]) -> &'static str
         // println!("Input: {} {:?}", &input, &list);
         match list.iter().find(|x| input.starts_with(**x)) {
             Some(v) => {
-                env.set_keyword(v.to_string());
+                env.set_keyword((*v).to_string());
                 // println!("Found: {}", &v);
                 Err("success")
             },
@@ -326,7 +326,7 @@ rule background() -> Background
       pb:position!()
     {
         Background::builder()
-            .steps(s.unwrap_or(vec![]))
+            .steps(s.unwrap_or_else(|| vec![]))
             .span((pa, pb))
             .build()
     }
@@ -379,7 +379,7 @@ rule scenario() -> Scenario
         Scenario::builder()
             .name(n.to_string())
             .tags(t)
-            .steps(s.unwrap_or(vec![]))
+            .steps(s.unwrap_or_else(|| vec![]))
             .examples(e)
             .span((pa, pb))
             .build()
@@ -396,7 +396,7 @@ rule scenario() -> Scenario
         Scenario::builder()
             .name(n.to_string())
             .tags(t)
-            .steps(s.unwrap_or(vec![]))
+            .steps(s.unwrap_or_else(|| vec![]))
             .examples(e)
             .span((pa, pb))
             .build()
@@ -432,16 +432,16 @@ rule rule_() -> Rule
         Rule::builder()
             .name(n.to_string())
             .tags(t)
-            .scenarios(s.unwrap_or(vec![]))
+            .scenarios(s.unwrap_or_else(|| vec![]))
             .span((pa, pb))
             .build()
     }
 
 rule rules() -> Vec<Rule>
-    = _ r:(rule_() ** _)? { r.unwrap_or(vec![]) }
+    = _ r:(rule_() ** _)? { r.unwrap_or_else(|| vec![]) }
 
 pub(crate) rule scenarios() -> Vec<Scenario>
-    = _ s:(scenario() ** _)? { s.unwrap_or(vec![]) }
+    = _ s:(scenario() ** _)? { s.unwrap_or_else(|| vec![]) }
 
 pub rule feature() -> Feature
     = _ language_directive()? nl()*

@@ -215,10 +215,6 @@ impl Step {
             None => None,
         }
     }
-
-    pub fn to_string(&self) -> String {
-        format!("{}", self)
-    }
 }
 
 impl std::fmt::Display for Step {
