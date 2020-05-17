@@ -1,4 +1,4 @@
-// Copyright (c) 2018  Brendan Molloy <brendan@bbqsrc.net>
+// Copyright (c) 2020  Brendan Molloy <brendan@bbqsrc.net>
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -6,299 +6,512 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#[derive(Parser)]
-#[grammar = "feature.pest"]
-pub struct FeatureParser;
+use std::cell::RefCell;
 
-// This ensures that when the .pest file is changed during dev, a new build will occur.
-#[cfg(debug_assertions)]
-const _GRAMMAR: &str = include_str!("./feature.pest");
+use crate::tagexpr::TagOperation;
+use crate::{Background, Feature, Rule, Scenario, Step, StepType, Table, Examples};
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use pest::Parser;
-    use std::convert::TryFrom;
+struct Keywords<'a> {
+    feature: &'a [&'a str],
+    background: &'a [&'a str],
+    rule: &'a [&'a str],
+    scenario: &'a [&'a str],
+    scenario_outline: &'a [&'a str],
+    examples: &'a [&'a str],
+    given: &'a [&'a str],
+    when: &'a [&'a str],
+    then: &'a [&'a str],
+    and: &'a [&'a str],
+    but: &'a [&'a str],
+}
 
-    #[test]
-    fn parse_tag() {
-        let _ = FeatureParser::parse(Rule::tag, "@tag").unwrap_or_else(|e| panic!("{}", e));
+impl<'a> Keywords<'a> {
+    pub fn all(&self) -> Vec<&'a str> {
+        let mut v = vec![];
+
+        for x in [
+            self.feature,
+            self.background,
+            self.rule,
+            self.scenario,
+            self.rule,
+            self.scenario_outline,
+            self.examples,
+            self.given,
+            self.when,
+            self.then,
+            self.and,
+            self.but,
+        ]
+        .iter()
+        {
+            v.append(&mut x.to_vec());
+        }
+
+        v
+    }
+}
+
+const DEFAULT_KEYWORDS: Keywords<'static> = Keywords {
+    feature: &["Feature"],
+    background: &["Background"],
+    rule: &["Rule"],
+    scenario: &["Scenario", "Example"],
+    scenario_outline: &["Scenario Outline", "Scenario Template"],
+    examples: &["Examples"],
+    given: &["Given"],
+    when: &["When"],
+    then: &["Then"],
+    and: &["*", "And"],
+    but: &["But"],
+};
+
+const FORMAL_SPEC_KEYWORDS: Keywords<'static> = Keywords {
+    feature: &["Section"],
+    background: &["Context"],
+    rule: &["Rule"],
+    scenario: &["Proof", "Evidence"],
+    scenario_outline: &["Demonstration"],
+    examples: &["Examples"],
+    given: &["Given"],
+    when: &["When"],
+    then: &["Then"],
+    and: &["*", "And"],
+    but: &["But"],
+};
+
+const SV_KEYWORDS: Keywords<'static> = Keywords {
+    feature: &["Egenskap"],
+    background: &["Bakgrund"],
+    rule: &["Regel"],
+    scenario: &["Scenario", "Exempel"],
+    scenario_outline: &["Abstrakt Scenario"],
+    examples: &["Exempel"],
+    given: &["Givet"],
+    when: &["När"],
+    then: &["Så"],
+    and: &["*", "Och"],
+    but: &["Men"],
+};
+
+pub struct GherkinEnv {
+    keywords: RefCell<Keywords<'static>>,
+    last_step: RefCell<Option<StepType>>,
+    last_keyword: RefCell<Option<String>>,
+}
+
+impl GherkinEnv {
+    pub fn set_language(&self, language: &str) -> Result<(), &'static str> {
+        let keywords = match language {
+            "formal" => FORMAL_SPEC_KEYWORDS,
+            "sv" => SV_KEYWORDS,
+            "en" => DEFAULT_KEYWORDS,
+            _ => return Err("Error: requested language not supported"),
+        };
+
+        *self.keywords.borrow_mut() = keywords;
+
+        Ok(())
     }
 
-    #[test]
-    fn parse_tags() {
-        let _ = FeatureParser::parse(Rule::tag, "@tag @tag2\t@tag3")
-            .unwrap_or_else(|e| panic!("{}", e));
+    fn keywords(&self) -> std::cell::Ref<Keywords<'static>> {
+        self.keywords.borrow()
     }
 
-    #[test]
-    fn parse_tagged_scenario() {
-        let _ = FeatureParser::parse(
-            Rule::scenario,
-            "@tag\nScenario: thingo\nGiven what what\n\n",
-        )
-        .unwrap_or_else(|e| panic!("{}", e));
+    fn set_keyword(&self, kw: String) {
+        *self.last_keyword.borrow_mut() = Some(kw);
     }
 
-    #[test]
-    fn parse_tagged_feature() {
-        let _ = FeatureParser::parse(Rule::feature, "@tag\nFeature: thingo\n\n")
-            .unwrap_or_else(|e| panic!("{}", e));
+    fn clear_keyword(&self) {
+        *self.last_keyword.borrow_mut() = None;
     }
 
-    #[test]
-    fn parse_scenario_without_nl() {
-        let _ = FeatureParser::parse(Rule::scenario, "@tag\nScenario: thingo\nGiven what what")
-            .unwrap_or_else(|e| panic!("{}", e));
+    fn last_keyword(&self) -> std::cell::Ref<Option<String>> {
+        self.last_keyword.borrow()
     }
 
-    #[test]
-    fn parse_step() {
-        let _pairs = FeatureParser::parse(Rule::step, "Given you disappoint me\n")
-            .unwrap_or_else(|e| panic!("{}", e));
-
-        // for pair in pairs {
-        //     for inner_pair in pair.into_inner() {
-        //         // let span = inner_pair.clone().into_span();
-        //         // println!("{:?} {}", inner_pair.as_rule(), span.as_str());
-        //     }
-        // }
+    fn take_keyword(&self) -> String {
+        self.last_keyword.borrow_mut().take().unwrap()
     }
 
-    #[test]
-    fn parse_scenario() {
-        let s = r#"Scenario: You are walking through the forest
-Given you fear Shia LeBoeuf
-When you encounter Shia LeBoeuf
-Then attempt to kill Shia LeBoeuf
-"#;
-        let pairs = FeatureParser::parse(Rule::scenario, &s).unwrap_or_else(|e| panic!("{}", e));
+    fn set_last_step(&self, ty: StepType) {
+        *self.last_step.borrow_mut() = Some(ty);
+    }
 
-        for pair in pairs {
-            // println!("<{:?}>", pair.as_rule());
-            for inner_pair in pair.into_inner() {
-                // println!("  <{:?}>", inner_pair.as_rule());
+    fn clear_last_step(&self) {
+        *self.last_step.borrow_mut() = None;
+    }
 
-                for inin_pair in inner_pair.into_inner() {
-                    // println!("    <{:?}>", inin_pair.as_rule());
+    fn last_step(&self) -> Option<StepType> {
+        self.last_step.borrow().clone()
+    }
+}
 
-                    for _ininin_pair in inin_pair.into_inner() {
-                        // let span = ininin_pair.clone().into_span();
-                        // println!("       <{:?}> {}", ininin_pair.as_rule(), span.as_str());
-                    }
-                }
+impl Default for GherkinEnv {
+    fn default() -> Self {
+        GherkinEnv {
+            keywords: RefCell::new(DEFAULT_KEYWORDS),
+            last_step: RefCell::new(None),
+            last_keyword: RefCell::new(None),
+        }
+    }
+}
+
+peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
+
+rule _() = quiet!{[' ']*}
+rule __() = quiet!{[' ']+}
+rule nl() = quiet!{"\n" comment()*}
+rule eof() = quiet!{![_]}
+rule nl_eof() = quiet!{(nl() / [' '])+ / eof()}
+rule comment() = quiet!{"#" $((!nl()[_])*) nl()}
+
+rule keyword1(list: &[&'static str]) -> &'static str
+    = input:$([_]*<
+        {list.iter().map(|x| x.len()).min().unwrap()},
+        {list.iter().map(|x| x.len()).max().unwrap()}
+    >) {?
+        // println!("Input: {} {:?}", &input, &list);
+        match list.iter().find(|x| input.starts_with(**x)) {
+            Some(v) => {
+                env.set_keyword(v.to_string());
+                // println!("Found: {}", &v);
+                Err("success")
+            },
+            None => {
+                // println!("Unfound: {}", &input);
+                env.clear_keyword();
+                Err("hacks")
             }
         }
     }
 
-    #[test]
-    fn parse_docstring() {
-        let s = r#""""
-    This is a docstring
-""""#;
-        let _pairs = FeatureParser::parse(Rule::docstring, &s).unwrap_or_else(|e| panic!("{}", e));
-    }
-
-    #[test]
-    fn parse_table_row() {
-        let s = r#"| first | second | third |"#;
-        let pairs = FeatureParser::parse(Rule::table_row, &s)
-            .unwrap_or_else(|e| panic!("{}", e))
-            .next()
-            .unwrap()
-            .into_inner();
-
-        let mut c = 0usize;
-        for _pair in pairs {
-            // println!("{:?}", pair.clone().into_span().as_str());
-            c += 1;
+rule keyword0(list: &[&'static str]) -> usize
+    = keyword1(list)? {?
+        match env.last_keyword().as_ref() {
+            Some(v) => Ok(v.len()),
+            None => Err("no match")
         }
-        assert!(c == 3, "{} != 3", c);
     }
 
-    #[test]
-    fn parse_datatable() {
-        let s = r#"| first | second | third |
-| a thingo | another thingo | final thingo |
-| a thingo | another thingo | final thingo |
+pub(crate) rule keyword(list: &[&'static str]) -> &'static str
+    = len:keyword0(list) [_]*<{len}> {
+        let kw = env.take_keyword();
+        list.iter().find(|x| **x == &*kw).unwrap()
+    }
+
+rule language_directive() -> ()
+    = "# language: " l:$(['a'..='z']+) _ nl() {?
+        env.set_language(l)
+    }
+
+rule docstring() -> String
+    = "\"\"\"" n:$((!"\"\"\""[_])*) "\"\"\"" nl_eof() {
+        textwrap::dedent(n)
+    }
+
+rule table_cell() -> &'input str
+    = "|" _ !(nl() / eof()) n:$((!"|"[_])*) { n }
+
+pub(crate) rule table_row() -> Vec<String>
+    = n:(table_cell() ** _) _ "|" _ nl_eof() {
+        n.into_iter()
+            .map(str::trim)
+            .map(str::to_string)
+            .collect()
+    }
+
+pub(crate) rule table0() -> Vec<Vec<String>>
+    = _ d:(table_row() ++ _) {
+        if d.is_empty() {
+            d
+        } else {
+            let len = d[0].len();
+            d.into_iter().map(|mut x| { x.truncate(len); x }).collect()
+        }
+    }
+
+pub(crate) rule table() -> Table
+    = pa:position!() t:table0() pb:position!() {
+        Table::builder()
+            .span((pa, pb))
+            .rows(t)
+            .build()
+    }
+
+pub(crate) rule step() -> Step
+    = pa:position!() k:keyword((env.keywords().given)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+      d:docstring()? t:table()?
+    {
+        env.set_last_step(StepType::Given);
+        Step::builder().ty(StepType::Given)
+            .raw_type(k.to_string())
+            .value(n.to_string())
+            .table(t)
+            .docstring(d)
+            .span((pa, pb))
+            .build()
+    }
+    / pa:position!() k:keyword((env.keywords().when)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+      d:docstring()? t:table()?
+    {
+        env.set_last_step(StepType::When);
+        Step::builder().ty(StepType::When)
+            .raw_type(k.to_string())
+            .value(n.to_string())
+            .table(t)
+            .docstring(d)
+            .span((pa, pb))
+            .build()
+    }
+    / pa:position!() k:keyword((env.keywords().then)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+      d:docstring()? t:table()?
+    {
+        env.set_last_step(StepType::Then);
+        Step::builder().ty(StepType::Then)
+            .raw_type(k.to_string())
+            .value(n.to_string())
+            .table(t)
+            .docstring(d)
+            .span((pa, pb))
+            .build()
+    }
+    / pa:position!() k:keyword((env.keywords().and)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+      d:docstring()? t:table()?
+    {?
+        match env.last_step() {
+            Some(v) => {
+                Ok(Step::builder().ty(v)
+                    .raw_type(k.to_string())
+                    .value(n.to_string())
+                    .table(t)
+                    .docstring(d)
+                    .span((pa, pb))
+                    .build())
+            }
+            None => {
+                Err("given, when or then")
+            }
+        }
+    }
+    / pa:position!() k:keyword((env.keywords().but)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+      d:docstring()? t:table()?
+    {?
+        match env.last_step() {
+            Some(v) => {
+                Ok(Step::builder().ty(v)
+                    .raw_type(k.to_string())
+                    .value(n.to_string())
+                    .table(t)
+                    .docstring(d)
+                    .span((pa, pb))
+                    .build())
+            }
+            None => {
+                Err("given, when or then")
+            }
+        }
+    }
+
+pub(crate) rule steps() -> Vec<Step>
+    = s:(step() ** _) {
+        env.clear_last_step();
+        s
+    }
+
+rule background() -> Background
+    = _ pa:position!()
+      keyword((env.keywords().background)) ":" _ nl_eof()
+      s:steps()?
+      pb:position!()
+    {
+        Background::builder()
+            .steps(s.unwrap_or(vec![]))
+            .span((pa, pb))
+            .build()
+    }
+
+rule any_directive() -> &'static str
+    = k:keyword((&*env.keywords().all())) {
+        // println!("Found directive: {}", &k);
+        k
+    }
+
+rule description_line() -> &'input str
+    = _ !"@" !any_directive() _ n:$((!['\n'][_])+) nl_eof() { n }
+
+rule description() -> Option<String>
+    = d:(description_line() ** _) {
+        let d = d.join("\n");
+        if d.trim() == "" {
+            None
+        } else {
+            Some(d)
+        }
+    }
+
+rule examples() -> Examples
+    = _
+      t:tags()
+      _
+      pa:position!()
+      keyword((env.keywords().examples)) ":" _ nl_eof()
+      tb:table()
+      pb:position!()
+    {
+        Examples::builder()
+            .tags(t)
+            .table(tb)
+            .span((pa, pb))
+            .build()
+    }
+
+rule scenario() -> Scenario
+    = _
+      t:tags()
+      _
+      pa:position!()
+      keyword((env.keywords().scenario)) ":" _ n:$((!['\n'][_])+) _ nl_eof()
+      s:steps()?
+      e:examples()?
+      pb:position!()
+    {
+        Scenario::builder()
+            .name(n.to_string())
+            .tags(t)
+            .steps(s.unwrap_or(vec![]))
+            .examples(e)
+            .span((pa, pb))
+            .build()
+    }
+    / _
+      t:tags()
+      _
+      pa:position!()
+      keyword((env.keywords().scenario_outline)) ":" _ n:$((!['\n'][_])+) _ nl_eof()
+      s:steps()?
+      e:examples()?
+      pb:position!()
+    {
+        Scenario::builder()
+            .name(n.to_string())
+            .tags(t)
+            .steps(s.unwrap_or(vec![]))
+            .examples(e)
+            .span((pa, pb))
+            .build()
+    }
+
+rule tag_char() -> &'input str
+    = s:$([_]) {?
+        let x = s.chars().next().unwrap();
+        if x.is_alphanumeric() || x == '_' || x == '-' {
+            Ok(s)
+        } else {
+            Err("tag character")
+        }
+    }
+
+pub(crate) rule tag() -> String
+    = "@" s:tag_char()+ { s.join("") }
+
+pub(crate) rule tags() -> Vec<String>
+    = t:(tag() ** ([' ']+)) _ nl() { t }
+    / { vec![] }
+
+rule rule_() -> Rule
+    = _
+      t:tags()
+      _
+      pa:position!()
+      keyword((env.keywords().rule)) ":" _ n:$((!['\n'][_])+) _ nl_eof()
+      s:scenarios()?
+    //   e:examples()?
+      pb:position!()
+    {
+        Rule::builder()
+            .name(n.to_string())
+            .tags(t)
+            .scenarios(s.unwrap_or(vec![]))
+            .span((pa, pb))
+            .build()
+    }
+
+rule rules() -> Vec<Rule>
+    = _ r:(rule_() ** _)? { r.unwrap_or(vec![]) }
+
+pub(crate) rule scenarios() -> Vec<Scenario>
+    = _ s:(scenario() ** _)? { s.unwrap_or(vec![]) }
+
+pub rule feature() -> Feature
+    = _ language_directive()? nl()*
+      t:tags() nl()*
+      pa:position!()
+      keyword((env.keywords().feature)) ":" _ n:$((!['\n'][_])+) _ nl()+
+      d:description()? nl()*
+      b:background()? nl()*
+      s:scenarios() nl()*
+      r:rules() pb:position!()
+      nl()*
+    {
+        Feature::builder()
+            .tags(t)
+            .name(n.to_string())
+            .description(d.flatten())
+            .background(b)
+            .scenarios(s)
+            .rules(r)
+            .span((pa, pb))
+            .build()
+    }
+
+pub rule tag_operation() -> TagOperation = precedence!{
+    x:@ _ "and" _ y:(@) { TagOperation::And(Box::new(x), Box::new(y)) }
+    x:@ _ "or" _ y:(@) { TagOperation::Or(Box::new(x), Box::new(y)) }
+    "not" _ x:(@) { TagOperation::Not(Box::new(x)) }
+    --
+    t:tag() { TagOperation::Tag(t) }
+    "(" t:tag_operation() ")" _ { t }
+}
+
+}}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    const FOO: &str = r#"# language: formal
+@hot-stuff
+Section: 4.2. The thing we care about
+A description just jammed in here for no reason
+@lol @a @rule     @with-spaces
+Rule: All gubbins must be placed in the airlock
+
+@bad_idea
+Evidence: A gubbins in an airlock
+    Given a gubbins
+    """
+    That's a gubbins
+    and that is
+    and so is that
+    """
+    When a gubbins is forced into this weird corner
+    | a | b | c |
+    | 1 | 2 | 3 |
+    | 4 | 5 | 6 |
+    Then a gubbins is proven to be in an airlock
 "#;
-        let _pairs = FeatureParser::parse(Rule::datatable, &s).unwrap_or_else(|e| panic!("{}", e));
+    #[test]
+    fn smoke() {
+        let env = GherkinEnv::default();
+        assert!(gherkin_parser::feature(FOO, &env).is_ok());
     }
 
     #[test]
-    fn parse_datatable_with_no_header() {
-        let s = r#"| a thingo | another thingo | final thingo |
-"#;
-        let _pairs = FeatureParser::parse(Rule::datatable, &s).unwrap_or_else(|e| panic!("{}", e));
-    }
-
-    #[test]
-    fn parse_datatable_with_empty_field() {
-        let s = r#"|       | second | third |
-| a thingo | another thingo | final thingo |
-| a thingo | another thingo | final thingo |
-"#;
-        let _pairs = FeatureParser::parse(Rule::datatable, &s).unwrap_or_else(|e| panic!("{}", e));
-    }
-
-    #[test]
-    fn parse_feature_with_prepended_newlines() {
-        let s = r#"
-
-
-
-Feature: This is some feature
-
-"#;
-        let _ = FeatureParser::parse(Rule::feature, &s).unwrap_or_else(|e| panic!("{}", e));
-    }
-
-    #[test]
-    fn parse_pointless_lines_after_feature() {
-        let s = r#"Feature: This is some feature
-  As a user
-  I want to be able to do a thing
-  So that I can complete a derp
-
-Scenario: bah
-  Then it worked
-"#;
-        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
-        println!("{:#?}", rout);
-
-        let out = crate::Feature::try_from(s);
-        println!("{:#?}", out);
-
-        assert!(out.unwrap().description.is_some());
-    }
-
-    #[test]
-    fn parse_bad_line_endings_and_whitespace() {
-        let s = r#"Feature: This is some feature
-        
-Scenario: bah
-  Then it worked
-
-      
-          
-
-
-"#;
-        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
-        println!("{:#?}", rout);
-
-        let out = crate::Feature::try_from(s);
-        println!("{:#?}", out);
-    }
-
-    #[test]
-    fn test_tags_on_scenario() {
-        let s = r#"Feature: Test
-
-  @thing1
-  Scenario: a scenario
-    Given something happens
-"#;
-        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
-        println!("{:#?}", rout);
-
-        let out = crate::Feature::try_from(s);
-        println!("{:#?}", out);
-        let out = out.unwrap();
-
-        assert!(out.scenarios[0].tags.is_some());
-        assert!(out.description.is_none());
-    }
-
-    #[test]
-    fn test_taglike_in_description() {
-        let s = r#"Feature: Test
-  This is some description with a @tag inside it.
-  
-  Scenario: a scenario
-    Given something happens
-"#;
-        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
-        println!("{:#?}", rout);
-
-        let out = crate::Feature::try_from(s);
-        println!("{:#?}", out);
-        let out = out.unwrap();
-
-        assert!(out.scenarios[0].tags.is_none());
-        assert_eq!(
-            out.description.unwrap().trim(),
-            "This is some description with a @tag inside it."
-        );
-    }
-
-    #[test]
-    fn test_scenario_kw_in_desc() {
-        let s = r#"Feature: Test
-  This is some description with a Scenario: inside it.
-  
-  Scenario: a scenario
-    Given something happens
-"#;
-        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
-        println!("{:#?}", rout);
-
-        let out = crate::Feature::try_from(s);
-        println!("{:#?}", out);
-        let out = out.unwrap();
-
-        assert!(out.scenarios[0].tags.is_none());
-        assert_eq!(
-            out.description.unwrap().trim(),
-            "This is some description with a Scenario: inside it."
-        );
-    }
-
-    #[test]
-    fn test_rule_parsing() {
-        let s = r#"Feature: Test
-  This is some description with a Scenario: inside it.
-  
-  Scenario: a top level scenario
-    Given something happens
-
-  Rule: a rule
-    Scenario: a scenario under the first rule
-      Given something happens
-    Scenario: a second scenario under the first rule
-      Given something happens
-
-  @taglife
-  Rule: a second rule
-    Background:
-      Given background is supported under rule
-    Scenario: a scenario in the second rule
-      Given something happens
-"#;
-        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
-        println!("{:#?}", rout);
-
-        let out = crate::Feature::try_from(s);
-        println!("{:#?}", out);
-        let _out = out.unwrap();
-    }
-
-    #[test]
-    fn test_indented_comments_no_newline() {
-        let s = r#"Feature: Basic functionality
-
-  Scenario: foo
-    Given a thing
-    When nothing
-    
-  # Scenario: bar
-    # Given a thing
-    # When something goes wrong"#;
-        let rout = FeatureParser::parse(Rule::main, &s).unwrap_or_else(|e| panic!("{}", e));
-        println!("{:#?}", rout);
-
-        let out = crate::Feature::try_from(s);
-        println!("{:#?}", out);
-        let _out = out.unwrap();
+    fn smoke2() {
+        let env = GherkinEnv::default();
+        let d = env!("CARGO_MANIFEST_DIR");
+        let s = std::fs::read_to_string(format!("{}/tests/test.feature", d)).unwrap();
+        assert!(gherkin_parser::feature(&s, &env).is_ok());
     }
 }
