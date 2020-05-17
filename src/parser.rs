@@ -161,10 +161,11 @@ peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
 
 rule _() = quiet!{[' ']*}
 rule __() = quiet!{[' ']+}
-rule nl() = quiet!{"\n" comment()*}
+rule nl() = quiet!{"\r"? "\n" comment()*}
 rule eof() = quiet!{![_]}
 rule nl_eof() = quiet!{(nl() / [' '])+ / eof()}
 rule comment() = quiet!{"#" $((!nl()[_])*) nl()}
+rule not_nl() -> &'input str = n:$((!['\n'][_])+) { n }
 
 rule keyword1(list: &[&'static str]) -> &'static str
     = input:$([_]*<
@@ -240,7 +241,7 @@ pub(crate) rule table() -> Table
     }
 
 pub(crate) rule step() -> Step
-    = pa:position!() k:keyword((env.keywords().given)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+    = pa:position!() k:keyword((env.keywords().given)) __ n:not_nl() pb:position!() _ nl_eof() _
       d:docstring()? t:table()?
     {
         env.set_last_step(StepType::Given);
@@ -252,7 +253,7 @@ pub(crate) rule step() -> Step
             .span((pa, pb))
             .build()
     }
-    / pa:position!() k:keyword((env.keywords().when)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+    / pa:position!() k:keyword((env.keywords().when)) __ n:not_nl() pb:position!() _ nl_eof() _
       d:docstring()? t:table()?
     {
         env.set_last_step(StepType::When);
@@ -264,7 +265,7 @@ pub(crate) rule step() -> Step
             .span((pa, pb))
             .build()
     }
-    / pa:position!() k:keyword((env.keywords().then)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+    / pa:position!() k:keyword((env.keywords().then)) __ n:not_nl() pb:position!() _ nl_eof() _
       d:docstring()? t:table()?
     {
         env.set_last_step(StepType::Then);
@@ -276,7 +277,7 @@ pub(crate) rule step() -> Step
             .span((pa, pb))
             .build()
     }
-    / pa:position!() k:keyword((env.keywords().and)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+    / pa:position!() k:keyword((env.keywords().and)) __ n:not_nl() pb:position!() _ nl_eof() _
       d:docstring()? t:table()?
     {?
         match env.last_step() {
@@ -294,7 +295,7 @@ pub(crate) rule step() -> Step
             }
         }
     }
-    / pa:position!() k:keyword((env.keywords().but)) __ n:$((!['\n'][_])+) pb:position!() _ nl_eof() _
+    / pa:position!() k:keyword((env.keywords().but)) __ n:not_nl() pb:position!() _ nl_eof() _
       d:docstring()? t:table()?
     {?
         match env.last_step() {
@@ -338,7 +339,7 @@ rule any_directive() -> &'static str
     }
 
 rule description_line() -> &'input str
-    = _ !"@" !any_directive() _ n:$((!['\n'][_])+) nl_eof() { n }
+    = _ !"@" !any_directive() _ n:not_nl() nl_eof() { n }
 
 rule description() -> Option<String>
     = d:(description_line() ** _) {
@@ -371,7 +372,7 @@ rule scenario() -> Scenario
       t:tags()
       _
       pa:position!()
-      keyword((env.keywords().scenario)) ":" _ n:$((!['\n'][_])+) _ nl_eof()
+      keyword((env.keywords().scenario)) ":" _ n:not_nl() _ nl_eof()
       s:steps()?
       e:examples()?
       pb:position!()
@@ -388,7 +389,7 @@ rule scenario() -> Scenario
       t:tags()
       _
       pa:position!()
-      keyword((env.keywords().scenario_outline)) ":" _ n:$((!['\n'][_])+) _ nl_eof()
+      keyword((env.keywords().scenario_outline)) ":" _ n:not_nl() _ nl_eof()
       s:steps()?
       e:examples()?
       pb:position!()
@@ -424,7 +425,7 @@ rule rule_() -> Rule
       t:tags()
       _
       pa:position!()
-      keyword((env.keywords().rule)) ":" _ n:$((!['\n'][_])+) _ nl_eof()
+      keyword((env.keywords().rule)) ":" _ n:not_nl() _ nl_eof()
       s:scenarios()?
     //   e:examples()?
       pb:position!()
@@ -447,7 +448,7 @@ pub rule feature() -> Feature
     = _ language_directive()? nl()*
       t:tags() nl()*
       pa:position!()
-      keyword((env.keywords().feature)) ":" _ n:$((!['\n'][_])+) _ nl()+
+      keyword((env.keywords().feature)) ":" _ n:not_nl() _ nl()+
       d:description()? nl()*
       b:background()? nl()*
       s:scenarios() nl()*
