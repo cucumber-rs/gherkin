@@ -41,7 +41,7 @@ pub use peg::str::LineCol;
 
 use typed_builder::TypedBuilder;
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 /// A feature background
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Hash, Eq)]
@@ -89,6 +89,9 @@ pub struct Feature {
     /// The `(start, end)` offset the feature directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+    /// The path supplied for the parsed `Feature`, if known.
+    #[builder(default)]
+    pub path: Option<PathBuf>,
 }
 
 impl PartialOrd for Feature {
@@ -187,11 +190,11 @@ impl Table {
 #[derive(Debug, thiserror::Error)]
 pub enum ParseFileError {
     #[error("Could not read path: {0}")]
-    Reading(std::path::PathBuf, #[source] std::io::Error),
+    Reading(PathBuf, #[source] std::io::Error),
 
     #[error("Could not parse feature file: {0}")]
     Parsing(
-        std::path::PathBuf,
+        PathBuf,
         #[source] peg::error::ParseError<peg::str::LineCol>,
     ),
 }
@@ -201,8 +204,10 @@ impl Feature {
     pub fn parse_path<P: AsRef<Path>>(path: P) -> Result<Feature, ParseFileError> {
         let s = std::fs::read_to_string(path.as_ref())
             .map_err(|e| ParseFileError::Reading(path.as_ref().to_path_buf(), e))?;
-        parser::gherkin_parser::feature(&s, &Default::default())
-            .map_err(|e| ParseFileError::Parsing(path.as_ref().to_path_buf(), e))
+        let mut feature = parser::gherkin_parser::feature(&s, &Default::default())
+            .map_err(|e| ParseFileError::Parsing(path.as_ref().to_path_buf(), e))?;
+        feature.path = Some(path.as_ref().to_path_buf());
+        Ok(feature)
     }
 
     #[inline]
