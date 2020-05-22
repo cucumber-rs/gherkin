@@ -174,6 +174,16 @@ pub struct Table {
     pub span: (usize, usize),
 }
 
+impl Table {
+    pub fn row_width(&self) -> usize {
+        self.rows
+            .iter()
+            .next()
+            .map(|x| x.len())
+            .unwrap_or_else(|| 0)
+    }
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum ParseFileError {
     #[error("Could not read path: {0}")]
