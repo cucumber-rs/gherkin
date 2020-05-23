@@ -98,8 +98,7 @@ pub struct GherkinEnv {
     keywords: RefCell<Keywords<'static>>,
     last_step: RefCell<Option<StepType>>,
     last_keyword: RefCell<Option<String>>,
-    line: RefCell<usize>,
-    offset: RefCell<usize>,
+    line_offsets: RefCell<Vec<usize>>,
 }
 
 impl GherkinEnv {
@@ -149,13 +148,15 @@ impl GherkinEnv {
     }
 
     fn increment_nl(&self, offset: usize) {
-        *self.line.borrow_mut() += 1;
-        *self.offset.borrow_mut() = offset;
+        self.line_offsets.borrow_mut().push(offset);
     }
 
     fn position(&self, offset: usize) -> (usize, usize) {
-        let line = *self.line.borrow();
-        let col = offset - *self.offset.borrow();
+        let line_offsets = self.line_offsets.borrow();
+        let index = line_offsets.iter().position(|x| x > &offset);
+
+        let line = index.unwrap_or(0);
+        let col = index.map(|i| offset - line_offsets[i - 1]).unwrap_or(offset) + 1;
 
         (line, col)
     }
@@ -167,8 +168,7 @@ impl Default for GherkinEnv {
             keywords: RefCell::new(DEFAULT_KEYWORDS),
             last_step: RefCell::new(None),
             last_keyword: RefCell::new(None),
-            line: RefCell::new(1),
-            offset: RefCell::new(0),
+            line_offsets: RefCell::new(vec![0]),
         }
     }
 }
@@ -177,13 +177,15 @@ peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
 
 rule _() = quiet!{[' ']*}
 rule __() = quiet!{[' ']+}
-rule nl() = quiet!{"\r"? "\n" p:position!() comment()* {
+
+rule nl0() = quiet!{"\r"? "\n"}
+rule nl() = quiet!{nl0() p:position!() comment()* {
     env.increment_nl(p);
 }} 
 rule eof() = quiet!{![_]}
 rule nl_eof() = quiet!{(nl() / [' '])+ / eof()}
-rule comment() = quiet!{"#" $((!nl()[_])*) nl()}
-rule not_nl() -> &'input str = n:$((!['\n'][_])+) { n }
+rule comment() = quiet!{"#" $((!nl0()[_])*) nl()}
+rule not_nl() -> &'input str = n:$((!nl0()[_])+) { n }
 
 rule keyword1(list: &[&'static str]) -> &'static str
     = input:$([_]*<
@@ -230,7 +232,7 @@ rule docstring() -> String
     }
 
 rule table_cell() -> &'input str
-    = "|" _ !(nl() / eof()) n:$((!"|"[_])*) { n }
+    = "|" _ !(nl0() / eof()) n:$((!"|"[_])*) { n }
 
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
