@@ -98,6 +98,8 @@ pub struct GherkinEnv {
     keywords: RefCell<Keywords<'static>>,
     last_step: RefCell<Option<StepType>>,
     last_keyword: RefCell<Option<String>>,
+    line: RefCell<usize>,
+    offset: RefCell<usize>,
 }
 
 impl GherkinEnv {
@@ -145,6 +147,18 @@ impl GherkinEnv {
     fn last_step(&self) -> Option<StepType> {
         *self.last_step.borrow()
     }
+
+    fn increment_nl(&self, offset: usize) {
+        *self.line.borrow_mut() += 1;
+        *self.offset.borrow_mut() = offset;
+    }
+
+    fn position(&self, offset: usize) -> (usize, usize) {
+        let line = *self.line.borrow();
+        let col = offset - *self.offset.borrow();
+
+        (line, col)
+    }
 }
 
 impl Default for GherkinEnv {
@@ -153,6 +167,8 @@ impl Default for GherkinEnv {
             keywords: RefCell::new(DEFAULT_KEYWORDS),
             last_step: RefCell::new(None),
             last_keyword: RefCell::new(None),
+            line: RefCell::new(1),
+            offset: RefCell::new(0),
         }
     }
 }
@@ -161,7 +177,9 @@ peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
 
 rule _() = quiet!{[' ']*}
 rule __() = quiet!{[' ']+}
-rule nl() = quiet!{"\r"? "\n" comment()*}
+rule nl() = quiet!{"\r"? "\n" p:position!() comment()* {
+    env.increment_nl(p);
+}} 
 rule eof() = quiet!{![_]}
 rule nl_eof() = quiet!{(nl() / [' '])+ / eof()}
 rule comment() = quiet!{"#" $((!nl()[_])*) nl()}
@@ -236,6 +254,7 @@ pub(crate) rule table() -> Table
     = pa:position!() t:table0() pb:position!() {
         Table::builder()
             .span((pa, pb))
+            .position(env.position(pa))
             .rows(t)
             .build()
     }
@@ -251,6 +270,7 @@ pub(crate) rule step() -> Step
             .table(t)
             .docstring(d)
             .span((pa, pb))
+            .position(env.position(pa))
             .build()
     }
     / pa:position!() k:keyword((env.keywords().when)) __ n:not_nl() pb:position!() _ nl_eof() _
@@ -263,6 +283,7 @@ pub(crate) rule step() -> Step
             .table(t)
             .docstring(d)
             .span((pa, pb))
+            .position(env.position(pa))
             .build()
     }
     / pa:position!() k:keyword((env.keywords().then)) __ n:not_nl() pb:position!() _ nl_eof() _
@@ -275,6 +296,7 @@ pub(crate) rule step() -> Step
             .table(t)
             .docstring(d)
             .span((pa, pb))
+            .position(env.position(pa))
             .build()
     }
     / pa:position!() k:keyword((env.keywords().and)) __ n:not_nl() pb:position!() _ nl_eof() _
@@ -288,6 +310,7 @@ pub(crate) rule step() -> Step
                     .table(t)
                     .docstring(d)
                     .span((pa, pb))
+                    .position(env.position(pa))
                     .build())
             }
             None => {
@@ -306,6 +329,7 @@ pub(crate) rule step() -> Step
                     .table(t)
                     .docstring(d)
                     .span((pa, pb))
+                    .position(env.position(pa))
                     .build())
             }
             None => {
@@ -329,6 +353,7 @@ rule background() -> Background
         Background::builder()
             .steps(s.unwrap_or_else(|| vec![]))
             .span((pa, pb))
+            .position(env.position(pa))
             .build()
     }
 
@@ -364,6 +389,7 @@ rule examples() -> Examples
             .tags(t)
             .table(tb)
             .span((pa, pb))
+            .position(env.position(pa))
             .build()
     }
 
@@ -383,6 +409,7 @@ rule scenario() -> Scenario
             .steps(s.unwrap_or_else(|| vec![]))
             .examples(e)
             .span((pa, pb))
+            .position(env.position(pa))
             .build()
     }
     / _
@@ -400,6 +427,7 @@ rule scenario() -> Scenario
             .steps(s.unwrap_or_else(|| vec![]))
             .examples(e)
             .span((pa, pb))
+            .position(env.position(pa))
             .build()
     }
 
@@ -435,6 +463,7 @@ rule rule_() -> Rule
             .tags(t)
             .scenarios(s.unwrap_or_else(|| vec![]))
             .span((pa, pb))
+            .position(env.position(pa))
             .build()
     }
 
@@ -463,6 +492,7 @@ pub rule feature() -> Feature
             .scenarios(s)
             .rules(r)
             .span((pa, pb))
+            .position(env.position(pa))
             .build()
     }
 

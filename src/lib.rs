@@ -51,6 +51,9 @@ pub struct Background {
     /// The `(start, end)` offset the background directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+    /// The `(line, col)` position the background directive was found in the .feature file.
+    #[builder(default)]
+    pub position: (usize, usize),
 }
 
 /// Examples for a scenario
@@ -64,6 +67,9 @@ pub struct Examples {
     /// The `(start, end)` offset the examples directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+    /// The `(line, col)` position the examples directive was found in the .feature file.
+    #[builder(default)]
+    pub position: (usize, usize),
 }
 
 /// A feature
@@ -89,6 +95,9 @@ pub struct Feature {
     /// The `(start, end)` offset the feature directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+    /// The `(line, col)` position the feature directive was found in the .feature file.
+    #[builder(default)]
+    pub position: (usize, usize),
     /// The path supplied for the parsed `Feature`, if known.
     #[builder(default)]
     pub path: Option<PathBuf>,
@@ -119,6 +128,9 @@ pub struct Rule {
     /// The `(start, end)` offset the rule directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+    /// The `(line, col)` position the rule directive was found in the .feature file.
+    #[builder(default)]
+    pub position: (usize, usize),
 }
 
 /// A scenario
@@ -137,6 +149,9 @@ pub struct Scenario {
     /// The `(start, end)` offset the scenario directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+    /// The `(line, col)` position the scenario directive was found in the .feature file.
+    #[builder(default)]
+    pub position: (usize, usize),
 }
 
 /// A scenario step
@@ -157,6 +172,9 @@ pub struct Step {
     /// The `(start, end)` offset the step directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+    /// The `(line, col)` position the step directive was found in the .feature file.
+    #[builder(default)]
+    pub position: (usize, usize),
 }
 
 /// The fundamental Gherkin step type after contextually handling `But` and `And`
@@ -175,6 +193,9 @@ pub struct Table {
     /// The `(start, end)` offset the table directive was found in the .feature file.
     #[builder(default)]
     pub span: (usize, usize),
+    /// The `(line, col)` position the table directive was found in the .feature file.
+    #[builder(default)]
+    pub position: (usize, usize),
 }
 
 impl Table {
