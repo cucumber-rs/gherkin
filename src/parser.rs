@@ -184,7 +184,7 @@ rule nl() = quiet!{nl0() p:position!() comment()* {
 }} 
 rule eof() = quiet!{![_]}
 rule nl_eof() = quiet!{(nl() / [' '])+ / eof()}
-rule comment() = quiet!{"#" $((!nl0()[_])*) nl()}
+rule comment() = quiet!{[' ']* "#" $((!nl0()[_])*) nl()}
 rule not_nl() -> &'input str = n:$((!nl0()[_])+) { n }
 
 rule keyword1(list: &[&'static str]) -> &'static str
