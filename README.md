@@ -8,7 +8,7 @@ If you want to run Cucumber tests in Rust, try [cucumber-rust](https://github.co
 
 ```toml
 [dependencies]
-gherkin-rust = "^0.3"
+gherkin-rust = "^0.8"
 ```
 
 ## License
