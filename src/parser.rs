@@ -202,7 +202,7 @@ rule keyword1(list: &[&'static str]) -> &'static str
             None => {
                 // println!("Unfound: {}", &input);
                 env.clear_keyword();
-                Err("hacks")
+                Err("unknown keyword")
             }
         }
     }
@@ -513,7 +513,7 @@ pub rule tag_operation() -> TagOperation = precedence!{
 mod test {
     use super::*;
 
-    const FOO: &str = r#"# language: formal
+    const FOO: &str = "# language: formal\r\n
 @hot-stuff
 Section: 4.2. The thing we care about
 A description just jammed in here for no reason
@@ -523,17 +523,17 @@ Rule: All gubbins must be placed in the airlock
 @bad_idea
 Evidence: A gubbins in an airlock
     Given a gubbins
-    """
+    \"\"\"
     That's a gubbins
     and that is
     and so is that
-    """
+    \"\"\"
     When a gubbins is forced into this weird corner
     | a | b | c |
     | 1 | 2 | 3 |
     | 4 | 5 | 6 |
     Then a gubbins is proven to be in an airlock
-"#;
+";
     #[test]
     fn smoke() {
         let env = GherkinEnv::default();
