@@ -41,6 +41,13 @@ Scenario Outline: eating
     |    12 |   5 |    7 |
     |    20 |   5 |   15 |
 
+@scenario-with-tab-indentation
+Scenario: A second scenario test
+# Below are TABs don't remove/convert them
+	Given I have not been testing much
+	Then I should probably start doing it
+# Above are TABs don't remove/convert them
+
 Scenario: A step with a doc comment and no new line at the end of the doc
 Given a
 """

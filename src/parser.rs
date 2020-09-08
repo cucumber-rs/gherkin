@@ -175,16 +175,16 @@ impl Default for GherkinEnv {
 
 peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
 
-rule _() = quiet!{[' ']*}
-rule __() = quiet!{[' ']+}
+rule _() = quiet!{[' ' | '\t']*}
+rule __() = quiet!{[' ' | '\t']+}
 
 rule nl0() = quiet!{"\r"? "\n"}
 rule nl() = quiet!{nl0() p:position!() comment()* {
     env.increment_nl(p);
 }} 
 rule eof() = quiet!{![_]}
-rule nl_eof() = quiet!{(nl() / [' '])+ / eof()}
-rule comment() = quiet!{[' ']* "#" $((!nl0()[_])*) nl()}
+rule nl_eof() = quiet!{(nl() / [' ' | '\t'])+ / eof()}
+rule comment() = quiet!{[' ' | '\t']* "#" $((!nl0()[_])*) nl()}
 rule not_nl() -> &'input str = n:$((!nl0()[_])+) { n }
 
 rule keyword1(list: &[&'static str]) -> &'static str
