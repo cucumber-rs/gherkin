@@ -120,6 +120,9 @@ impl Ord for Feature {
 pub struct Rule {
     /// The name of the scenario.
     pub name: String,
+    /// The background of the rule, if found.
+    #[builder(default)]
+    pub background: Option<Background>,
     /// The parsed scenarios from the rule directive.
     pub scenarios: Vec<Scenario>,
     /// The tags for the rule directive if provided.
