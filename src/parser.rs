@@ -456,13 +456,15 @@ rule rule_() -> Rule
       _
       pa:position!()
       keyword((env.keywords().rule)) ":" _ n:not_nl() _ nl_eof()
-      s:scenarios()?
+      b:background()? nl()*
+      s:scenarios()? nl()*
     //   e:examples()?
       pb:position!()
     {
         Rule::builder()
             .name(n.to_string())
             .tags(t)
+            .background(b)
             .scenarios(s.unwrap_or_else(|| vec![]))
             .span((pa, pb))
             .position(env.position(pa))
@@ -534,6 +536,19 @@ Evidence: A gubbins in an airlock
     | 4 | 5 | 6 |
     Then a gubbins is proven to be in an airlock
 ";
+
+    const RULE_WITH_BACKGROUND: &str = "
+Feature: Everything with background inside rule
+
+Rule: Be sure that I didn't started yet
+    Background:
+        Given I didn't started yet
+        And I'm pretty sure about it
+
+        Scenario: Nothing
+            Given I just started
+";
+
     #[test]
     fn smoke() {
         let env = GherkinEnv::default();
@@ -546,5 +561,12 @@ Evidence: A gubbins in an airlock
         let d = env!("CARGO_MANIFEST_DIR");
         let s = std::fs::read_to_string(format!("{}/tests/test.feature", d)).unwrap();
         assert!(gherkin_parser::feature(&s, &env).is_ok());
+    }
+
+    #[test]
+    fn smoke3() {
+        let env = GherkinEnv::default();
+        assert!(gherkin_parser::feature(RULE_WITH_BACKGROUND, &env).is_ok(),
+            "RULE_WITH_BACKGROUND was not parsed correctly!");
     }
 }
