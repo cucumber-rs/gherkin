@@ -21,6 +21,6 @@ typed-builder = "0.7.0"
 thiserror = "1.0.20"
 
 [dev-dependencies]
-cucumber = { package = "cucumber_rust", version = "^0.7.0" }
+cucumber = { package = "cucumber_rust", version = "^0.8.0" }
 async-trait = "0.1.40"
 futures = "0.3.5"
