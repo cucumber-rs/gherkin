@@ -187,8 +187,6 @@ rule nl_eof() = quiet!{(nl() / [' ' | '\t'])+ / eof()}
 rule comment() = quiet!{[' ' | '\t']* "#" $((!nl0()[_])*) nl()}
 rule not_nl() -> &'input str = n:$((!nl0()[_])+) { n }
 
-rule match_until_starting_word_is_keyword() -> &'input str = n:$((not_nl() / 
-   (!(nl() __ (keyword((env.keywords().given)) / keyword((env.keywords().when)) / keyword((env.keywords().then))) ) nl()))+ nl()) { n }
 rule keyword1(list: &[&'static str]) -> &'static str
     = input:$([_]*<
         {list.iter().map(|x| x.len()).min().unwrap()},
@@ -402,7 +400,7 @@ rule scenario() -> Scenario
       t:tags()
       _
       pa:position!()
-      keyword((env.keywords().scenario)) ":" _ n:$(match_until_starting_word_is_keyword())
+      keyword((env.keywords().scenario)) ":" _ n:not_nl() _ nl_eof()
       s:steps()?
       e:examples()?
       pb:position!()
@@ -483,7 +481,7 @@ pub rule feature() -> Feature
     = _ language_directive()? nl()*
       t:tags() nl()*
       pa:position!()
-      keyword((env.keywords().feature)) ":" _ n:$([_]+)
+      keyword((env.keywords().feature)) ":" _ n:not_nl() _ nl()+
       d:description()? nl()*
       b:background()? nl()*
       s:scenarios() nl()*
@@ -551,40 +549,6 @@ Rule: Be sure that I didn't started yet
             Given I just started
 ";
 
-    const RULE_WITH_MULTILINE_DESCRIPTION: &str = "
-Feature: Everything with background inside rule
-
-Rule: Be sure that I didn't started yet
-    Background:
-        Given I didn't started yet
-        And I'm pretty sure about it
-
-        Scenario: Long winded 
-        A long description elaborating on what is happening
-            Given I just started
-";
-
-    // From Gherkin 6 documentation
-    const RULE_WITH_RULE_IN_BACKGROUND: &str = "
-Feature: Overdue tasks
-  Let users know when tasks are overdue, even when using other
-  features of the app
-
-  Rule: Users are notified about overdue tasks on first use of the day
-    Background:
-      Given I have overdue tasks
-
-    Example: First use of the day
-      Given I last used the app yesterday
-      When I use the app
-      Then I am notified about overdue tasks
-
-    Example: Already used today
-      Given I last used the app earlier today
-      When I use the app
-      Then I am not notified about overdue tasks
-";
-
     #[test]
     fn smoke() {
         let env = GherkinEnv::default();
@@ -604,20 +568,5 @@ Feature: Overdue tasks
         let env = GherkinEnv::default();
         assert!(gherkin_parser::feature(RULE_WITH_BACKGROUND, &env).is_ok(),
             "RULE_WITH_BACKGROUND was not parsed correctly!");
-    }
-
-    #[test]
-    fn smoke4() {
-        let env = GherkinEnv::default();
-        assert!(gherkin_parser::feature(RULE_WITH_RULE_IN_BACKGROUND, &env).is_ok(),
-        "RULE_WITH_RULE_IN_BACKGROUND was not parsed correctly!");
-    }
-    
-    #[test]
-    fn multiline_desription() {
-        let env = GherkinEnv::default();
-        let feature_result = gherkin_parser::feature(RULE_WITH_MULTILINE_DESCRIPTION, &env);
-        assert!(feature_result.is_ok(),
-            "RULE_WITH_MULTILINE_DESCRIPTION was not parsed correctly!");
     }
 }
