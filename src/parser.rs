@@ -1,4 +1,4 @@
-// Copyright (c) 2020  Brendan Molloy <brendan@bbqsrc.net>
+// Copyright (c) 2020-2021  Brendan Molloy <brendan@bbqsrc.net>
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -156,7 +156,10 @@ impl GherkinEnv {
         let index = line_offsets.iter().position(|x| x > &offset);
 
         let line = index.unwrap_or(0);
-        let col = index.map(|i| offset - line_offsets[i - 1]).unwrap_or(offset) + 1;
+        let col = index
+            .map(|i| offset - line_offsets[i - 1])
+            .unwrap_or(offset)
+            + 1;
 
         (line, col)
     }
@@ -181,7 +184,7 @@ rule __() = quiet!{[' ' | '\t']+}
 rule nl0() = quiet!{"\r"? "\n"}
 rule nl() = quiet!{nl0() p:position!() comment()* {
     env.increment_nl(p);
-}} 
+}}
 rule eof() = quiet!{![_]}
 rule nl_eof() = quiet!{(nl() / [' ' | '\t'])+ / eof()}
 rule comment() = quiet!{[' ' | '\t']* "#" $((!nl0()[_])*) nl()}
@@ -537,16 +540,25 @@ Evidence: A gubbins in an airlock
     Then a gubbins is proven to be in an airlock
 ";
 
+    // From Gherkin 6 documentation
     const RULE_WITH_BACKGROUND: &str = "
-Feature: Everything with background inside rule
+Feature: Overdue tasks
+  Let users know when tasks are overdue, even when using other
+  features of the app
 
-Rule: Be sure that I didn't started yet
+  Rule: Users are notified about overdue tasks on first use of the day
     Background:
-        Given I didn't started yet
-        And I'm pretty sure about it
+      Given I have overdue tasks
 
-        Scenario: Nothing
-            Given I just started
+    Example: First use of the day
+      Given I last used the app yesterday
+      When I use the app
+      Then I am notified about overdue tasks
+
+    Example: Already used today
+      Given I last used the app earlier today
+      When I use the app
+      Then I am not notified about overdue tasks
 ";
 
     #[test]
@@ -564,9 +576,26 @@ Rule: Be sure that I didn't started yet
     }
 
     #[test]
-    fn smoke3() {
+    fn rule_with_background() {
         let env = GherkinEnv::default();
-        assert!(gherkin_parser::feature(RULE_WITH_BACKGROUND, &env).is_ok(),
-            "RULE_WITH_BACKGROUND was not parsed correctly!");
+        assert!(
+            gherkin_parser::feature(RULE_WITH_BACKGROUND, &env).is_ok(),
+            "RULE_IN_BACKGROUND was not parsed correctly!"
+        );
+    }
+
+    #[test]
+    fn feature_name_and_scenario() {
+        let env = GherkinEnv::default();
+        let input = r#"Feature: Basic functionality
+        here's some text
+        really
+Scenario: Helloq
+  Given a step
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        println!("{:#?}", feature);
+        assert_eq!(feature.scenarios.len(), 1);
+        assert!(feature.description.is_some());
     }
 }

@@ -218,10 +218,7 @@ pub enum ParseFileError {
     Reading(PathBuf, #[source] std::io::Error),
 
     #[error("Could not parse feature file: {0}")]
-    Parsing(
-        PathBuf,
-        #[source] peg::error::ParseError<peg::str::LineCol>,
-    ),
+    Parsing(PathBuf, #[source] peg::error::ParseError<peg::str::LineCol>),
 }
 
 impl Feature {

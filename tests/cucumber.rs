@@ -18,7 +18,7 @@ mod t {
     use cucumber::Steps;
 
     pub fn steps() -> Steps<crate::MyWorld> {
-        let mut builder: Steps<crate::MyWorld> = Steps::new();
+        let builder: Steps<crate::MyWorld> = Steps::new();
         builder
     }
 }
