@@ -43,8 +43,6 @@ mod keywords;
 pub mod tagexpr;
 
 // Re-export for convenience
-pub use peg::error::ParseError;
-pub use peg::str::LineCol;
 pub use parser::EnvError;
 
 #[cfg(feature = "parser")]
@@ -54,15 +52,55 @@ use typed_builder::TypedBuilder;
 use serde::{Deserialize, Serialize};
 
 use std::{
+    collections::HashSet,
     fmt::{self, Display},
     path::{Path, PathBuf},
 };
 
 use parser::GherkinEnv;
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
+pub struct Span {
+    pub start: usize,
+    pub end: usize,
+}
+
+#[cfg(feature = "juniper")]
+#[cfg_attr(feature = "juniper", juniper::graphql_object)]
+impl Span {
+    pub fn start(&self) -> i32 {
+        self.start as i32
+    }
+
+    pub fn end(&self) -> i32 {
+        self.end as i32
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
+pub struct LineCol {
+    pub line: usize,
+    pub col: usize,
+}
+
+#[cfg(feature = "juniper")]
+#[cfg_attr(feature = "juniper", juniper::graphql_object)]
+impl LineCol {
+    pub fn line(&self) -> i32 {
+        self.line as i32
+    }
+
+    pub fn col(&self) -> i32 {
+        self.col as i32
+    }
+}
+
 /// A feature background
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Background {
     /// The raw keyword used in the original source.
@@ -71,15 +109,16 @@ pub struct Background {
     pub steps: Vec<Step>,
     /// The `(start, end)` offset the background directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub span: (usize, usize),
+    pub span: Span,
     /// The `(line, col)` position the background directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub position: (usize, usize),
+    pub position: LineCol,
 }
 
 /// Examples for a scenario
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Examples {
     /// The raw keyword used in the original source.
@@ -91,15 +130,16 @@ pub struct Examples {
     pub tags: Vec<String>,
     /// The `(start, end)` offset the examples directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub span: (usize, usize),
+    pub span: Span,
     /// The `(line, col)` position the examples directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub position: (usize, usize),
+    pub position: LineCol,
 }
 
 /// A feature
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Feature {
     /// The raw keyword used in the original source.
@@ -123,12 +163,13 @@ pub struct Feature {
     pub tags: Vec<String>,
     /// The `(start, end)` offset the feature directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub span: (usize, usize),
+    pub span: Span,
     /// The `(line, col)` position the feature directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub position: (usize, usize),
+    pub position: LineCol,
     /// The path supplied for the parsed `Feature`, if known.
     #[cfg_attr(feature = "parser", builder(default))]
+    #[cfg_attr(feature = "juniper", graphql(skip))]
     pub path: Option<PathBuf>,
 }
 
@@ -136,26 +177,38 @@ pub struct Feature {
 impl Feature {
     #[inline]
     pub fn parse_path<P: AsRef<Path>>(path: P) -> Result<Feature, ParseFileError> {
-        let s = std::fs::read_to_string(path.as_ref())
-            .map_err(|e| ParseFileError::Reading {
-                path: path.as_ref().to_path_buf(),
-                source: e
-            })?;
+        let s = std::fs::read_to_string(path.as_ref()).map_err(|e| ParseFileError::Reading {
+            path: path.as_ref().to_path_buf(),
+            source: e,
+        })?;
         let env = GherkinEnv::default();
-        let mut feature = parser::gherkin_parser::feature(&s, &env).map_err(|e| {
-            ParseFileError::Parsing {
+        let mut feature =
+            parser::gherkin_parser::feature(&s, &env).map_err(|e| ParseFileError::Parsing {
                 path: path.as_ref().to_path_buf(),
                 error: env.last_error.borrow_mut().take(),
-                source: e,   
-            }
-        })?;
+                source: ParseError {
+                    position: LineCol {
+                        line: e.location.line,
+                        col: e.location.column,
+                    },
+                    expected: e.expected.tokens().collect(),
+                },
+            })?;
         feature.path = Some(path.as_ref().to_path_buf());
         Ok(feature)
     }
 
     #[inline]
-    pub fn parse<S: AsRef<str>>(input: S) -> Result<Feature, ParseError<LineCol>> {
-        parser::gherkin_parser::feature(input.as_ref(), &Default::default())
+    pub fn parse<S: AsRef<str>>(input: S) -> Result<Feature, ParseError> {
+        parser::gherkin_parser::feature(input.as_ref(), &Default::default()).map_err(|e| {
+            ParseError {
+                position: LineCol {
+                    line: e.location.line,
+                    col: e.location.column,
+                },
+                expected: e.expected.tokens().collect(),
+            }
+        })
     }
 }
 
@@ -173,8 +226,9 @@ impl Ord for Feature {
 
 /// A rule, as introduced in Gherkin 6.
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
-#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Rule {
     /// The raw keyword used in the original source.
     pub keyword: String,
@@ -190,15 +244,16 @@ pub struct Rule {
     pub tags: Vec<String>,
     /// The `(start, end)` offset the rule directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub span: (usize, usize),
+    pub span: Span,
     /// The `(line, col)` position the rule directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub position: (usize, usize),
+    pub position: LineCol,
 }
 
 /// A scenario
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Scenario {
     /// The raw keyword used in the original source.
@@ -215,15 +270,16 @@ pub struct Scenario {
     pub tags: Vec<String>,
     /// The `(start, end)` offset the scenario directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub span: (usize, usize),
+    pub span: Span,
     /// The `(line, col)` position the scenario directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub position: (usize, usize),
+    pub position: LineCol,
 }
 
 /// A scenario step
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Step {
     /// The raw keyword used in the original source, including `But` and `And`.
@@ -240,10 +296,10 @@ pub struct Step {
     pub table: Option<Table>,
     /// The `(start, end)` offset the step directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub span: (usize, usize),
+    pub span: Span,
     /// The `(line, col)` position the step directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub position: (usize, usize),
+    pub position: LineCol,
 }
 
 impl Step {
@@ -264,6 +320,7 @@ impl Display for Step {
 
 /// The fundamental Gherkin step type after contextually handling `But` and `And`
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLEnum))]
 #[derive(Debug, Clone, Copy, PartialEq, Hash, Eq)]
 pub enum StepType {
     Given,
@@ -274,16 +331,17 @@ pub enum StepType {
 /// A data table
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Table {
     /// The rows of the data table. Each row is always the same length as the first row.
     pub rows: Vec<Vec<String>>,
     /// The `(start, end)` offset the table directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub span: (usize, usize),
+    pub span: Span,
     /// The `(line, col)` position the table directive was found in the .feature file.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub position: (usize, usize),
+    pub position: LineCol,
 }
 
 impl Table {
@@ -297,17 +355,26 @@ impl Table {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[error("Error at {}:{}: {expected:?}", .position.line, .position.col)]
+pub struct ParseError {
+    position: LineCol,
+    expected: HashSet<&'static str>,
+}
+
+#[derive(Debug, thiserror::Error)]
 pub enum ParseFileError {
     #[error("Could not read path: {path}")]
     Reading {
         path: PathBuf,
-        #[source] source: std::io::Error
+        #[source]
+        source: std::io::Error,
     },
 
     #[error("Could not parse feature file: {path}")]
     Parsing {
         path: PathBuf,
         error: Option<parser::EnvError>,
-        #[source] source: peg::error::ParseError<peg::str::LineCol>,
+        #[source]
+        source: ParseError,
     },
 }

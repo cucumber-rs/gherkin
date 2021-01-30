@@ -9,7 +9,7 @@
 use std::cell::RefCell;
 
 use crate::{keywords::Keywords, tagexpr::TagOperation};
-use crate::{Background, Examples, Feature, Rule, Scenario, Step, StepType, Table};
+use crate::{Background, Examples, Feature, LineCol, Rule, Scenario, Span, Step, StepType, Table};
 
 #[derive(Debug)]
 pub struct GherkinEnv {
@@ -77,7 +77,7 @@ impl GherkinEnv {
         self.line_offsets.borrow_mut().push(offset);
     }
 
-    fn position(&self, offset: usize) -> (usize, usize) {
+    fn position(&self, offset: usize) -> LineCol {
         let line_offsets = self.line_offsets.borrow();
         let index = line_offsets.iter().position(|x| x > &offset);
 
@@ -87,7 +87,7 @@ impl GherkinEnv {
             .unwrap_or(offset)
             + 1;
 
-        (line, col)
+        LineCol { line, col }
     }
 }
 
@@ -190,7 +190,7 @@ pub(crate) rule table0() -> Vec<Vec<String>>
 pub(crate) rule table() -> Table
     = pa:position!() t:table0() pb:position!() {
         Table::builder()
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .rows(t)
             .build()
@@ -206,7 +206,7 @@ pub(crate) rule step() -> Step
             .value(n.to_string())
             .table(t)
             .docstring(d)
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
@@ -219,7 +219,7 @@ pub(crate) rule step() -> Step
             .value(n.to_string())
             .table(t)
             .docstring(d)
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
@@ -232,7 +232,7 @@ pub(crate) rule step() -> Step
             .value(n.to_string())
             .table(t)
             .docstring(d)
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
@@ -246,7 +246,7 @@ pub(crate) rule step() -> Step
                     .value(n.to_string())
                     .table(t)
                     .docstring(d)
-                    .span((pa, pb))
+                    .span(Span { start: pa, end: pb })
                     .position(env.position(pa))
                     .build())
             }
@@ -265,7 +265,7 @@ pub(crate) rule step() -> Step
                     .value(n.to_string())
                     .table(t)
                     .docstring(d)
-                    .span((pa, pb))
+                    .span(Span { start: pa, end: pb })
                     .position(env.position(pa))
                     .build())
             }
@@ -290,7 +290,7 @@ rule background() -> Background
         Background::builder()
             .keyword(k.into())
             .steps(s.unwrap_or_else(|| vec![]))
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
@@ -327,7 +327,7 @@ rule examples() -> Examples
             .keyword(k.into())
             .tags(t)
             .table(tb)
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
@@ -349,7 +349,7 @@ rule scenario() -> Scenario
             .tags(t)
             .steps(s.unwrap_or_else(|| vec![]))
             .examples(e)
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
@@ -369,7 +369,7 @@ rule scenario() -> Scenario
             .tags(t)
             .steps(s.unwrap_or_else(|| vec![]))
             .examples(e)
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
@@ -408,7 +408,7 @@ rule rule_() -> Rule
             .tags(t)
             .background(b)
             .scenarios(s.unwrap_or_else(|| vec![]))
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
@@ -438,7 +438,7 @@ pub(crate) rule feature() -> Feature
             .background(b)
             .scenarios(s)
             .rules(r)
-            .span((pa, pb))
+            .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
