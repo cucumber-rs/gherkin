@@ -233,6 +233,9 @@ rule docstring() -> String
     = "\"\"\"" n:$((!"\"\"\""[_])*) "\"\"\"" nl_eof() {
         textwrap::dedent(n)
     }
+    / "```" n:$((!"```"[_])*) "```" nl_eof() {
+        textwrap::dedent(n)
+    }
 
 rule table_cell() -> &'input str
     = "|" _ !(nl0() / eof()) n:$((!"|"[_])*) { n }
@@ -561,6 +564,26 @@ Feature: Overdue tasks
       Then I am not notified about overdue tasks
 ";
 
+    const DOCSTRING: &str = r#"
+Feature: Meow
+
+Scenario: Meow
+  Given meow
+    """
+    Docstring life!
+    """
+"#;
+
+    const DOCSTRING2: &str = r#"
+Feature: Meow
+
+Scenario: Meow
+  Given meow
+    ```
+    Docstring life!
+    ```
+"#;
+
     #[test]
     fn smoke() {
         let env = GherkinEnv::default();
@@ -581,6 +604,24 @@ Feature: Overdue tasks
         assert!(
             gherkin_parser::feature(RULE_WITH_BACKGROUND, &env).is_ok(),
             "RULE_IN_BACKGROUND was not parsed correctly!"
+        );
+    }
+
+    #[test]
+    fn docstring() {
+        let env = GherkinEnv::default();
+        assert!(
+            gherkin_parser::feature(DOCSTRING, &env).is_ok(),
+            "DOCSTRING was not parsed correctly!"
+        );
+    }
+
+    #[test]
+    fn docstring2() {
+        let env = GherkinEnv::default();
+        assert!(
+            gherkin_parser::feature(DOCSTRING2, &env).is_ok(),
+            "DOCSTRING2 was not parsed correctly!"
         );
     }
 
