@@ -29,10 +29,11 @@ fn main() {
 
     let runner = cucumber::Cucumber::<MyWorld>::new()
         .features(&["./tests/features"])
-        .steps(t::steps());
+        .steps(t::steps())
+        .cli();
 
     // You may choose any executor you like (Tokio, async-std, etc)
     // You may even have an async main, it doesn't matter. The point is that
     // Cucumber is composable. :)
-    futures::executor::block_on(runner.run());
+    futures::executor::block_on(runner.run_and_exit());
 }

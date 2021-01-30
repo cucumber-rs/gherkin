@@ -8,7 +8,7 @@ If you want to run Cucumber tests in Rust, try [cucumber-rust](https://github.co
 
 ```toml
 [dependencies]
-gherkin-rust = "^0.8"
+gherkin-rust = "^0.9"
 ```
 
 ## License
@@ -19,3 +19,5 @@ This project is licensed under either of
  * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
+
+[Original source](https://github.com/cucumber/cucumber/blob/master/gherkin/gherkin-languages.json) of `src/languages.json` is used under the [MIT license](https://github.com/cucumber/cucumber/blob/master/gherkin/LICENSE).

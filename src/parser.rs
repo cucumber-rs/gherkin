@@ -8,107 +8,33 @@
 
 use std::cell::RefCell;
 
-use crate::tagexpr::TagOperation;
+use crate::{keywords::Keywords, tagexpr::TagOperation};
 use crate::{Background, Examples, Feature, Rule, Scenario, Step, StepType, Table};
 
-struct Keywords<'a> {
-    feature: &'a [&'a str],
-    background: &'a [&'a str],
-    rule: &'a [&'a str],
-    scenario: &'a [&'a str],
-    scenario_outline: &'a [&'a str],
-    examples: &'a [&'a str],
-    given: &'a [&'a str],
-    when: &'a [&'a str],
-    then: &'a [&'a str],
-    and: &'a [&'a str],
-    but: &'a [&'a str],
-}
-
-impl<'a> Keywords<'a> {
-    pub fn all(&self) -> Vec<&'a str> {
-        let mut v = vec![];
-
-        for x in [
-            self.feature,
-            self.background,
-            self.rule,
-            self.scenario,
-            self.rule,
-            self.scenario_outline,
-            self.examples,
-            self.given,
-            self.when,
-            self.then,
-            self.and,
-            self.but,
-        ]
-        .iter()
-        {
-            v.append(&mut x.to_vec());
-        }
-
-        v
-    }
-}
-
-const DEFAULT_KEYWORDS: Keywords<'static> = Keywords {
-    feature: &["Feature"],
-    background: &["Background"],
-    rule: &["Rule"],
-    scenario: &["Scenario", "Example"],
-    scenario_outline: &["Scenario Outline", "Scenario Template"],
-    examples: &["Examples"],
-    given: &["Given"],
-    when: &["When"],
-    then: &["Then"],
-    and: &["*", "And"],
-    but: &["But"],
-};
-
-const FORMAL_SPEC_KEYWORDS: Keywords<'static> = Keywords {
-    feature: &["Section"],
-    background: &["Context"],
-    rule: &["Rule"],
-    scenario: &["Proof", "Evidence"],
-    scenario_outline: &["Demonstration"],
-    examples: &["Examples"],
-    given: &["Given"],
-    when: &["When"],
-    then: &["Then"],
-    and: &["*", "And"],
-    but: &["But"],
-};
-
-const SV_KEYWORDS: Keywords<'static> = Keywords {
-    feature: &["Egenskap"],
-    background: &["Bakgrund"],
-    rule: &["Regel"],
-    scenario: &["Scenario", "Exempel"],
-    scenario_outline: &["Abstrakt Scenario"],
-    examples: &["Exempel"],
-    given: &["Givet"],
-    when: &["När"],
-    then: &["Så"],
-    and: &["*", "Och"],
-    but: &["Men"],
-};
-
+#[derive(Debug)]
 pub struct GherkinEnv {
     keywords: RefCell<Keywords<'static>>,
+    pub(crate) last_error: RefCell<Option<EnvError>>,
     last_step: RefCell<Option<StepType>>,
     last_keyword: RefCell<Option<String>>,
     line_offsets: RefCell<Vec<usize>>,
 }
 
+#[derive(Debug, thiserror::Error)]
+pub enum EnvError {
+    #[error("Requested language '{0}' is not supported.")]
+    UnsupportedLanguage(String),
+
+    #[error("Unknown keyword: '{0}'.")]
+    UnknownKeyword(String),
+}
+
 impl GherkinEnv {
     pub fn set_language(&self, language: &str) -> Result<(), &'static str> {
-        let keywords = match language {
-            "formal" => FORMAL_SPEC_KEYWORDS,
-            "sv" => SV_KEYWORDS,
-            "en" => DEFAULT_KEYWORDS,
-            _ => return Err("Error: requested language not supported"),
-        };
+        let keywords = Keywords::get(language).ok_or_else(|| {
+            *self.last_error.borrow_mut() = Some(EnvError::UnsupportedLanguage(language.into()));
+            "Unsupported language"
+        })?;
 
         *self.keywords.borrow_mut() = keywords;
 
@@ -168,7 +94,8 @@ impl GherkinEnv {
 impl Default for GherkinEnv {
     fn default() -> Self {
         GherkinEnv {
-            keywords: RefCell::new(DEFAULT_KEYWORDS),
+            keywords: RefCell::new(Default::default()),
+            last_error: RefCell::new(None),
             last_step: RefCell::new(None),
             last_keyword: RefCell::new(None),
             line_offsets: RefCell::new(vec![0]),
@@ -187,15 +114,15 @@ rule nl() = quiet!{nl0() p:position!() comment()* {
 }}
 rule eof() = quiet!{![_]}
 rule nl_eof() = quiet!{(nl() / [' ' | '\t'])+ / eof()}
-rule comment() = quiet!{[' ' | '\t']* "#" $((!nl0()[_])*) nl()}
+rule comment() = quiet!{[' ' | '\t']* "#" $((!nl0()[_])*) nl_eof()}
 rule not_nl() -> &'input str = n:$((!nl0()[_])+) { n }
 
 rule keyword1(list: &[&'static str]) -> &'static str
     = input:$([_]*<
-        {list.iter().map(|x| x.len()).min().unwrap()},
-        {list.iter().map(|x| x.len()).max().unwrap()}
+        {list.iter().map(|x| x.chars().count()).min().unwrap()},
+        {list.iter().map(|x| x.chars().count()).max().unwrap()}
     >) {?
-        // println!("Input: {} {:?}", &input, &list);
+        // println!("Input: {}", &input);
         match list.iter().find(|x| input.starts_with(**x)) {
             Some(v) => {
                 env.set_keyword((*v).to_string());
@@ -205,6 +132,7 @@ rule keyword1(list: &[&'static str]) -> &'static str
             None => {
                 // println!("Unfound: {}", &input);
                 env.clear_keyword();
+                *env.last_error.borrow_mut() = Some(EnvError::UnknownKeyword(input.into()));
                 Err("unknown keyword")
             }
         }
@@ -213,13 +141,13 @@ rule keyword1(list: &[&'static str]) -> &'static str
 rule keyword0(list: &[&'static str]) -> usize
     = keyword1(list)? {?
         match env.last_keyword().as_ref() {
-            Some(v) => Ok(v.len()),
+            Some(v) => Ok(v.chars().count()),
             None => Err("no match")
         }
     }
 
 pub(crate) rule keyword(list: &[&'static str]) -> &'static str
-    = len:keyword0(list) [_]*<{len}> {
+    = comment()* len:keyword0(list) [_]*<{len}> {
         let kw = env.take_keyword();
         list.iter().find(|x| **x == &*kw).unwrap()
     }
@@ -228,6 +156,7 @@ rule language_directive() -> ()
     = "# language: " l:$(['a'..='z']+) _ nl() {?
         env.set_language(l)
     }
+    / comment() { () }
 
 rule docstring() -> String
     = "\"\"\"" n:$((!"\"\"\""[_])*) "\"\"\"" nl_eof() {
@@ -268,12 +197,12 @@ pub(crate) rule table() -> Table
     }
 
 pub(crate) rule step() -> Step
-    = pa:position!() k:keyword((env.keywords().given)) __ n:not_nl() pb:position!() _ nl_eof() _
+    = comment()* pa:position!() k:keyword((env.keywords().given)) __ n:not_nl() pb:position!() _ nl_eof() _
       d:docstring()? t:table()?
     {
         env.set_last_step(StepType::Given);
         Step::builder().ty(StepType::Given)
-            .raw_type(k.to_string())
+            .keyword(k.to_string())
             .value(n.to_string())
             .table(t)
             .docstring(d)
@@ -286,7 +215,7 @@ pub(crate) rule step() -> Step
     {
         env.set_last_step(StepType::When);
         Step::builder().ty(StepType::When)
-            .raw_type(k.to_string())
+            .keyword(k.to_string())
             .value(n.to_string())
             .table(t)
             .docstring(d)
@@ -299,7 +228,7 @@ pub(crate) rule step() -> Step
     {
         env.set_last_step(StepType::Then);
         Step::builder().ty(StepType::Then)
-            .raw_type(k.to_string())
+            .keyword(k.to_string())
             .value(n.to_string())
             .table(t)
             .docstring(d)
@@ -313,7 +242,7 @@ pub(crate) rule step() -> Step
         match env.last_step() {
             Some(v) => {
                 Ok(Step::builder().ty(v)
-                    .raw_type(k.to_string())
+                    .keyword(k.to_string())
                     .value(n.to_string())
                     .table(t)
                     .docstring(d)
@@ -332,7 +261,7 @@ pub(crate) rule step() -> Step
         match env.last_step() {
             Some(v) => {
                 Ok(Step::builder().ty(v)
-                    .raw_type(k.to_string())
+                    .keyword(k.to_string())
                     .value(n.to_string())
                     .table(t)
                     .docstring(d)
@@ -353,12 +282,13 @@ pub(crate) rule steps() -> Vec<Step>
     }
 
 rule background() -> Background
-    = _ pa:position!()
-      keyword((env.keywords().background)) ":" _ nl_eof()
+    = comment()* _ pa:position!()
+      k:keyword((env.keywords().background)) ":" _ nl_eof()
       s:steps()?
       pb:position!()
     {
         Background::builder()
+            .keyword(k.into())
             .steps(s.unwrap_or_else(|| vec![]))
             .span((pa, pb))
             .position(env.position(pa))
@@ -367,7 +297,6 @@ rule background() -> Background
 
 rule any_directive() -> &'static str
     = k:keyword((&*env.keywords().all())) {
-        // println!("Found directive: {}", &k);
         k
     }
 
@@ -385,15 +314,17 @@ rule description() -> Option<String>
     }
 
 rule examples() -> Examples
-    = _
+    = comment()*
+      _
       t:tags()
       _
       pa:position!()
-      keyword((env.keywords().examples)) ":" _ nl_eof()
+      k:keyword((env.keywords().examples)) ":" _ nl_eof()
       tb:table()
       pb:position!()
     {
         Examples::builder()
+            .keyword(k.into())
             .tags(t)
             .table(tb)
             .span((pa, pb))
@@ -402,16 +333,18 @@ rule examples() -> Examples
     }
 
 rule scenario() -> Scenario
-    = _
+    = comment()*
+      _
       t:tags()
       _
       pa:position!()
-      keyword((env.keywords().scenario)) ":" _ n:not_nl() _ nl_eof()
+      k:keyword((env.keywords().scenario)) ":" _ n:not_nl() _ nl_eof()
       s:steps()?
       e:examples()?
       pb:position!()
     {
         Scenario::builder()
+            .keyword(k.into())
             .name(n.to_string())
             .tags(t)
             .steps(s.unwrap_or_else(|| vec![]))
@@ -420,16 +353,18 @@ rule scenario() -> Scenario
             .position(env.position(pa))
             .build()
     }
-    / _
+    / comment()*
+      _
       t:tags()
       _
       pa:position!()
-      keyword((env.keywords().scenario_outline)) ":" _ n:not_nl() _ nl_eof()
+      k:keyword((env.keywords().scenario_outline)) ":" _ n:not_nl() _ nl_eof()
       s:steps()?
       e:examples()?
       pb:position!()
     {
         Scenario::builder()
+            .keyword(k.into())
             .name(n.to_string())
             .tags(t)
             .steps(s.unwrap_or_else(|| vec![]))
@@ -461,13 +396,14 @@ rule rule_() -> Rule
       t:tags()
       _
       pa:position!()
-      keyword((env.keywords().rule)) ":" _ n:not_nl() _ nl_eof()
+      k:keyword((env.keywords().rule)) ":" _ n:not_nl() _ nl_eof()
       b:background()? nl()*
       s:scenarios()? nl()*
     //   e:examples()?
       pb:position!()
     {
         Rule::builder()
+            .keyword(k.into())
             .name(n.to_string())
             .tags(t)
             .background(b)
@@ -483,11 +419,11 @@ rule rules() -> Vec<Rule>
 pub(crate) rule scenarios() -> Vec<Scenario>
     = _ s:(scenario() ** _)? { s.unwrap_or_else(|| vec![]) }
 
-pub rule feature() -> Feature
-    = _ language_directive()? nl()*
+pub(crate) rule feature() -> Feature
+    = _ language_directive()* nl()*
       t:tags() nl()*
       pa:position!()
-      keyword((env.keywords().feature)) ":" _ n:not_nl() _ nl()+
+      k:keyword((env.keywords().feature)) ":" _ n:not_nl() _ nl()+
       d:description()? nl()*
       b:background()? nl()*
       s:scenarios() nl()*
@@ -495,6 +431,7 @@ pub rule feature() -> Feature
       nl()*
     {
         Feature::builder()
+            .keyword(k.into())
             .tags(t)
             .name(n.to_string())
             .description(d.flatten())
@@ -506,7 +443,7 @@ pub rule feature() -> Feature
             .build()
     }
 
-pub rule tag_operation() -> TagOperation = precedence!{
+pub(crate) rule tag_operation() -> TagOperation = precedence!{
     x:@ _ "and" _ y:(@) { TagOperation::And(Box::new(x), Box::new(y)) }
     x:@ _ "or" _ y:(@) { TagOperation::Or(Box::new(x), Box::new(y)) }
     "not" _ x:(@) { TagOperation::Not(Box::new(x)) }
@@ -631,7 +568,7 @@ Scenario: Meow
         let input = r#"Feature: Basic functionality
         here's some text
         really
-Scenario: Helloq
+Scenario: Hello
   Given a step
 "#;
         let feature = gherkin_parser::feature(input, &env).unwrap();

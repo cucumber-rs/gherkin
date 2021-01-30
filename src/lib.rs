@@ -37,11 +37,15 @@
 mod parser;
 
 #[cfg(feature = "parser")]
+mod keywords;
+
+#[cfg(feature = "parser")]
 pub mod tagexpr;
 
 // Re-export for convenience
 pub use peg::error::ParseError;
 pub use peg::str::LineCol;
+pub use parser::EnvError;
 
 #[cfg(feature = "parser")]
 use typed_builder::TypedBuilder;
@@ -54,11 +58,15 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use parser::GherkinEnv;
+
 /// A feature background
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Background {
+    /// The raw keyword used in the original source.
+    pub keyword: String,
     /// The parsed steps from the background directive.
     pub steps: Vec<Step>,
     /// The `(start, end)` offset the background directive was found in the .feature file.
@@ -74,6 +82,8 @@ pub struct Background {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Examples {
+    /// The raw keyword used in the original source.
+    pub keyword: String,
     /// The data table from the examples directive.
     pub table: Table,
     /// The tags for the examples directive if provided.
@@ -92,6 +102,8 @@ pub struct Examples {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Feature {
+    /// The raw keyword used in the original source.
+    pub keyword: String,
     /// The name of the feature.
     pub name: String,
     /// The description of the feature, if found.
@@ -125,9 +137,18 @@ impl Feature {
     #[inline]
     pub fn parse_path<P: AsRef<Path>>(path: P) -> Result<Feature, ParseFileError> {
         let s = std::fs::read_to_string(path.as_ref())
-            .map_err(|e| ParseFileError::Reading(path.as_ref().to_path_buf(), e))?;
-        let mut feature = parser::gherkin_parser::feature(&s, &Default::default())
-            .map_err(|e| ParseFileError::Parsing(path.as_ref().to_path_buf(), e))?;
+            .map_err(|e| ParseFileError::Reading {
+                path: path.as_ref().to_path_buf(),
+                source: e
+            })?;
+        let env = GherkinEnv::default();
+        let mut feature = parser::gherkin_parser::feature(&s, &env).map_err(|e| {
+            ParseFileError::Parsing {
+                path: path.as_ref().to_path_buf(),
+                error: env.last_error.borrow_mut().take(),
+                source: e,   
+            }
+        })?;
         feature.path = Some(path.as_ref().to_path_buf());
         Ok(feature)
     }
@@ -155,6 +176,8 @@ impl Ord for Feature {
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Rule {
+    /// The raw keyword used in the original source.
+    pub keyword: String,
     /// The name of the scenario.
     pub name: String,
     /// The background of the rule, if found.
@@ -178,6 +201,8 @@ pub struct Rule {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Scenario {
+    /// The raw keyword used in the original source.
+    pub keyword: String,
     /// The name of the scenario.
     pub name: String,
     /// The parsed steps from the scenario directive.
@@ -201,10 +226,10 @@ pub struct Scenario {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Step {
+    /// The raw keyword used in the original source, including `But` and `And`.
+    pub keyword: String,
     /// The step type for the step after parsed in context.
     pub ty: StepType,
-    /// The original raw step type, including `But` and `And`.
-    pub raw_type: String,
     /// The value of the step after the type.
     pub value: String,
     /// A docstring, if provided.
@@ -233,7 +258,7 @@ impl Step {
 
 impl Display for Step {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} {}", &self.raw_type, &self.value)
+        write!(f, "{} {}", &self.keyword, &self.value)
     }
 }
 
@@ -273,9 +298,16 @@ impl Table {
 
 #[derive(Debug, thiserror::Error)]
 pub enum ParseFileError {
-    #[error("Could not read path: {0}")]
-    Reading(PathBuf, #[source] std::io::Error),
+    #[error("Could not read path: {path}")]
+    Reading {
+        path: PathBuf,
+        #[source] source: std::io::Error
+    },
 
-    #[error("Could not parse feature file: {0}")]
-    Parsing(PathBuf, #[source] peg::error::ParseError<peg::str::LineCol>),
+    #[error("Could not parse feature file: {path}")]
+    Parsing {
+        path: PathBuf,
+        error: Option<parser::EnvError>,
+        #[source] source: peg::error::ParseError<peg::str::LineCol>,
+    },
 }
