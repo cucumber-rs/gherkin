@@ -22,7 +22,7 @@ typed-builder = { version = "0.7.0", optional = true }
 serde = { version = "1", optional = true, features = ["derive"] }
 
 [dev-dependencies]
-cucumber = { package = "cucumber_rust", version = "^0.8.0" }
+cucumber = { package = "cucumber_rust", version = "0.8.1" }
 async-trait = "0.1.40"
 futures = "0.3.5"
 
