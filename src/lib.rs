@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020  Brendan Molloy <brendan@bbqsrc.net>
+// Copyright (c) 2018-2021  Brendan Molloy <brendan@bbqsrc.net>
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -33,75 +33,109 @@
 //! Indentation and comments are ignored by the parser. Most other things can be accessed via
 //! properties of the relevant struct.
 
+#[cfg(feature = "parser")]
 mod parser;
+
+#[cfg(feature = "parser")]
 pub mod tagexpr;
 
 // Re-export for convenience
 pub use peg::error::ParseError;
 pub use peg::str::LineCol;
 
+#[cfg(feature = "parser")]
 use typed_builder::TypedBuilder;
 
-use std::path::{Path, PathBuf};
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
+use std::{
+    fmt::{self, Display},
+    path::{Path, PathBuf},
+};
 
 /// A feature background
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "parser", derive(TypedBuilder))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Background {
     /// The parsed steps from the background directive.
     pub steps: Vec<Step>,
     /// The `(start, end)` offset the background directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub span: (usize, usize),
     /// The `(line, col)` position the background directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub position: (usize, usize),
 }
 
 /// Examples for a scenario
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "parser", derive(TypedBuilder))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Examples {
     /// The data table from the examples directive.
     pub table: Table,
     /// The tags for the examples directive if provided.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub tags: Vec<String>,
     /// The `(start, end)` offset the examples directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub span: (usize, usize),
     /// The `(line, col)` position the examples directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub position: (usize, usize),
 }
 
 /// A feature
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "parser", derive(TypedBuilder))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Feature {
     /// The name of the feature.
     pub name: String,
     /// The description of the feature, if found.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub description: Option<String>,
     /// The background of the feature, if found.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub background: Option<Background>,
     /// The scenarios for the feature.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub scenarios: Vec<Scenario>,
     /// The rules for the feature.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub rules: Vec<Rule>,
     /// The tags for the feature if provided.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub tags: Vec<String>,
     /// The `(start, end)` offset the feature directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub span: (usize, usize),
     /// The `(line, col)` position the feature directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub position: (usize, usize),
     /// The path supplied for the parsed `Feature`, if known.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub path: Option<PathBuf>,
+}
+
+#[cfg(feature = "parser")]
+impl Feature {
+    #[inline]
+    pub fn parse_path<P: AsRef<Path>>(path: P) -> Result<Feature, ParseFileError> {
+        let s = std::fs::read_to_string(path.as_ref())
+            .map_err(|e| ParseFileError::Reading(path.as_ref().to_path_buf(), e))?;
+        let mut feature = parser::gherkin_parser::feature(&s, &Default::default())
+            .map_err(|e| ParseFileError::Parsing(path.as_ref().to_path_buf(), e))?;
+        feature.path = Some(path.as_ref().to_path_buf());
+        Ok(feature)
+    }
+
+    #[inline]
+    pub fn parse<S: AsRef<str>>(input: S) -> Result<Feature, ParseError<LineCol>> {
+        parser::gherkin_parser::feature(input.as_ref(), &Default::default())
+    }
 }
 
 impl PartialOrd for Feature {
@@ -117,49 +151,55 @@ impl Ord for Feature {
 }
 
 /// A rule, as introduced in Gherkin 6.
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "parser", derive(TypedBuilder))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Rule {
     /// The name of the scenario.
     pub name: String,
     /// The background of the rule, if found.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub background: Option<Background>,
     /// The parsed scenarios from the rule directive.
     pub scenarios: Vec<Scenario>,
     /// The tags for the rule directive if provided.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub tags: Vec<String>,
     /// The `(start, end)` offset the rule directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub span: (usize, usize),
     /// The `(line, col)` position the rule directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub position: (usize, usize),
 }
 
 /// A scenario
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "parser", derive(TypedBuilder))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Scenario {
     /// The name of the scenario.
     pub name: String,
     /// The parsed steps from the scenario directive.
     pub steps: Vec<Step>,
     // The parsed examples from the scenario directive if found.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub examples: Option<Examples>,
     /// The tags for the scenarios directive if provided.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub tags: Vec<String>,
     /// The `(start, end)` offset the scenario directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub span: (usize, usize),
     /// The `(line, col)` position the scenario directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub position: (usize, usize),
 }
 
 /// A scenario step
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "parser", derive(TypedBuilder))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Step {
     /// The step type for the step after parsed in context.
     pub ty: StepType,
@@ -168,20 +208,37 @@ pub struct Step {
     /// The value of the step after the type.
     pub value: String,
     /// A docstring, if provided.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub docstring: Option<String>,
     /// A data table, if provided.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub table: Option<Table>,
     /// The `(start, end)` offset the step directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub span: (usize, usize),
     /// The `(line, col)` position the step directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub position: (usize, usize),
 }
 
+impl Step {
+    pub fn docstring(&self) -> Option<&String> {
+        self.docstring.as_ref()
+    }
+
+    pub fn table(&self) -> Option<&Table> {
+        self.table.as_ref()
+    }
+}
+
+impl Display for Step {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} {}", &self.raw_type, &self.value)
+    }
+}
+
 /// The fundamental Gherkin step type after contextually handling `But` and `And`
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy, PartialEq, Hash, Eq)]
 pub enum StepType {
     Given,
@@ -190,15 +247,17 @@ pub enum StepType {
 }
 
 /// A data table
-#[derive(Debug, Clone, TypedBuilder, PartialEq, Hash, Eq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "parser", derive(TypedBuilder))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Table {
     /// The rows of the data table. Each row is always the same length as the first row.
     pub rows: Vec<Vec<String>>,
     /// The `(start, end)` offset the table directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub span: (usize, usize),
     /// The `(line, col)` position the table directive was found in the .feature file.
-    #[builder(default)]
+    #[cfg_attr(feature = "parser", builder(default))]
     pub position: (usize, usize),
 }
 
@@ -219,43 +278,4 @@ pub enum ParseFileError {
 
     #[error("Could not parse feature file: {0}")]
     Parsing(PathBuf, #[source] peg::error::ParseError<peg::str::LineCol>),
-}
-
-impl Feature {
-    #[inline]
-    pub fn parse_path<P: AsRef<Path>>(path: P) -> Result<Feature, ParseFileError> {
-        let s = std::fs::read_to_string(path.as_ref())
-            .map_err(|e| ParseFileError::Reading(path.as_ref().to_path_buf(), e))?;
-        let mut feature = parser::gherkin_parser::feature(&s, &Default::default())
-            .map_err(|e| ParseFileError::Parsing(path.as_ref().to_path_buf(), e))?;
-        feature.path = Some(path.as_ref().to_path_buf());
-        Ok(feature)
-    }
-
-    #[inline]
-    pub fn parse<S: AsRef<str>>(input: S) -> Result<Feature, ParseError<LineCol>> {
-        parser::gherkin_parser::feature(input.as_ref(), &Default::default())
-    }
-}
-
-impl Step {
-    pub fn docstring(&self) -> Option<&String> {
-        match &self.docstring {
-            Some(v) => Some(&v),
-            None => None,
-        }
-    }
-
-    pub fn table(&self) -> Option<&Table> {
-        match &self.table {
-            Some(v) => Some(&v),
-            None => None,
-        }
-    }
-}
-
-impl std::fmt::Display for Step {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {}", &self.raw_type, &self.value)
-    }
 }
