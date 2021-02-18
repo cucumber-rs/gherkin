@@ -1,6 +1,6 @@
 [package]
 name = "gherkin_rust"
-version = "0.9.0"
+version = "0.10.0"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
 description = "A pure Rust implementation of the Gherkin (`.feature` file) language for the Cucumber testing framework"
 license = "MIT OR Apache-2.0"
