@@ -57,7 +57,12 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use parser::GherkinEnv;
+pub use parser::GherkinEnv;
+
+#[cfg(feature = "parser")]
+pub fn is_language_supported(lang: &str) -> bool {
+    keywords::Keywords::get(lang).is_some()
+}
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
@@ -176,12 +181,11 @@ pub struct Feature {
 #[cfg(feature = "parser")]
 impl Feature {
     #[inline]
-    pub fn parse_path<P: AsRef<Path>>(path: P) -> Result<Feature, ParseFileError> {
+    pub fn parse_path<P: AsRef<Path>>(path: P, env: GherkinEnv) -> Result<Feature, ParseFileError> {
         let s = std::fs::read_to_string(path.as_ref()).map_err(|e| ParseFileError::Reading {
             path: path.as_ref().to_path_buf(),
             source: e,
         })?;
-        let env = GherkinEnv::default();
         let mut feature =
             parser::gherkin_parser::feature(&s, &env).map_err(|e| ParseFileError::Parsing {
                 path: path.as_ref().to_path_buf(),
@@ -199,8 +203,8 @@ impl Feature {
     }
 
     #[inline]
-    pub fn parse<S: AsRef<str>>(input: S) -> Result<Feature, ParseError> {
-        parser::gherkin_parser::feature(input.as_ref(), &Default::default()).map_err(|e| {
+    pub fn parse<S: AsRef<str>>(input: S, env: GherkinEnv) -> Result<Feature, ParseError> {
+        parser::gherkin_parser::feature(input.as_ref(), &env).map_err(|e| {
             ParseError {
                 position: LineCol {
                     line: e.location.line,

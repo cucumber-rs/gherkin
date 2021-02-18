@@ -30,6 +30,16 @@ pub enum EnvError {
 }
 
 impl GherkinEnv {
+    pub fn new(language: &str) -> Result<Self, EnvError> {
+        let keywords = Keywords::get(language)
+            .ok_or_else(|| EnvError::UnsupportedLanguage(language.into()))?;
+
+        Ok(Self {
+            keywords: RefCell::new(keywords),
+            ..Default::default()
+        })
+    }
+
     pub fn set_language(&self, language: &str) -> Result<(), &'static str> {
         let keywords = Keywords::get(language).ok_or_else(|| {
             *self.last_error.borrow_mut() = Some(EnvError::UnsupportedLanguage(language.into()));
