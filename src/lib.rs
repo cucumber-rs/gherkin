@@ -52,6 +52,7 @@ use typed_builder::TypedBuilder;
 use serde::{Deserialize, Serialize};
 
 use std::{
+    borrow::Cow,
     collections::HashSet,
     fmt::{self, Display},
     path::{Path, PathBuf},
@@ -182,10 +183,17 @@ pub struct Feature {
 impl Feature {
     #[inline]
     pub fn parse_path<P: AsRef<Path>>(path: P, env: GherkinEnv) -> Result<Feature, ParseFileError> {
-        let s = std::fs::read_to_string(path.as_ref()).map_err(|e| ParseFileError::Reading {
-            path: path.as_ref().to_path_buf(),
-            source: e,
-        })?;
+        let mut s =
+            std::fs::read_to_string(path.as_ref()).map_err(|e| ParseFileError::Reading {
+                path: path.as_ref().to_path_buf(),
+                source: e,
+            })?;
+
+        if !s.ends_with("\n") {
+            // Add a new line at the end, because our parser is bad and we should feel bad.
+            s.push('\n');
+        }
+
         let mut feature =
             parser::gherkin_parser::feature(&s, &env).map_err(|e| ParseFileError::Parsing {
                 path: path.as_ref().to_path_buf(),
@@ -198,20 +206,24 @@ impl Feature {
                     expected: e.expected.tokens().collect(),
                 },
             })?;
+
         feature.path = Some(path.as_ref().to_path_buf());
         Ok(feature)
     }
 
     #[inline]
     pub fn parse<S: AsRef<str>>(input: S, env: GherkinEnv) -> Result<Feature, ParseError> {
-        parser::gherkin_parser::feature(input.as_ref(), &env).map_err(|e| {
-            ParseError {
-                position: LineCol {
-                    line: e.location.line,
-                    col: e.location.column,
-                },
-                expected: e.expected.tokens().collect(),
-            }
+        let input: Cow<'_, str> = match input.as_ref().ends_with("\n") {
+            true => Cow::Borrowed(input.as_ref()),
+            // Add a new line at the end, because our parser is bad and we should feel bad.
+            false => Cow::Owned(format!("{}\n", input.as_ref())),
+        };
+        parser::gherkin_parser::feature(&input, &env).map_err(|e| ParseError {
+            position: LineCol {
+                line: e.location.line,
+                col: e.location.column,
+            },
+            expected: e.expected.tokens().collect(),
         })
     }
 }

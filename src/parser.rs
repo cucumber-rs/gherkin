@@ -89,13 +89,12 @@ impl GherkinEnv {
 
     fn position(&self, offset: usize) -> LineCol {
         let line_offsets = self.line_offsets.borrow();
-        let index = line_offsets.iter().position(|x| x > &offset);
+        let line = line_offsets
+            .iter()
+            .position(|x| x > &offset)
+            .unwrap_or_else(|| line_offsets.len());
 
-        let line = index.unwrap_or(0);
-        let col = index
-            .map(|i| offset - line_offsets[i - 1])
-            .unwrap_or(offset)
-            + 1;
+        let col = offset - line_offsets[line - 1] + 1;
 
         LineCol { line, col }
     }
@@ -579,11 +578,22 @@ Scenario: Meow
         here's some text
         really
 Scenario: Hello
-  Given a step
-"#;
+  Given a step"#;
         let feature = gherkin_parser::feature(input, &env).unwrap();
         println!("{:#?}", feature);
         assert_eq!(feature.scenarios.len(), 1);
         assert!(feature.description.is_some());
+        assert!(feature.scenarios[0].steps[0].position.line != 0)
+    }
+
+    #[test]
+    fn feature_only() {
+        let env = GherkinEnv::default();
+        let input = r#"Feature: Basic functionality
+        "#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        println!("{:#?}", feature);
+        assert_eq!(feature.scenarios.len(), 0);
+        assert!(feature.description.is_none());
     }
 }
