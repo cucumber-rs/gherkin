@@ -197,7 +197,7 @@ impl Feature {
         let mut feature =
             parser::gherkin_parser::feature(&s, &env).map_err(|e| ParseFileError::Parsing {
                 path: path.as_ref().to_path_buf(),
-                error: env.last_error.borrow_mut().take(),
+                error: env.fatal_error.borrow_mut().take().or_else(|| env.last_error.borrow_mut().take()),
                 source: ParseError {
                     position: LineCol {
                         line: e.location.line,

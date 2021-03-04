@@ -15,6 +15,7 @@ use crate::{Background, Examples, Feature, LineCol, Rule, Scenario, Span, Step, 
 pub struct GherkinEnv {
     keywords: RefCell<Keywords<'static>>,
     pub(crate) last_error: RefCell<Option<EnvError>>,
+    pub(crate) fatal_error: RefCell<Option<EnvError>>,
     last_step: RefCell<Option<StepType>>,
     last_keyword: RefCell<Option<String>>,
     line_offsets: RefCell<Vec<usize>>,
@@ -27,6 +28,9 @@ pub enum EnvError {
 
     #[error("Unknown keyword: '{0}'.")]
     UnknownKeyword(String),
+
+    #[error("Inconsistent cell count")]
+    InconsistentCellCount(Vec<Vec<String>>),
 }
 
 impl GherkinEnv {
@@ -42,13 +46,33 @@ impl GherkinEnv {
 
     pub fn set_language(&self, language: &str) -> Result<(), &'static str> {
         let keywords = Keywords::get(language).ok_or_else(|| {
-            *self.last_error.borrow_mut() = Some(EnvError::UnsupportedLanguage(language.into()));
+            self.set_fatal_error(EnvError::UnsupportedLanguage(language.into()));
             "Unsupported language"
         })?;
 
         *self.keywords.borrow_mut() = keywords;
 
         Ok(())
+    }
+
+    fn assert_no_error(&self) -> Result<(), &'static str> {
+        if self.fatal_error.borrow().is_some() {
+            return Err("fatal error");
+        }
+
+        Ok(())
+    }
+
+    fn set_fatal_error(&self, error: EnvError) {
+        if self.fatal_error.borrow().is_some() {
+            return
+        }
+
+        *self.fatal_error.borrow_mut() = Some(error);
+    }
+
+    fn set_last_error(&self, error: EnvError) {
+        *self.last_error.borrow_mut() = Some(error);
     }
 
     fn keywords(&self) -> std::cell::Ref<Keywords<'static>> {
@@ -105,6 +129,7 @@ impl Default for GherkinEnv {
         GherkinEnv {
             keywords: RefCell::new(Default::default()),
             last_error: RefCell::new(None),
+            fatal_error: RefCell::new(None),
             last_step: RefCell::new(None),
             last_keyword: RefCell::new(None),
             line_offsets: RefCell::new(vec![0]),
@@ -141,7 +166,7 @@ rule keyword1(list: &[&'static str]) -> &'static str
             None => {
                 // println!("Unfound: {}", &input);
                 env.clear_keyword();
-                *env.last_error.borrow_mut() = Some(EnvError::UnknownKeyword(input.into()));
+                env.set_last_error(EnvError::UnknownKeyword(input.into()));
                 Err("unknown keyword")
             }
         }
@@ -162,10 +187,9 @@ pub(crate) rule keyword(list: &[&'static str]) -> &'static str
     }
 
 rule language_directive() -> ()
-    = "# language: " l:$(['a'..='z']+) _ nl() {?
+    = "#" _ "language:" _ l:$(not_nl()+) _ nl() {?
         env.set_language(l)
     }
-    / comment() { () }
 
 rule docstring() -> String
     = "\"\"\"" n:$((!"\"\"\""[_])*) "\"\"\"" nl_eof() {
@@ -197,12 +221,22 @@ pub(crate) rule table0() -> Vec<Vec<String>>
     }
 
 pub(crate) rule table() -> Table
-    = pa:position!() t:table0() pb:position!() {
-        Table::builder()
-            .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
-            .rows(t)
-            .build()
+    = pa:position!() t:table0() pb:position!() {?
+        loop {
+            if !t.is_empty() {
+                let c = t[0].len();
+                if t.iter().skip(1).find(|x| x.len() != c).is_some() {
+                    env.set_fatal_error(EnvError::InconsistentCellCount(t));
+                    break Err("inconsistent table row sizes");
+                }
+            }
+            
+            break Ok(Table::builder()
+                .span(Span { start: pa, end: pb })
+                .position(env.position(pa))
+                .rows(t)
+                .build());
+        }
     }
 
 pub(crate) rule step() -> Step
@@ -429,7 +463,8 @@ pub(crate) rule scenarios() -> Vec<Scenario>
     = _ s:(scenario() ** _)? { s.unwrap_or_else(|| vec![]) }
 
 pub(crate) rule feature() -> Feature
-    = _ language_directive()* nl()*
+    = _ language_directive()?
+      nl()*
       t:tags() nl()*
       pa:position!()
       k:keyword((env.keywords().feature)) ":" _ n:not_nl() _ nl()+
@@ -438,18 +473,24 @@ pub(crate) rule feature() -> Feature
       s:scenarios() nl()*
       r:rules() pb:position!()
       nl()*
-    {
-        Feature::builder()
-            .keyword(k.into())
-            .tags(t)
-            .name(n.to_string())
-            .description(d.flatten())
-            .background(b)
-            .scenarios(s)
-            .rules(r)
-            .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
-            .build()
+    {?
+        loop {
+            if let Err(e) = env.assert_no_error() {
+                break Err(e);
+            }
+
+            break Ok(Feature::builder()
+                .keyword(k.into())
+                .tags(t)
+                .name(n.to_string())
+                .description(d.flatten())
+                .background(b)
+                .scenarios(s)
+                .rules(r)
+                .span(Span { start: pa, end: pb })
+                .position(env.position(pa))
+                .build())
+        }
     }
 
 pub(crate) rule tag_operation() -> TagOperation = precedence!{
