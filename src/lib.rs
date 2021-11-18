@@ -280,7 +280,7 @@ pub struct Scenario {
     pub steps: Vec<Step>,
     // The parsed examples from the scenario directive if found.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub examples: Option<Examples>,
+    pub examples: Vec<Examples>,
     /// The tags for the scenarios directive if provided.
     #[cfg_attr(feature = "parser", builder(default))]
     pub tags: Vec<String>,
