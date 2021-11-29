@@ -65,7 +65,7 @@ impl GherkinEnv {
 
     fn set_fatal_error(&self, error: EnvError) {
         if self.fatal_error.borrow().is_some() {
-            return
+            return;
         }
 
         *self.fatal_error.borrow_mut() = Some(error);
@@ -230,7 +230,7 @@ pub(crate) rule table() -> Table
                     break Err("inconsistent table row sizes");
                 }
             }
-            
+
             break Ok(Table::builder()
                 .span(Span { start: pa, end: pb })
                 .position(env.position(pa))

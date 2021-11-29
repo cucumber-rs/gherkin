@@ -1,39 +1,49 @@
 [package]
 name = "gherkin_rust"
 version = "0.10.1"
-authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
-description = "A pure Rust implementation of the Gherkin (`.feature` file) language for the Cucumber testing framework"
-license = "MIT OR Apache-2.0"
-readme = "README.md"
-repository = "https://github.com/bbqsrc/gherkin-rust"
-documentation = "https://docs.rs/gherkin_rust"
-homepage = "https://github.com/bbqsrc/gherkin-rust"
 edition = "2018"
+description = """\
+    Pure Rust implementation of Gherkin language (`.feature` file) for \
+    Cucumber testing framework.\
+    """
+license = "MIT OR Apache-2.0"
+authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
+readme = "README.md"
+documentation = "https://docs.rs/gherkin_rust"
+homepage = "https://github.com/cucumber-rs/gherkin"
+repository = "https://github.com/cucumber-rs/gherkin"
+
+[features]
+default = ["parser"]
+# Enables ability to parse AST.
+parser = ["typed-builder"]
+
+[dependencies]
+peg = "0.6.3"
+textwrap = "0.12.1"
+thiserror = "1.0.20"
+
+# "parser" feature dependencies.
+typed-builder = { version = "0.7", optional = true }
+
+# "serde" feature enables ability to serialize/deserialize AST.
+serde = { version = "1.0.103", features = ["derive"], optional = true }
+
+# "juniper" feature enables ability to use AST as GraphQL types.
+juniper = { version = "0.15.3", default-features = false, optional = true }
+
+[build-dependencies]
+heck = "0.3"
+quote = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+syn = "1.0"
+
+[dev-dependencies]
+async-trait = "0.1.40"
+cucumber = "0.10"
+futures = "0.3.5"
 
 [[test]]
 name = "cucumber"
 harness = false
-
-[dependencies]
-textwrap = "0.12.1"
-peg = "0.6.3"
-thiserror = "1.0.20"
-typed-builder = { version = "0.7.0", optional = true }
-serde = { version = "1", optional = true, features = ["derive"] }
-juniper = { version = "0.15", optional = true }
-
-[dev-dependencies]
-cucumber = { package = "cucumber_rust", version = "0.8.1" }
-async-trait = "0.1.40"
-futures = "0.3.5"
-
-[build-dependencies]
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-quote = "1"
-syn = "1"
-heck = "0.3"
-
-[features]
-default = ["parser"]
-parser = ["typed-builder"]

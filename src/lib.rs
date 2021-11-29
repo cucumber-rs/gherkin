@@ -34,31 +34,27 @@
 //! properties of the relevant struct.
 
 #[cfg(feature = "parser")]
-mod parser;
-
-#[cfg(feature = "parser")]
 mod keywords;
-
+#[cfg(feature = "parser")]
+mod parser;
 #[cfg(feature = "parser")]
 pub mod tagexpr;
 
-// Re-export for convenience
-pub use parser::EnvError;
-
 #[cfg(feature = "parser")]
-use typed_builder::TypedBuilder;
+use std::path::Path;
+use std::{
+    collections::HashSet,
+    fmt::{self, Display},
+    path::PathBuf,
+};
 
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "parser")]
+use typed_builder::TypedBuilder;
 
-use std::{
-    borrow::Cow,
-    collections::HashSet,
-    fmt::{self, Display},
-    path::{Path, PathBuf},
-};
-
-pub use parser::GherkinEnv;
+#[cfg(feature = "parser")]
+pub use self::parser::{EnvError, GherkinEnv};
 
 #[cfg(feature = "parser")]
 pub fn is_language_supported(lang: &str) -> bool {
@@ -197,7 +193,11 @@ impl Feature {
         let mut feature =
             parser::gherkin_parser::feature(&s, &env).map_err(|e| ParseFileError::Parsing {
                 path: path.as_ref().to_path_buf(),
-                error: env.fatal_error.borrow_mut().take().or_else(|| env.last_error.borrow_mut().take()),
+                error: env
+                    .fatal_error
+                    .borrow_mut()
+                    .take()
+                    .or_else(|| env.last_error.borrow_mut().take()),
                 source: ParseError {
                     position: LineCol {
                         line: e.location.line,
@@ -213,6 +213,8 @@ impl Feature {
 
     #[inline]
     pub fn parse<S: AsRef<str>>(input: S, env: GherkinEnv) -> Result<Feature, ParseError> {
+        use std::borrow::Cow;
+
         let input: Cow<'_, str> = match input.as_ref().ends_with("\n") {
             true => Cow::Borrowed(input.as_ref()),
             // Add a new line at the end, because our parser is bad and we should feel bad.
@@ -377,6 +379,7 @@ pub struct ParseError {
     expected: HashSet<&'static str>,
 }
 
+#[cfg(feature = "parser")]
 #[derive(Debug, thiserror::Error)]
 pub enum ParseFileError {
     #[error("Could not read path: {path}")]
