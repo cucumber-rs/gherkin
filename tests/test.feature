@@ -41,6 +41,23 @@ Scenario Outline: eating
     |    12 |   5 |    7 |
     |    20 |   5 |   15 |
 
+@multiple-examples
+Scenario Outline: eating
+  Given there are <start> cucumbers
+  When I eat <eat> cucumbers
+  Then I should have <left> cucumbers
+
+  Examples:
+    | start | eat | left |
+    |    12 |   5 |    7 |
+    |    20 |   5 |   15 |
+
+  @another-misfeature-of-cucumber
+  Examples:
+    | start | eat | left |
+    |    12 |   5 |    7 |
+    |    20 |   5 |   15 |
+
 @scenario-with-tab-indentation
 Scenario: A second scenario test
 # Below are TABs don't remove/convert them

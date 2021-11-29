@@ -383,7 +383,7 @@ rule scenario() -> Scenario
       pa:position!()
       k:keyword((env.keywords().scenario)) ":" _ n:not_nl() _ nl_eof()
       s:steps()?
-      e:examples()?
+      e:examples()*
       pb:position!()
     {
         Scenario::builder()
@@ -403,7 +403,7 @@ rule scenario() -> Scenario
       pa:position!()
       k:keyword((env.keywords().scenario_outline)) ":" _ n:not_nl() _ nl_eof()
       s:steps()?
-      e:examples()?
+      e:examples()*
       pb:position!()
     {
         Scenario::builder()
