@@ -1,6 +1,6 @@
 [package]
 name = "gherkin_rust"
-version = "0.10.1"
+version = "0.10.2"
 edition = "2018"
 description = """\
     Pure Rust implementation of Gherkin language (`.feature` file) for \
@@ -8,10 +8,17 @@ description = """\
     """
 license = "MIT OR Apache-2.0"
 authors = ["Brendan Molloy <brendan@bbqsrc.net>"]
-readme = "README.md"
 documentation = "https://docs.rs/gherkin_rust"
 homepage = "https://github.com/cucumber-rs/gherkin"
 repository = "https://github.com/cucumber-rs/gherkin"
+readme = "README.md"
+categories = ["compilers", "parser-implementations"]
+keywords = ["gherkin", "cucumber", "cucumber-gherkin", "testing", "bdd"]
+include = ["/src/", "/build.rs", "/tests/cucumber.rs", "/LICENSE-*", "/README.md", "/CHANGELOG.md"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
 
 [features]
 default = ["parser"]

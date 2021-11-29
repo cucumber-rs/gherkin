@@ -33,6 +33,13 @@
 //! Indentation and comments are ignored by the parser. Most other things can be accessed via
 //! properties of the relevant struct.
 
+#![doc(
+    html_logo_url = "https://avatars.githubusercontent.com/u/91469139?s=128",
+    html_favicon_url = "https://avatars.githubusercontent.com/u/91469139?s=256"
+)]
+#![forbid(non_ascii_idents, unsafe_code)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
 #[cfg(feature = "parser")]
 mod keywords;
 #[cfg(feature = "parser")]
