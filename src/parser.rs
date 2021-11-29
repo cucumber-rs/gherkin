@@ -222,20 +222,15 @@ pub(crate) rule table0() -> Vec<Vec<String>>
 
 pub(crate) rule table() -> Table
     = pa:position!() t:table0() pb:position!() {?
-        loop {
-            if !t.is_empty() {
-                let c = t[0].len();
-                if t.iter().skip(1).find(|x| x.len() != c).is_some() {
-                    env.set_fatal_error(EnvError::InconsistentCellCount(t));
-                    break Err("inconsistent table row sizes");
-                }
-            }
-
-            break Ok(Table::builder()
+        if !t.is_empty() && t.iter().skip(1).any(|x| x.len() != t[0].len()) {
+            env.set_fatal_error(EnvError::InconsistentCellCount(t));
+            Err("inconsistent table row sizes")
+        } else {
+            Ok(Table::builder()
                 .span(Span { start: pa, end: pb })
                 .position(env.position(pa))
                 .rows(t)
-                .build());
+                .build())
         }
     }
 
@@ -332,7 +327,7 @@ rule background() -> Background
     {
         Background::builder()
             .keyword(k.into())
-            .steps(s.unwrap_or_else(|| vec![]))
+            .steps(s.unwrap_or_else(Vec::new))
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
@@ -390,7 +385,7 @@ rule scenario() -> Scenario
             .keyword(k.into())
             .name(n.to_string())
             .tags(t)
-            .steps(s.unwrap_or_else(|| vec![]))
+            .steps(s.unwrap_or_else(Vec::new))
             .examples(e)
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
@@ -410,7 +405,7 @@ rule scenario() -> Scenario
             .keyword(k.into())
             .name(n.to_string())
             .tags(t)
-            .steps(s.unwrap_or_else(|| vec![]))
+            .steps(s.unwrap_or_else(Vec::new))
             .examples(e)
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
@@ -450,17 +445,17 @@ rule rule_() -> Rule
             .name(n.to_string())
             .tags(t)
             .background(b)
-            .scenarios(s.unwrap_or_else(|| vec![]))
+            .scenarios(s.unwrap_or_else(Vec::new))
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
 
 rule rules() -> Vec<Rule>
-    = _ r:(rule_() ** _)? { r.unwrap_or_else(|| vec![]) }
+    = _ r:(rule_() ** _)? { r.unwrap_or_else(Vec::new) }
 
 pub(crate) rule scenarios() -> Vec<Scenario>
-    = _ s:(scenario() ** _)? { s.unwrap_or_else(|| vec![]) }
+    = _ s:(scenario() ** _)? { s.unwrap_or_else(Vec::new) }
 
 pub(crate) rule feature() -> Feature
     = _ language_directive()?
@@ -474,12 +469,10 @@ pub(crate) rule feature() -> Feature
       r:rules() pb:position!()
       nl()*
     {?
-        loop {
-            if let Err(e) = env.assert_no_error() {
-                break Err(e);
-            }
-
-            break Ok(Feature::builder()
+        if let Err(e) = env.assert_no_error() {
+            Err(e)
+        } else {
+            Ok(Feature::builder()
                 .keyword(k.into())
                 .tags(t)
                 .name(n.to_string())

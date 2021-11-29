@@ -57,7 +57,7 @@ impl<'a> Keywords<'a> {
             v.append(&mut x.to_vec());
         }
 
-        v.sort();
+        v.sort_unstable();
 
         v
     }

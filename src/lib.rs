@@ -185,7 +185,7 @@ impl Feature {
                 source: e,
             })?;
 
-        if !s.ends_with("\n") {
+        if !s.ends_with('\n') {
             // Add a new line at the end, because our parser is bad and we should feel bad.
             s.push('\n');
         }
@@ -215,7 +215,7 @@ impl Feature {
     pub fn parse<S: AsRef<str>>(input: S, env: GherkinEnv) -> Result<Feature, ParseError> {
         use std::borrow::Cow;
 
-        let input: Cow<'_, str> = match input.as_ref().ends_with("\n") {
+        let input: Cow<'_, str> = match input.as_ref().ends_with('\n') {
             true => Cow::Borrowed(input.as_ref()),
             // Add a new line at the end, because our parser is bad and we should feel bad.
             false => Cow::Owned(format!("{}\n", input.as_ref())),
@@ -364,11 +364,7 @@ pub struct Table {
 
 impl Table {
     pub fn row_width(&self) -> usize {
-        self.rows
-            .iter()
-            .next()
-            .map(|x| x.len())
-            .unwrap_or_else(|| 0)
+        self.rows.get(0).map(Vec::len).unwrap_or_default()
     }
 }
 
