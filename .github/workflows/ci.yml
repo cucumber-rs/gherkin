@@ -168,7 +168,7 @@ jobs:
         id: release
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
 
-      - name: Verify release version matches `gherkin_rust` Cargo manifest
+      - name: Verify release version matches `gherkin` Cargo manifest
         run: >-
           test "${{ steps.release.outputs.VERSION }}" \
             == "$(grep -m1 'version = "' Cargo.toml | cut -d '"' -f2)"
@@ -183,7 +183,7 @@ jobs:
         with:
           name: ${{ steps.release.outputs.VERSION }}
           body: |
-            [API docs](https://docs.rs/gherkin_rust/${{ steps.release.outputs.VERSION }})
+            [API docs](https://docs.rs/gherkin/${{ steps.release.outputs.VERSION }})
             [Changelog](${{ steps.changelog.outputs.LINK }})
           prerelease: ${{ contains(steps.release.outputs.VERSION, '-') }}
 
@@ -199,6 +199,6 @@ jobs:
           profile: minimal
           toolchain: stable
 
-      - name: Publish `gherkin_rust` crate
-        run: cargo publish -p gherkin_rust
+      - name: Publish `gherkin` crate
+        run: cargo publish -p gherkin
                            --token ${{ secrets.CRATESIO_TOKEN }}

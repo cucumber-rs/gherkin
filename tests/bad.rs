@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use gherkin_rust::{Feature, ParseFileError};
+use gherkin::{Feature, ParseFileError};
 
 fn load_feature<P: AsRef<Path>>(path: P) -> Result<Feature, ParseFileError> {
     Feature::parse_path(path.as_ref(), Default::default())
@@ -15,7 +15,7 @@ fn inconsistent_cell_count() {
         ParseFileError::Parsing { error, .. } => {
             let error = error.unwrap();
             match error {
-                gherkin_rust::EnvError::InconsistentCellCount(_) => {}
+                gherkin::EnvError::InconsistentCellCount(_) => {}
                 _ => panic!("Invalid error"),
             }
         }
