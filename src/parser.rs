@@ -339,7 +339,12 @@ rule any_directive() -> &'static str
     }
 
 rule description_line() -> &'input str
-    = _ !"@" !any_directive() _ n:not_nl() nl_eof() { n }
+    = _
+      !"@" !keyword((&*env.keywords().exclude_in_description()))
+      _ n:not_nl() nl_eof()
+    {
+        n
+    }
 
 rule description() -> Option<String>
     = d:(description_line() ** _) {
@@ -415,7 +420,8 @@ rule scenario() -> Scenario
 rule tag_char() -> &'input str
     = s:$([_]) {?
         let x = s.chars().next().unwrap();
-        if x.is_alphanumeric() || "_-.#".contains(x) {
+        // `)` isn't allowed, as it would collide with TagExpression.
+        if !x.is_whitespace() && !"\n@)".contains(x) {
             Ok(s)
         } else {
             Err("tag character")
@@ -426,7 +432,7 @@ pub(crate) rule tag() -> String
     = "@" s:tag_char()+ { s.join("") }
 
 pub(crate) rule tags() -> Vec<String>
-    = t:(tag() ** _) _ nl() { t }
+    = t:(tag() ** _) _ nl()* { t }
     / { vec![] }
 
 rule rule_() -> Rule

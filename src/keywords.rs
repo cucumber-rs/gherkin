@@ -6,6 +6,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use std::ops::Deref;
+
 #[derive(Debug, Clone)]
 pub(crate) struct Keywords<'a> {
     pub feature: &'a [&'a str],
@@ -36,14 +38,11 @@ impl<'a> Keywords<'a> {
     }
 
     pub fn all(&self) -> Vec<&'a str> {
-        let mut v = vec![];
-
-        for x in [
+        let mut v = [
             self.feature,
             self.background,
             self.rule,
             self.scenario,
-            self.rule,
             self.scenario_outline,
             self.examples,
             self.given,
@@ -53,9 +52,26 @@ impl<'a> Keywords<'a> {
             self.but,
         ]
         .iter()
-        {
-            v.append(&mut x.to_vec());
-        }
+        .flat_map(|s| s.iter().map(Deref::deref))
+        .collect::<Vec<_>>();
+
+        v.sort_unstable();
+
+        v
+    }
+
+    pub fn exclude_in_description(&self) -> Vec<&'a str> {
+        let mut v = [
+            self.feature,
+            self.background,
+            self.rule,
+            self.scenario,
+            self.scenario_outline,
+            self.examples,
+        ]
+        .iter()
+        .flat_map(|s| s.iter().map(Deref::deref))
+        .collect::<Vec<_>>();
 
         v.sort_unstable();
 

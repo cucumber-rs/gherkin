@@ -6,6 +6,24 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## [0.11.1] · ???
+[0.11.1]: /../../tree/v0.11.1
+
+[Diff](/../../compare/v0.11.0...v0.11.1)
+
+### Fixed
+
+- Allowed keywords in `Feature`s `Description`. ([#30], [cucumber#175])
+- Allowed characters in `Tag`s. ([#30], [cucumber#174])
+- Comments on the same line with `Tag`s. ([#30])
+  
+[#30]: /../../pull/30
+[cucumber#174]: https://github.com/cucumber-rs/cucumber/issues/174
+[cucumber#175]: https://github.com/cucumber-rs/cucumber/issues/175
+
+
+
+
 ## [0.11.0] · 2021-12-06
 [0.11.0]: /../../tree/v0.11.0
 
