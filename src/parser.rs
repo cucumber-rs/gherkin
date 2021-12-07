@@ -415,7 +415,7 @@ rule scenario() -> Scenario
 rule tag_char() -> &'input str
     = s:$([_]) {?
         let x = s.chars().next().unwrap();
-        if x.is_alphanumeric() || x == '_' || x == '-' {
+        if x.is_alphanumeric() || "_-.#".contains(x) {
             Ok(s)
         } else {
             Err("tag character")
