@@ -426,7 +426,7 @@ pub(crate) rule tag() -> String
     = "@" s:tag_char()+ { s.join("") }
 
 pub(crate) rule tags() -> Vec<String>
-    = t:(tag() ** ([' ']+)) _ nl() { t }
+    = t:(tag() ** _) _ nl() { t }
     / { vec![] }
 
 rule rule_() -> Rule

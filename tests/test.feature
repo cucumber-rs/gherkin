@@ -19,7 +19,7 @@ Background:
   And then it was fun
     | value1 | value2 |
 
-@tag1 @tag2 @tag-life_woo
+@tag1 @tag2 @tag-life_woo @tag.with#more.chars
 Scenario: A second scenario test
   Given I have not been testing much
   Then I should probably start doing it
@@ -29,7 +29,7 @@ Scenario: A second scenario test
     Given I am lightly tabbed
     Then handle how tabbed I am
 
-@taglife
+@taglife@with_joined_tags
 Scenario Outline: eating
   Given there are <start> cucumbers
   When I eat <eat> cucumbers
