@@ -6,7 +6,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
-## [0.11.1] · 2021-12-??
+## [0.11.1] · 2021-12-08
 [0.11.1]: /../../tree/v0.11.1
 
 [Diff](/../../compare/v0.11.0...v0.11.1)
