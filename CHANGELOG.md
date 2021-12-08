@@ -16,7 +16,8 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 - Allowed keywords in `Feature`s `Description`. ([#30], [cucumber#175])
 - Allowed characters in `Tag`s. ([#30], [cucumber#174])
 - Comments on the same line with `Tag`s. ([#30])
-  
+- `Tag`s requiring whitespaces between them. ([#30]) 
+
 [#30]: /../../pull/30
 [cucumber#174]: https://github.com/cucumber-rs/cucumber/issues/174
 [cucumber#175]: https://github.com/cucumber-rs/cucumber/issues/175

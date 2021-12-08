@@ -421,7 +421,7 @@ rule tag_char() -> &'input str
     = s:$([_]) {?
         let x = s.chars().next().unwrap();
         // `)` isn't allowed, as it would collide with TagExpression.
-        if !x.is_whitespace() && !"\n@)".contains(x) {
+        if !x.is_whitespace() && !"\r\n@)".contains(x) {
             Ok(s)
         } else {
             Err("tag character")
