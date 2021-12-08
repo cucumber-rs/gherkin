@@ -2,6 +2,11 @@
 @feature-tag
 Feature: This is a feature file
 
+  For all queries, parameters will not be set for default values as defined by:
+  * Numeric inputs: 0
+  * String inputs: ""
+  But list isn't exhaustive
+
 
 # Surprise comment
 Background:
@@ -19,7 +24,11 @@ Background:
   And then it was fun
     | value1 | value2 |
 
-@tag1 @tag2 @tag-life_woo
+#comment
+@tag1 @tag2 @tag-life_woo @tag.with#more.chars #comment
+
+
+#comment
 Scenario: A second scenario test
   Given I have not been testing much
   Then I should probably start doing it
@@ -29,8 +38,8 @@ Scenario: A second scenario test
     Given I am lightly tabbed
     Then handle how tabbed I am
 
-@taglife
-Scenario Outline: eating
+@taglife@with_joined_tags
+Scenario Outline: eating <eat> cucumbers
   Given there are <start> cucumbers
   When I eat <eat> cucumbers
   Then I should have <left> cucumbers

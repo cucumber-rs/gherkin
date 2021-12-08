@@ -113,4 +113,34 @@ mod tests {
             .unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
     }
+
+    #[test]
+    fn parse_tag_expr9() {
+        let foo: TagOperation = "@bar\\\\\\)\\ \\("
+            .parse()
+            .unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", foo);
+    }
+
+    #[test]
+    fn parse_tag_expr10() {
+        let foo: TagOperation = "(@foo and @bar\\))"
+            .parse()
+            .unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", foo);
+    }
+
+    #[test]
+    fn parse_tag_expr11() {
+        let foo: TagOperation = "not (@\\)a or @\\(b) and (@c or not @d)"
+            .parse()
+            .unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", foo);
+    }
+
+    #[test]
+    fn parse_tag_expr12() {
+        let err = "@bar\\".parse::<TagOperation>().unwrap_err();
+        println!("{:#?}", err);
+    }
 }
