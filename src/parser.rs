@@ -19,6 +19,7 @@ pub struct GherkinEnv {
     last_step: RefCell<Option<StepType>>,
     last_keyword: RefCell<Option<String>>,
     line_offsets: RefCell<Vec<usize>>,
+    was_escaped: RefCell<bool>,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -122,6 +123,14 @@ impl GherkinEnv {
 
         LineCol { line, col }
     }
+
+    fn escaped(&self) -> bool {
+        *self.was_escaped.borrow()
+    }
+
+    fn set_escaped(&self, v: bool) {
+        *self.was_escaped.borrow_mut() = v;
+    }
 }
 
 impl Default for GherkinEnv {
@@ -133,6 +142,7 @@ impl Default for GherkinEnv {
             last_step: RefCell::new(None),
             last_keyword: RefCell::new(None),
             line_offsets: RefCell::new(vec![0]),
+            was_escaped: RefCell::new(false),
         }
     }
 }
@@ -420,8 +430,7 @@ rule scenario() -> Scenario
 rule tag_char() -> &'input str
     = s:$([_]) {?
         let x = s.chars().next().unwrap();
-        // `)` isn't allowed, as it would collide with TagExpression.
-        if !x.is_whitespace() && !"\r\n@)".contains(x) {
+        if !x.is_whitespace() && x != '@' {
             Ok(s)
         } else {
             Err("tag character")
@@ -430,6 +439,36 @@ rule tag_char() -> &'input str
 
 pub(crate) rule tag() -> String
     = "@" s:tag_char()+ { s.join("") }
+
+rule tag_in_expr_char() -> Option<&'input str>
+    = s:$([_]) {?
+        let x = s.chars().next().unwrap();
+        if !env.escaped() && x == '\\' {
+            env.set_escaped(true);
+            Ok(None)
+        } else if env.escaped() {
+            env.set_escaped(false);
+            if "\\() ".contains(x) {
+                Ok(Some(s))
+            } else {
+                Err("escaped non-reserved char")
+            }
+        } else if !x.is_whitespace() && !"@()\\".contains(x) {
+            Ok(Some(s))
+        } else {
+            Err("tag character")
+        }
+    }
+
+pub(crate) rule tag_in_expr() -> String
+    = "@" s:tag_in_expr_char()+ {?
+        if env.escaped() {
+            env.set_escaped(false);
+            Err("escaped end of line")
+        } else {
+            Ok(s.into_iter().flatten().collect())
+        }
+    }
 
 pub(crate) rule tags() -> Vec<String>
     = t:(tag() ** _) _ nl()* { t }
@@ -497,7 +536,7 @@ pub(crate) rule tag_operation() -> TagOperation = precedence!{
     x:@ _ "or" _ y:(@) { TagOperation::Or(Box::new(x), Box::new(y)) }
     "not" _ x:(@) { TagOperation::Not(Box::new(x)) }
     --
-    t:tag() { TagOperation::Tag(t) }
+    t:tag_in_expr() { TagOperation::Tag(t) }
     "(" t:tag_operation() ")" _ { t }
 }
 
