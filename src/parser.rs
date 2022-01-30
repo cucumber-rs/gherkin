@@ -151,6 +151,7 @@ peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
 
 rule _() = quiet!{[' ' | '\t']*}
 rule __() = quiet!{[' ' | '\t']+}
+rule ___() = quiet!{(!nl0()[_])*}
 
 rule nl0() = quiet!{"\r"? "\n"}
 rule nl() = quiet!{nl0() p:position!() comment()* {
@@ -331,7 +332,7 @@ pub(crate) rule steps() -> Vec<Step>
 
 rule background() -> Background
     = comment()* _ pa:position!()
-      k:keyword((env.keywords().background)) ":" _ nl_eof()
+      k:keyword((env.keywords().background)) ":" ___ nl_eof()
       s:steps()?
       pb:position!()
     {
@@ -372,7 +373,7 @@ rule examples() -> Examples
       t:tags()
       _
       pa:position!()
-      k:keyword((env.keywords().examples)) ":" _ nl_eof()
+      k:keyword((env.keywords().examples)) ":" ___ nl_eof()
       tb:table()
       pb:position!()
     {
