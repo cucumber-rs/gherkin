@@ -116,6 +116,9 @@ pub struct Background {
     pub keyword: String,
     /// The name of the background.
     pub name: Option<String>,
+    /// The description of the background, if found.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub description: Option<String>,
     /// The parsed steps from the background directive.
     pub steps: Vec<Step>,
     /// The `(start, end)` offset the background directive was found in the .feature file.
@@ -136,6 +139,9 @@ pub struct Examples {
     pub keyword: String,
     /// The name of the examples.
     pub name: Option<String>,
+    /// The description of the examples, if found.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub description: Option<String>,
     /// The data table from the examples directive.
     pub table: Table,
     /// The tags for the examples directive if provided.
@@ -153,7 +159,7 @@ pub struct Examples {
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-#[derive(Debug, Clone, PartialEq, Hash, Eq)]
+#[derive(Debug, Clone, PartialEq, Hash, Eq, Default)]
 pub struct Feature {
     /// The raw keyword used in the original source.
     pub keyword: String,
@@ -263,6 +269,9 @@ pub struct Rule {
     pub keyword: String,
     /// The name of the scenario.
     pub name: String,
+    /// The description of the rule, if found.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub description: Option<String>,
     /// The background of the rule, if found.
     #[cfg_attr(feature = "parser", builder(default))]
     pub background: Option<Background>,
@@ -289,6 +298,9 @@ pub struct Scenario {
     pub keyword: String,
     /// The name of the scenario.
     pub name: String,
+    /// The description of the scenario, if found.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub description: Option<String>,
     /// The parsed steps from the scenario directive.
     pub steps: Vec<Step>,
     // The parsed examples from the scenario directive if found.
@@ -361,7 +373,7 @@ pub enum StepType {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-#[derive(Debug, Clone, PartialEq, Hash, Eq)]
+#[derive(Debug, Clone, PartialEq, Hash, Eq, Default)]
 pub struct Table {
     /// The rows of the data table. Each row is always the same length as the first row.
     pub rows: Vec<Vec<String>>,

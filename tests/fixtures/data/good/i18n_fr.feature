@@ -17,7 +17,7 @@ Fonctionnalité: i18n support
     Alors je suis heureux
 
   Scénario: Support du mot-clef "Étant donné que "
-    Étant donné que j'aime les gâteaux 
+    Étant donné que j'aime les gâteaux
     Lorsqu'on m'offre 1 gâteau
     Alors je suis heureux
 

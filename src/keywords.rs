@@ -60,22 +60,36 @@ impl<'a> Keywords<'a> {
         v
     }
 
-    pub fn exclude_in_description(&self) -> Vec<&'a str> {
-        let mut v = [
-            self.feature,
+    pub fn excluded_feature(&'a self) -> Vec<&'a str> {
+        [
             self.background,
             self.rule,
             self.scenario,
             self.scenario_outline,
-            self.examples,
         ]
-        .iter()
-        .flat_map(|s| s.iter().map(Deref::deref))
-        .collect::<Vec<_>>();
+        .concat()
+    }
 
-        v.sort_unstable();
+    pub fn excluded_rule(&'a self) -> Vec<&'a str> {
+        [self.background, self.scenario, self.scenario_outline].concat()
+    }
 
-        v
+    pub fn excluded_background(&'a self) -> Vec<&'a str> {
+        [self.scenario, self.scenario_outline, self.given, self.when, self.then, self.and, self.but].concat()
+    }
+
+    pub fn excluded_scenario(&'a self) -> Vec<&'a str> {
+        [self.scenario, self.scenario_outline, self.given, self.when, self.then, self.and, self.but].concat()
+    }
+
+    pub fn excluded_scenario_outline(&'a self) -> Vec<&'a str> {
+        [self.scenario, self.scenario_outline, self.given, self.when, self.then, self.and, self.but].concat()
+    }
+
+    pub fn excluded_examples(&'a self) -> Vec<&'a str> {
+        let mut r = [self.scenario, self.scenario_outline, self.given, self.when, self.then, self.and, self.but].concat();
+        r.push("|");
+        r
     }
 }
 
