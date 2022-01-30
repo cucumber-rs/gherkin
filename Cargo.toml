@@ -48,8 +48,11 @@ syn = "1.0"
 
 [dev-dependencies]
 async-trait = "0.1.40"
-cucumber = "0.10"
+cucumber = "0.11"
 futures = "0.3.5"
+
+[patch.crates-io]
+gherkin = { path = "." }
 
 [[test]]
 name = "cucumber"
