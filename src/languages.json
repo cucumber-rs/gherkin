@@ -1,15 +1,15 @@
 {
   "af": {
     "and": [
-      "*",
-      "En"
+      "* ",
+      "En "
     ],
     "background": [
       "Agtergrond"
     ],
     "but": [
-      "*",
-      "Maar"
+      "* ",
+      "Maar "
     ],
     "examples": [
       "Voorbeelde"
@@ -20,13 +20,13 @@
       "Vermoë"
     ],
     "given": [
-      "*",
-      "Gegewe"
+      "* ",
+      "Gegewe "
     ],
     "name": "Afrikaans",
     "native": "Afrikaans",
     "rule": [
-      "Rule"
+      "Regel"
     ],
     "scenario": [
       "Voorbeeld",
@@ -36,25 +36,25 @@
       "Situasie Uiteensetting"
     ],
     "then": [
-      "*",
-      "Dan"
+      "* ",
+      "Dan "
     ],
     "when": [
-      "*",
-      "Wanneer"
+      "* ",
+      "Wanneer "
     ]
   },
   "am": {
     "and": [
-      "*",
-      "Եվ"
+      "* ",
+      "Եվ "
     ],
     "background": [
       "Կոնտեքստ"
     ],
     "but": [
-      "*",
-      "Բայց"
+      "* ",
+      "Բայց "
     ],
     "examples": [
       "Օրինակներ"
@@ -64,8 +64,8 @@
       "Հատկություն"
     ],
     "given": [
-      "*",
-      "Դիցուք"
+      "* ",
+      "Դիցուք "
     ],
     "name": "Armenian",
     "native": "հայերեն",
@@ -80,27 +80,27 @@
       "Սցենարի կառուցվացքը"
     ],
     "then": [
-      "*",
-      "Ապա"
+      "* ",
+      "Ապա "
     ],
     "when": [
-      "*",
-      "Եթե",
-      "Երբ"
+      "* ",
+      "Եթե ",
+      "Երբ "
     ]
   },
   "an": {
     "and": [
-      "*",
-      "Y",
-      "E"
+      "* ",
+      "Y ",
+      "E "
     ],
     "background": [
       "Antecedents"
     ],
     "but": [
-      "*",
-      "Pero"
+      "* ",
+      "Pero "
     ],
     "examples": [
       "Eixemplos"
@@ -109,11 +109,11 @@
       "Caracteristica"
     ],
     "given": [
-      "*",
-      "Dau",
-      "Dada",
-      "Daus",
-      "Dadas"
+      "* ",
+      "Dau ",
+      "Dada ",
+      "Daus ",
+      "Dadas "
     ],
     "name": "Aragonese",
     "native": "Aragonés",
@@ -128,27 +128,27 @@
       "Esquema del caso"
     ],
     "then": [
-      "*",
-      "Alavez",
-      "Allora",
-      "Antonces"
+      "* ",
+      "Alavez ",
+      "Allora ",
+      "Antonces "
     ],
     "when": [
-      "*",
-      "Cuan"
+      "* ",
+      "Cuan "
     ]
   },
   "ar": {
     "and": [
-      "*",
-      "و"
+      "* ",
+      "و "
     ],
     "background": [
       "الخلفية"
     ],
     "but": [
-      "*",
-      "لكن"
+      "* ",
+      "لكن "
     ],
     "examples": [
       "امثلة"
@@ -157,8 +157,8 @@
       "خاصية"
     ],
     "given": [
-      "*",
-      "بفرض"
+      "* ",
+      "بفرض "
     ],
     "name": "Arabic",
     "native": "العربية",
@@ -173,28 +173,28 @@
       "سيناريو مخطط"
     ],
     "then": [
-      "*",
-      "اذاً",
-      "ثم"
+      "* ",
+      "اذاً ",
+      "ثم "
     ],
     "when": [
-      "*",
-      "متى",
-      "عندما"
+      "* ",
+      "متى ",
+      "عندما "
     ]
   },
   "ast": {
     "and": [
-      "*",
-      "Y",
-      "Ya"
+      "* ",
+      "Y ",
+      "Ya "
     ],
     "background": [
       "Antecedentes"
     ],
     "but": [
-      "*",
-      "Peru"
+      "* ",
+      "Peru "
     ],
     "examples": [
       "Exemplos"
@@ -203,11 +203,11 @@
       "Carauterística"
     ],
     "given": [
-      "*",
-      "Dáu",
-      "Dada",
-      "Daos",
-      "Daes"
+      "* ",
+      "Dáu ",
+      "Dada ",
+      "Daos ",
+      "Daes "
     ],
     "name": "Asturian",
     "native": "asturianu",
@@ -222,28 +222,28 @@
       "Esbozu del casu"
     ],
     "then": [
-      "*",
-      "Entós"
+      "* ",
+      "Entós "
     ],
     "when": [
-      "*",
-      "Cuando"
+      "* ",
+      "Cuando "
     ]
   },
   "az": {
     "and": [
-      "*",
-      "Və",
-      "Həm"
+      "* ",
+      "Və ",
+      "Həm "
     ],
     "background": [
       "Keçmiş",
       "Kontekst"
     ],
     "but": [
-      "*",
-      "Amma",
-      "Ancaq"
+      "* ",
+      "Amma ",
+      "Ancaq "
     ],
     "examples": [
       "Nümunələr"
@@ -252,9 +252,9 @@
       "Özəllik"
     ],
     "given": [
-      "*",
-      "Tutaq ki",
-      "Verilir"
+      "* ",
+      "Tutaq ki ",
+      "Verilir "
     ],
     "name": "Azerbaijani",
     "native": "Azərbaycanca",
@@ -269,26 +269,26 @@
       "Ssenarinin strukturu"
     ],
     "then": [
-      "*",
-      "O halda"
+      "* ",
+      "O halda "
     ],
     "when": [
-      "*",
-      "Əgər",
-      "Nə vaxt ki"
+      "* ",
+      "Əgər ",
+      "Nə vaxt ki "
     ]
   },
   "bg": {
     "and": [
-      "*",
-      "И"
+      "* ",
+      "И "
     ],
     "background": [
       "Предистория"
     ],
     "but": [
-      "*",
-      "Но"
+      "* ",
+      "Но "
     ],
     "examples": [
       "Примери"
@@ -297,13 +297,13 @@
       "Функционалност"
     ],
     "given": [
-      "*",
-      "Дадено"
+      "* ",
+      "Дадено "
     ],
     "name": "Bulgarian",
     "native": "български",
     "rule": [
-      "Rule"
+      "Правило"
     ],
     "scenario": [
       "Пример",
@@ -313,26 +313,26 @@
       "Рамка на сценарий"
     ],
     "then": [
-      "*",
-      "То"
+      "* ",
+      "То "
     ],
     "when": [
-      "*",
-      "Когато"
+      "* ",
+      "Когато "
     ]
   },
   "bm": {
     "and": [
-      "*",
-      "Dan"
+      "* ",
+      "Dan "
     ],
     "background": [
       "Latar Belakang"
     ],
     "but": [
-      "*",
-      "Tetapi",
-      "Tapi"
+      "* ",
+      "Tetapi ",
+      "Tapi "
     ],
     "examples": [
       "Contoh"
@@ -341,9 +341,9 @@
       "Fungsi"
     ],
     "given": [
-      "*",
-      "Diberi",
-      "Bagi"
+      "* ",
+      "Diberi ",
+      "Bagi "
     ],
     "name": "Malay",
     "native": "Bahasa Melayu",
@@ -362,27 +362,27 @@
       "Garis Panduan Senario"
     ],
     "then": [
-      "*",
-      "Maka",
-      "Kemudian"
+      "* ",
+      "Maka ",
+      "Kemudian "
     ],
     "when": [
-      "*",
-      "Apabila"
+      "* ",
+      "Apabila "
     ]
   },
   "bs": {
     "and": [
-      "*",
-      "I",
-      "A"
+      "* ",
+      "I ",
+      "A "
     ],
     "background": [
       "Pozadina"
     ],
     "but": [
-      "*",
-      "Ali"
+      "* ",
+      "Ali "
     ],
     "examples": [
       "Primjeri"
@@ -391,8 +391,8 @@
       "Karakteristika"
     ],
     "given": [
-      "*",
-      "Dato"
+      "* ",
+      "Dato "
     ],
     "name": "Bosnian",
     "native": "Bosanski",
@@ -409,26 +409,26 @@
       "Scenario-outline"
     ],
     "then": [
-      "*",
-      "Zatim"
+      "* ",
+      "Zatim "
     ],
     "when": [
-      "*",
-      "Kada"
+      "* ",
+      "Kada "
     ]
   },
   "ca": {
     "and": [
-      "*",
-      "I"
+      "* ",
+      "I "
     ],
     "background": [
       "Rerefons",
       "Antecedents"
     ],
     "but": [
-      "*",
-      "Però"
+      "* ",
+      "Però "
     ],
     "examples": [
       "Exemples"
@@ -438,11 +438,11 @@
       "Funcionalitat"
     ],
     "given": [
-      "*",
-      "Donat",
-      "Donada",
-      "Atès",
-      "Atesa"
+      "* ",
+      "Donat ",
+      "Donada ",
+      "Atès ",
+      "Atesa "
     ],
     "name": "Catalan",
     "native": "català",
@@ -457,28 +457,28 @@
       "Esquema de l'escenari"
     ],
     "then": [
-      "*",
-      "Aleshores",
-      "Cal"
+      "* ",
+      "Aleshores ",
+      "Cal "
     ],
     "when": [
-      "*",
-      "Quan"
+      "* ",
+      "Quan "
     ]
   },
   "cs": {
     "and": [
-      "*",
-      "A také",
-      "A"
+      "* ",
+      "A také ",
+      "A "
     ],
     "background": [
       "Pozadí",
       "Kontext"
     ],
     "but": [
-      "*",
-      "Ale"
+      "* ",
+      "Ale "
     ],
     "examples": [
       "Příklady"
@@ -487,14 +487,14 @@
       "Požadavek"
     ],
     "given": [
-      "*",
-      "Pokud",
-      "Za předpokladu"
+      "* ",
+      "Pokud ",
+      "Za předpokladu "
     ],
     "name": "Czech",
     "native": "Česky",
     "rule": [
-      "Rule"
+      "Pravidlo"
     ],
     "scenario": [
       "Příklad",
@@ -505,25 +505,25 @@
       "Osnova scénáře"
     ],
     "then": [
-      "*",
-      "Pak"
+      "* ",
+      "Pak "
     ],
     "when": [
-      "*",
-      "Když"
+      "* ",
+      "Když "
     ]
   },
   "cy-GB": {
     "and": [
-      "*",
-      "A"
+      "* ",
+      "A "
     ],
     "background": [
       "Cefndir"
     ],
     "but": [
-      "*",
-      "Ond"
+      "* ",
+      "Ond "
     ],
     "examples": [
       "Enghreifftiau"
@@ -532,8 +532,8 @@
       "Arwedd"
     ],
     "given": [
-      "*",
-      "Anrhegedig a"
+      "* ",
+      "Anrhegedig a "
     ],
     "name": "Welsh",
     "native": "Cymraeg",
@@ -548,25 +548,25 @@
       "Scenario Amlinellol"
     ],
     "then": [
-      "*",
-      "Yna"
+      "* ",
+      "Yna "
     ],
     "when": [
-      "*",
-      "Pryd"
+      "* ",
+      "Pryd "
     ]
   },
   "da": {
     "and": [
-      "*",
-      "Og"
+      "* ",
+      "Og "
     ],
     "background": [
       "Baggrund"
     ],
     "but": [
-      "*",
-      "Men"
+      "* ",
+      "Men "
     ],
     "examples": [
       "Eksempler"
@@ -575,8 +575,8 @@
       "Egenskab"
     ],
     "given": [
-      "*",
-      "Givet"
+      "* ",
+      "Givet "
     ],
     "name": "Danish",
     "native": "dansk",
@@ -591,18 +591,18 @@
       "Abstrakt Scenario"
     ],
     "then": [
-      "*",
-      "Så"
+      "* ",
+      "Så "
     ],
     "when": [
-      "*",
-      "Når"
+      "* ",
+      "Når "
     ]
   },
   "de": {
     "and": [
-      "*",
-      "Und"
+      "* ",
+      "Und "
     ],
     "background": [
       "Grundlage",
@@ -611,8 +611,8 @@
       "Vorbedingungen"
     ],
     "but": [
-      "*",
-      "Aber"
+      "* ",
+      "Aber "
     ],
     "examples": [
       "Beispiele"
@@ -622,10 +622,10 @@
       "Funktion"
     ],
     "given": [
-      "*",
-      "Angenommen",
-      "Gegeben sei",
-      "Gegeben seien"
+      "* ",
+      "Angenommen ",
+      "Gegeben sei ",
+      "Gegeben seien "
     ],
     "name": "German",
     "native": "Deutsch",
@@ -642,25 +642,25 @@
       "Szenarien"
     ],
     "then": [
-      "*",
-      "Dann"
+      "* ",
+      "Dann "
     ],
     "when": [
-      "*",
-      "Wenn"
+      "* ",
+      "Wenn "
     ]
   },
   "el": {
     "and": [
-      "*",
-      "Και"
+      "* ",
+      "Και "
     ],
     "background": [
       "Υπόβαθρο"
     ],
     "but": [
-      "*",
-      "Αλλά"
+      "* ",
+      "Αλλά "
     ],
     "examples": [
       "Παραδείγματα",
@@ -671,8 +671,8 @@
       "Λειτουργία"
     ],
     "given": [
-      "*",
-      "Δεδομένου"
+      "* ",
+      "Δεδομένου "
     ],
     "name": "Greek",
     "native": "Ελληνικά",
@@ -688,24 +688,24 @@
       "Περίγραμμα Σεναρίου"
     ],
     "then": [
-      "*",
-      "Τότε"
+      "* ",
+      "Τότε "
     ],
     "when": [
-      "*",
-      "Όταν"
+      "* ",
+      "Όταν "
     ]
   },
   "em": {
     "and": [
-      "*",
+      "* ",
       "😂"
     ],
     "background": [
       "💤"
     ],
     "but": [
-      "*",
+      "* ",
       "😔"
     ],
     "examples": [
@@ -715,7 +715,7 @@
       "📚"
     ],
     "given": [
-      "*",
+      "* ",
       "😐"
     ],
     "name": "Emoji",
@@ -731,25 +731,25 @@
       "📖"
     ],
     "then": [
-      "*",
+      "* ",
       "🙏"
     ],
     "when": [
-      "*",
+      "* ",
       "🎬"
     ]
   },
   "en": {
     "and": [
-      "*",
-      "And"
+      "* ",
+      "And "
     ],
     "background": [
       "Background"
     ],
     "but": [
-      "*",
-      "But"
+      "* ",
+      "But "
     ],
     "examples": [
       "Examples",
@@ -761,8 +761,8 @@
       "Ability"
     ],
     "given": [
-      "*",
-      "Given"
+      "* ",
+      "Given "
     ],
     "name": "English",
     "native": "English",
@@ -778,25 +778,25 @@
       "Scenario Template"
     ],
     "then": [
-      "*",
-      "Then"
+      "* ",
+      "Then "
     ],
     "when": [
-      "*",
-      "When"
+      "* ",
+      "When "
     ]
   },
   "en-Scouse": {
     "and": [
-      "*",
-      "An"
+      "* ",
+      "An "
     ],
     "background": [
       "Dis is what went down"
     ],
     "but": [
-      "*",
-      "Buh"
+      "* ",
+      "Buh "
     ],
     "examples": [
       "Examples"
@@ -805,9 +805,9 @@
       "Feature"
     ],
     "given": [
-      "*",
-      "Givun",
-      "Youse know when youse got"
+      "* ",
+      "Givun ",
+      "Youse know when youse got "
     ],
     "name": "Scouse",
     "native": "Scouse",
@@ -821,27 +821,27 @@
       "Wharrimean is"
     ],
     "then": [
-      "*",
-      "Dun",
-      "Den youse gotta"
+      "* ",
+      "Dun ",
+      "Den youse gotta "
     ],
     "when": [
-      "*",
-      "Wun",
-      "Youse know like when"
+      "* ",
+      "Wun ",
+      "Youse know like when "
     ]
   },
   "en-au": {
     "and": [
-      "*",
-      "Too right"
+      "* ",
+      "Too right "
     ],
     "background": [
       "First off"
     ],
     "but": [
-      "*",
-      "Yeah nah"
+      "* ",
+      "Yeah nah "
     ],
     "examples": [
       "You'll wanna"
@@ -850,8 +850,8 @@
       "Pretty much"
     ],
     "given": [
-      "*",
-      "Y'know"
+      "* ",
+      "Y'know "
     ],
     "name": "Australian",
     "native": "Australian",
@@ -865,25 +865,25 @@
       "Reckon it's like"
     ],
     "then": [
-      "*",
-      "But at the end of the day I reckon"
+      "* ",
+      "But at the end of the day I reckon "
     ],
     "when": [
-      "*",
-      "It's just unbelievable"
+      "* ",
+      "It's just unbelievable "
     ]
   },
   "en-lol": {
     "and": [
-      "*",
-      "AN"
+      "* ",
+      "AN "
     ],
     "background": [
       "B4"
     ],
     "but": [
-      "*",
-      "BUT"
+      "* ",
+      "BUT "
     ],
     "examples": [
       "EXAMPLZ"
@@ -892,8 +892,8 @@
       "OH HAI"
     ],
     "given": [
-      "*",
-      "I CAN HAZ"
+      "* ",
+      "I CAN HAZ "
     ],
     "name": "LOLCAT",
     "native": "LOLCAT",
@@ -907,27 +907,27 @@
       "MISHUN SRSLY"
     ],
     "then": [
-      "*",
-      "DEN"
+      "* ",
+      "DEN "
     ],
     "when": [
-      "*",
-      "WEN"
+      "* ",
+      "WEN "
     ]
   },
   "en-old": {
     "and": [
-      "*",
-      "Ond",
-      "7"
+      "* ",
+      "Ond ",
+      "7 "
     ],
     "background": [
       "Aer",
       "Ær"
     ],
     "but": [
-      "*",
-      "Ac"
+      "* ",
+      "Ac "
     ],
     "examples": [
       "Se the",
@@ -939,10 +939,10 @@
       "Hwæt"
     ],
     "given": [
-      "*",
-      "Thurh",
-      "Þurh",
-      "Ðurh"
+      "* ",
+      "Thurh ",
+      "Þurh ",
+      "Ðurh "
     ],
     "name": "Old English",
     "native": "Englisc",
@@ -957,32 +957,32 @@
       "Swa hwær swa"
     ],
     "then": [
-      "*",
-      "Tha",
-      "Þa",
-      "Ða",
-      "Tha the",
-      "Þa þe",
-      "Ða ðe"
+      "* ",
+      "Tha ",
+      "Þa ",
+      "Ða ",
+      "Tha the ",
+      "Þa þe ",
+      "Ða ðe "
     ],
     "when": [
-      "*",
-      "Tha",
-      "Þa",
-      "Ða"
+      "* ",
+      "Tha ",
+      "Þa ",
+      "Ða "
     ]
   },
   "en-pirate": {
     "and": [
-      "*",
-      "Aye"
+      "* ",
+      "Aye "
     ],
     "background": [
       "Yo-ho-ho"
     ],
     "but": [
-      "*",
-      "Avast!"
+      "* ",
+      "Avast! "
     ],
     "examples": [
       "Dead men tell no tales"
@@ -991,8 +991,8 @@
       "Ahoy matey!"
     ],
     "given": [
-      "*",
-      "Gangway!"
+      "* ",
+      "Gangway! "
     ],
     "name": "Pirate",
     "native": "Pirate",
@@ -1006,25 +1006,65 @@
       "Shiver me timbers"
     ],
     "then": [
-      "*",
-      "Let go and haul"
+      "* ",
+      "Let go and haul "
     ],
     "when": [
-      "*",
-      "Blimey!"
+      "* ",
+      "Blimey! "
+    ]
+  },
+    "en-tx": {
+    "and": [
+      "Come hell or high water "
+    ],
+    "background": [
+      "Lemme tell y'all a story"
+    ],
+    "but": [
+      "Well now hold on, I'll you what "
+    ],
+    "examples": [
+      "Now that's a story longer than a cattle drive in July"
+    ],
+    "feature": [
+      "This ain’t my first rodeo",
+      "All gussied up"
+    ],
+    "given": [
+      "Fixin' to ",
+      "All git out "
+    ],
+    "name": "Texas",
+    "native": "Texas",
+    "rule": [
+      "Rule "
+    ],
+    "scenario": [
+      "All hat and no cattle"
+    ],
+    "scenarioOutline": [
+      "Serious as a snake bite",
+      "Busy as a hound in flea season"
+    ],
+    "then": [
+      "There’s no tree but bears some fruit "
+    ],
+    "when": [
+      "Quick out of the chute "
     ]
   },
   "eo": {
     "and": [
-      "*",
-      "Kaj"
+      "* ",
+      "Kaj "
     ],
     "background": [
       "Fono"
     ],
     "but": [
-      "*",
-      "Sed"
+      "* ",
+      "Sed "
     ],
     "examples": [
       "Ekzemploj"
@@ -1033,9 +1073,9 @@
       "Trajto"
     ],
     "given": [
-      "*",
-      "Donitaĵo",
-      "Komence"
+      "* ",
+      "Donitaĵo ",
+      "Komence "
     ],
     "name": "Esperanto",
     "native": "Esperanto",
@@ -1053,44 +1093,47 @@
       "Kazo-skizo"
     ],
     "then": [
-      "*",
-      "Do"
+      "* ",
+      "Do "
     ],
     "when": [
-      "*",
-      "Se"
+      "* ",
+      "Se "
     ]
   },
   "es": {
     "and": [
-      "*",
-      "Y",
-      "E"
+      "* ",
+      "Y ",
+      "E "
     ],
     "background": [
       "Antecedentes"
     ],
     "but": [
-      "*",
-      "Pero"
+      "* ",
+      "Pero "
     ],
     "examples": [
       "Ejemplos"
     ],
     "feature": [
-      "Característica"
+      "Característica",
+      "Necesidad del negocio",
+      "Requisito"
     ],
     "given": [
-      "*",
-      "Dado",
-      "Dada",
-      "Dados",
-      "Dadas"
+      "* ",
+      "Dado ",
+      "Dada ",
+      "Dados ",
+      "Dadas "
     ],
     "name": "Spanish",
     "native": "español",
     "rule": [
-      "Regla"
+      "Regla",
+      "Regla de negocio"
     ],
     "scenario": [
       "Ejemplo",
@@ -1100,25 +1143,25 @@
       "Esquema del escenario"
     ],
     "then": [
-      "*",
-      "Entonces"
+      "* ",
+      "Entonces "
     ],
     "when": [
-      "*",
-      "Cuando"
+      "* ",
+      "Cuando "
     ]
   },
   "et": {
     "and": [
-      "*",
-      "Ja"
+      "* ",
+      "Ja "
     ],
     "background": [
       "Taust"
     ],
     "but": [
-      "*",
-      "Kuid"
+      "* ",
+      "Kuid "
     ],
     "examples": [
       "Juhtumid"
@@ -1127,8 +1170,8 @@
       "Omadus"
     ],
     "given": [
-      "*",
-      "Eeldades"
+      "* ",
+      "Eeldades "
     ],
     "name": "Estonian",
     "native": "eesti keel",
@@ -1144,25 +1187,25 @@
       "Raamstsenaarium"
     ],
     "then": [
-      "*",
-      "Siis"
+      "* ",
+      "Siis "
     ],
     "when": [
-      "*",
-      "Kui"
+      "* ",
+      "Kui "
     ]
   },
   "fa": {
     "and": [
-      "*",
-      "و"
+      "* ",
+      "و "
     ],
     "background": [
       "زمینه"
     ],
     "but": [
-      "*",
-      "اما"
+      "* ",
+      "اما "
     ],
     "examples": [
       "نمونه ها"
@@ -1171,8 +1214,8 @@
       "وِیژگی"
     ],
     "given": [
-      "*",
-      "با فرض"
+      "* ",
+      "با فرض "
     ],
     "name": "Persian",
     "native": "فارسی",
@@ -1187,25 +1230,25 @@
       "الگوی سناریو"
     ],
     "then": [
-      "*",
-      "آنگاه"
+      "* ",
+      "آنگاه "
     ],
     "when": [
-      "*",
-      "هنگامی"
+      "* ",
+      "هنگامی "
     ]
   },
   "fi": {
     "and": [
-      "*",
-      "Ja"
+      "* ",
+      "Ja "
     ],
     "background": [
       "Tausta"
     ],
     "but": [
-      "*",
-      "Mutta"
+      "* ",
+      "Mutta "
     ],
     "examples": [
       "Tapaukset"
@@ -1214,8 +1257,8 @@
       "Ominaisuus"
     ],
     "given": [
-      "*",
-      "Oletetaan"
+      "* ",
+      "Oletetaan "
     ],
     "name": "Finnish",
     "native": "suomi",
@@ -1229,29 +1272,29 @@
       "Tapausaihio"
     ],
     "then": [
-      "*",
-      "Niin"
+      "* ",
+      "Niin "
     ],
     "when": [
-      "*",
-      "Kun"
+      "* ",
+      "Kun "
     ]
   },
   "fr": {
     "and": [
-      "*",
-      "Et que",
+      "* ",
+      "Et que ",
       "Et qu'",
-      "Et"
+      "Et "
     ],
     "background": [
       "Contexte"
     ],
     "but": [
-      "*",
-      "Mais que",
+      "* ",
+      "Mais que ",
       "Mais qu'",
-      "Mais"
+      "Mais "
     ],
     "examples": [
       "Exemples"
@@ -1260,23 +1303,23 @@
       "Fonctionnalité"
     ],
     "given": [
-      "*",
-      "Soit",
-      "Sachant que",
+      "* ",
+      "Soit ",
+      "Sachant que ",
       "Sachant qu'",
-      "Sachant",
-      "Etant donné que",
+      "Sachant ",
+      "Etant donné que ",
       "Etant donné qu'",
-      "Etant donné",
-      "Etant donnée",
-      "Etant donnés",
-      "Etant données",
-      "Étant donné que",
+      "Etant donné ",
+      "Etant donnée ",
+      "Etant donnés ",
+      "Etant données ",
+      "Étant donné que ",
       "Étant donné qu'",
-      "Étant donné",
-      "Étant donnée",
-      "Étant donnés",
-      "Étant données"
+      "Étant donné ",
+      "Étant donnée ",
+      "Étant donnés ",
+      "Étant données "
     ],
     "name": "French",
     "native": "français",
@@ -1292,27 +1335,27 @@
       "Plan du Scénario"
     ],
     "then": [
-      "*",
-      "Alors",
-      "Donc"
+      "* ",
+      "Alors ",
+      "Donc "
     ],
     "when": [
-      "*",
-      "Quand",
-      "Lorsque",
+      "* ",
+      "Quand ",
+      "Lorsque ",
       "Lorsqu'"
     ]
   },
   "ga": {
     "and": [
-      "*",
+      "* ",
       "Agus"
     ],
     "background": [
       "Cúlra"
     ],
     "but": [
-      "*",
+      "* ",
       "Ach"
     ],
     "examples": [
@@ -1322,7 +1365,7 @@
       "Gné"
     ],
     "given": [
-      "*",
+      "* ",
       "Cuir i gcás go",
       "Cuir i gcás nach",
       "Cuir i gcás gur",
@@ -1341,11 +1384,11 @@
       "Cás Achomair"
     ],
     "then": [
-      "*",
+      "* ",
       "Ansin"
     ],
     "when": [
-      "*",
+      "* ",
       "Nuair a",
       "Nuair nach",
       "Nuair ba",
@@ -1354,15 +1397,15 @@
   },
   "gj": {
     "and": [
-      "*",
-      "અને"
+      "* ",
+      "અને "
     ],
     "background": [
       "બેકગ્રાઉન્ડ"
     ],
     "but": [
-      "*",
-      "પણ"
+      "* ",
+      "પણ "
     ],
     "examples": [
       "ઉદાહરણો"
@@ -1373,8 +1416,8 @@
       "ક્ષમતા"
     ],
     "given": [
-      "*",
-      "આપેલ છે"
+      "* ",
+      "આપેલ છે "
     ],
     "name": "Gujarati",
     "native": "ગુજરાતી",
@@ -1390,26 +1433,26 @@
       "પરિદ્દશ્ય ઢાંચો"
     ],
     "then": [
-      "*",
-      "પછી"
+      "* ",
+      "પછી "
     ],
     "when": [
-      "*",
-      "ક્યારે"
+      "* ",
+      "ક્યારે "
     ]
   },
   "gl": {
     "and": [
-      "*",
-      "E"
+      "* ",
+      "E "
     ],
     "background": [
       "Contexto"
     ],
     "but": [
-      "*",
-      "Mais",
-      "Pero"
+      "* ",
+      "Mais ",
+      "Pero "
     ],
     "examples": [
       "Exemplos"
@@ -1418,11 +1461,11 @@
       "Característica"
     ],
     "given": [
-      "*",
-      "Dado",
-      "Dada",
-      "Dados",
-      "Dadas"
+      "* ",
+      "Dado ",
+      "Dada ",
+      "Dados ",
+      "Dadas "
     ],
     "name": "Galician",
     "native": "galego",
@@ -1437,26 +1480,26 @@
       "Esbozo do escenario"
     ],
     "then": [
-      "*",
-      "Entón",
-      "Logo"
+      "* ",
+      "Entón ",
+      "Logo "
     ],
     "when": [
-      "*",
-      "Cando"
+      "* ",
+      "Cando "
     ]
   },
   "he": {
     "and": [
-      "*",
-      "וגם"
+      "* ",
+      "וגם "
     ],
     "background": [
       "רקע"
     ],
     "but": [
-      "*",
-      "אבל"
+      "* ",
+      "אבל "
     ],
     "examples": [
       "דוגמאות"
@@ -1465,8 +1508,8 @@
       "תכונה"
     ],
     "given": [
-      "*",
-      "בהינתן"
+      "* ",
+      "בהינתן "
     ],
     "name": "Hebrew",
     "native": "עברית",
@@ -1481,29 +1524,29 @@
       "תבנית תרחיש"
     ],
     "then": [
-      "*",
-      "אז",
-      "אזי"
+      "* ",
+      "אז ",
+      "אזי "
     ],
     "when": [
-      "*",
-      "כאשר"
+      "* ",
+      "כאשר "
     ]
   },
   "hi": {
     "and": [
-      "*",
-      "और",
-      "तथा"
+      "* ",
+      "और ",
+      "तथा "
     ],
     "background": [
       "पृष्ठभूमि"
     ],
     "but": [
-      "*",
-      "पर",
-      "परन्तु",
-      "किन्तु"
+      "* ",
+      "पर ",
+      "परन्तु ",
+      "किन्तु "
     ],
     "examples": [
       "उदाहरण"
@@ -1512,15 +1555,15 @@
       "रूप लेख"
     ],
     "given": [
-      "*",
-      "अगर",
-      "यदि",
-      "चूंकि"
+      "* ",
+      "अगर ",
+      "यदि ",
+      "चूंकि "
     ],
     "name": "Hindi",
     "native": "हिंदी",
     "rule": [
-      "Rule"
+      "नियम"
     ],
     "scenario": [
       "परिदृश्य"
@@ -1529,27 +1572,27 @@
       "परिदृश्य रूपरेखा"
     ],
     "then": [
-      "*",
-      "तब",
-      "तदा"
+      "* ",
+      "तब ",
+      "तदा "
     ],
     "when": [
-      "*",
-      "जब",
-      "कदा"
+      "* ",
+      "जब ",
+      "कदा "
     ]
   },
   "hr": {
     "and": [
-      "*",
-      "I"
+      "* ",
+      "I "
     ],
     "background": [
       "Pozadina"
     ],
     "but": [
-      "*",
-      "Ali"
+      "* ",
+      "Ali "
     ],
     "examples": [
       "Primjeri",
@@ -1561,11 +1604,11 @@
       "Mogucnost"
     ],
     "given": [
-      "*",
-      "Zadan",
-      "Zadani",
-      "Zadano",
-      "Ukoliko"
+      "* ",
+      "Zadan ",
+      "Zadani ",
+      "Zadano ",
+      "Ukoliko "
     ],
     "name": "Croatian",
     "native": "hrvatski",
@@ -1581,29 +1624,29 @@
       "Koncept"
     ],
     "then": [
-      "*",
-      "Onda"
+      "* ",
+      "Onda "
     ],
     "when": [
-      "*",
-      "Kada",
-      "Kad"
+      "* ",
+      "Kada ",
+      "Kad "
     ]
   },
   "ht": {
     "and": [
-      "*",
-      "Ak",
-      "Epi",
-      "E"
+      "* ",
+      "Ak ",
+      "Epi ",
+      "E "
     ],
     "background": [
       "Kontèks",
       "Istorik"
     ],
     "but": [
-      "*",
-      "Men"
+      "* ",
+      "Men "
     ],
     "examples": [
       "Egzanp"
@@ -1614,10 +1657,10 @@
       "Fonksyonalite"
     ],
     "given": [
-      "*",
-      "Sipoze",
-      "Sipoze ke",
-      "Sipoze Ke"
+      "* ",
+      "Sipoze ",
+      "Sipoze ke ",
+      "Sipoze Ke "
     ],
     "name": "Creole",
     "native": "kreyòl",
@@ -1636,27 +1679,27 @@
       "Dyagram Senaryo"
     ],
     "then": [
-      "*",
-      "Lè sa a",
-      "Le sa a"
+      "* ",
+      "Lè sa a ",
+      "Le sa a "
     ],
     "when": [
-      "*",
-      "Lè",
-      "Le"
+      "* ",
+      "Lè ",
+      "Le "
     ]
   },
   "hu": {
     "and": [
-      "*",
-      "És"
+      "* ",
+      "És "
     ],
     "background": [
       "Háttér"
     ],
     "but": [
-      "*",
-      "De"
+      "* ",
+      "De "
     ],
     "examples": [
       "Példák"
@@ -1665,14 +1708,14 @@
       "Jellemző"
     ],
     "given": [
-      "*",
-      "Amennyiben",
-      "Adott"
+      "* ",
+      "Amennyiben ",
+      "Adott "
     ],
     "name": "Hungarian",
     "native": "magyar",
     "rule": [
-      "Rule"
+      "Szabály"
     ],
     "scenario": [
       "Példa",
@@ -1682,29 +1725,29 @@
       "Forgatókönyv vázlat"
     ],
     "then": [
-      "*",
-      "Akkor"
+      "* ",
+      "Akkor "
     ],
     "when": [
-      "*",
-      "Majd",
-      "Ha",
-      "Amikor"
+      "* ",
+      "Majd ",
+      "Ha ",
+      "Amikor "
     ]
   },
   "id": {
     "and": [
-      "*",
-      "Dan"
+      "* ",
+      "Dan "
     ],
     "background": [
       "Dasar",
       "Latar Belakang"
     ],
     "but": [
-      "*",
-      "Tapi",
-      "Tetapi"
+      "* ",
+      "Tapi ",
+      "Tetapi "
     ],
     "examples": [
       "Contoh",
@@ -1714,12 +1757,12 @@
       "Fitur"
     ],
     "given": [
-      "*",
-      "Dengan",
-      "Diketahui",
-      "Diasumsikan",
-      "Bila",
-      "Jika"
+      "* ",
+      "Dengan ",
+      "Diketahui ",
+      "Diasumsikan ",
+      "Bila ",
+      "Jika "
     ],
     "name": "Indonesian",
     "native": "Bahasa Indonesia",
@@ -1735,26 +1778,26 @@
       "Garis-Besar Skenario"
     ],
     "then": [
-      "*",
-      "Maka",
-      "Kemudian"
+      "* ",
+      "Maka ",
+      "Kemudian "
     ],
     "when": [
-      "*",
-      "Ketika"
+      "* ",
+      "Ketika "
     ]
   },
   "is": {
     "and": [
-      "*",
-      "Og"
+      "* ",
+      "Og "
     ],
     "background": [
       "Bakgrunnur"
     ],
     "but": [
-      "*",
-      "En"
+      "* ",
+      "En "
     ],
     "examples": [
       "Dæmi",
@@ -1764,8 +1807,8 @@
       "Eiginleiki"
     ],
     "given": [
-      "*",
-      "Ef"
+      "* ",
+      "Ef "
     ],
     "name": "Icelandic",
     "native": "Íslenska",
@@ -1780,25 +1823,25 @@
       "Lýsing Dæma"
     ],
     "then": [
-      "*",
-      "Þá"
+      "* ",
+      "Þá "
     ],
     "when": [
-      "*",
-      "Þegar"
+      "* ",
+      "Þegar "
     ]
   },
   "it": {
     "and": [
-      "*",
-      "E"
+      "* ",
+      "E "
     ],
     "background": [
       "Contesto"
     ],
     "but": [
-      "*",
-      "Ma"
+      "* ",
+      "Ma "
     ],
     "examples": [
       "Esempi"
@@ -1809,11 +1852,11 @@
       "Abilità"
     ],
     "given": [
-      "*",
-      "Dato",
-      "Data",
-      "Dati",
-      "Date"
+      "* ",
+      "Dato ",
+      "Data ",
+      "Dati ",
+      "Date "
     ],
     "name": "Italian",
     "native": "italiano",
@@ -1828,24 +1871,24 @@
       "Schema dello scenario"
     ],
     "then": [
-      "*",
-      "Allora"
+      "* ",
+      "Allora "
     ],
     "when": [
-      "*",
-      "Quando"
+      "* ",
+      "Quando "
     ]
   },
   "ja": {
     "and": [
-      "*",
+      "* ",
       "かつ"
     ],
     "background": [
       "背景"
     ],
     "but": [
-      "*",
+      "* ",
       "しかし",
       "但し",
       "ただし"
@@ -1859,7 +1902,7 @@
       "機能"
     ],
     "given": [
-      "*",
+      "* ",
       "前提"
     ],
     "name": "Japanese",
@@ -1877,27 +1920,27 @@
       "シナリオテンプレ"
     ],
     "then": [
-      "*",
+      "* ",
       "ならば"
     ],
     "when": [
-      "*",
+      "* ",
       "もし"
     ]
   },
   "jv": {
     "and": [
-      "*",
-      "Lan"
+      "* ",
+      "Lan "
     ],
     "background": [
       "Dasar"
     ],
     "but": [
-      "*",
-      "Tapi",
-      "Nanging",
-      "Ananging"
+      "* ",
+      "Tapi ",
+      "Nanging ",
+      "Ananging "
     ],
     "examples": [
       "Conto",
@@ -1907,9 +1950,9 @@
       "Fitur"
     ],
     "given": [
-      "*",
-      "Nalika",
-      "Nalikaning"
+      "* ",
+      "Nalika ",
+      "Nalikaning "
     ],
     "name": "Javanese",
     "native": "Basa Jawa",
@@ -1923,26 +1966,26 @@
       "Konsep skenario"
     ],
     "then": [
-      "*",
-      "Njuk",
-      "Banjur"
+      "* ",
+      "Njuk ",
+      "Banjur "
     ],
     "when": [
-      "*",
-      "Manawa",
-      "Menawa"
+      "* ",
+      "Manawa ",
+      "Menawa "
     ]
   },
   "ka": {
     "and": [
-      "*",
+      "* ",
       "და"
     ],
     "background": [
       "კონტექსტი"
     ],
     "but": [
-      "*",
+      "* ",
       "მაგ­რამ"
     ],
     "examples": [
@@ -1952,7 +1995,7 @@
       "თვისება"
     ],
     "given": [
-      "*",
+      "* ",
       "მოცემული"
     ],
     "name": "Georgian",
@@ -1968,25 +2011,25 @@
       "სცენარის ნიმუში"
     ],
     "then": [
-      "*",
+      "* ",
       "მაშინ"
     ],
     "when": [
-      "*",
+      "* ",
       "როდესაც"
     ]
   },
   "kn": {
     "and": [
-      "*",
-      "ಮತ್ತು"
+      "* ",
+      "ಮತ್ತು "
     ],
     "background": [
       "ಹಿನ್ನೆಲೆ"
     ],
     "but": [
-      "*",
-      "ಆದರೆ"
+      "* ",
+      "ಆದರೆ "
     ],
     "examples": [
       "ಉದಾಹರಣೆಗಳು"
@@ -1995,8 +2038,8 @@
       "ಹೆಚ್ಚಳ"
     ],
     "given": [
-      "*",
-      "ನೀಡಿದ"
+      "* ",
+      "ನೀಡಿದ "
     ],
     "name": "Kannada",
     "native": "ಕನ್ನಡ",
@@ -2011,24 +2054,24 @@
       "ವಿವರಣೆ"
     ],
     "then": [
-      "*",
-      "ನಂತರ"
+      "* ",
+      "ನಂತರ "
     ],
     "when": [
-      "*",
-      "ಸ್ಥಿತಿಯನ್ನು"
+      "* ",
+      "ಸ್ಥಿತಿಯನ್ನು "
     ]
   },
   "ko": {
     "and": [
-      "*",
+      "* ",
       "그리고"
     ],
     "background": [
       "배경"
     ],
     "but": [
-      "*",
+      "* ",
       "하지만",
       "단"
     ],
@@ -2039,7 +2082,7 @@
       "기능"
     ],
     "given": [
-      "*",
+      "* ",
       "조건",
       "먼저"
     ],
@@ -2055,26 +2098,26 @@
       "시나리오 개요"
     ],
     "then": [
-      "*",
+      "* ",
       "그러면"
     ],
     "when": [
-      "*",
+      "* ",
       "만일",
       "만약"
     ]
   },
   "lt": {
     "and": [
-      "*",
-      "Ir"
+      "* ",
+      "Ir "
     ],
     "background": [
       "Kontekstas"
     ],
     "but": [
-      "*",
-      "Bet"
+      "* ",
+      "Bet "
     ],
     "examples": [
       "Pavyzdžiai",
@@ -2085,8 +2128,8 @@
       "Savybė"
     ],
     "given": [
-      "*",
-      "Duota"
+      "* ",
+      "Duota "
     ],
     "name": "Lithuanian",
     "native": "lietuvių kalba",
@@ -2101,27 +2144,27 @@
       "Scenarijaus šablonas"
     ],
     "then": [
-      "*",
-      "Tada"
+      "* ",
+      "Tada "
     ],
     "when": [
-      "*",
-      "Kai"
+      "* ",
+      "Kai "
     ]
   },
   "lu": {
     "and": [
-      "*",
-      "an",
-      "a"
+      "* ",
+      "an ",
+      "a "
     ],
     "background": [
       "Hannergrond"
     ],
     "but": [
-      "*",
-      "awer",
-      "mä"
+      "* ",
+      "awer ",
+      "mä "
     ],
     "examples": [
       "Beispiller"
@@ -2130,8 +2173,8 @@
       "Funktionalitéit"
     ],
     "given": [
-      "*",
-      "ugeholl"
+      "* ",
+      "ugeholl "
     ],
     "name": "Luxemburgish",
     "native": "Lëtzebuergesch",
@@ -2146,26 +2189,26 @@
       "Plang vum Szenario"
     ],
     "then": [
-      "*",
-      "dann"
+      "* ",
+      "dann "
     ],
     "when": [
-      "*",
-      "wann"
+      "* ",
+      "wann "
     ]
   },
   "lv": {
     "and": [
-      "*",
-      "Un"
+      "* ",
+      "Un "
     ],
     "background": [
       "Konteksts",
       "Situācija"
     ],
     "but": [
-      "*",
-      "Bet"
+      "* ",
+      "Bet "
     ],
     "examples": [
       "Piemēri",
@@ -2176,8 +2219,8 @@
       "Fīča"
     ],
     "given": [
-      "*",
-      "Kad"
+      "* ",
+      "Kad "
     ],
     "name": "Latvian",
     "native": "latviešu",
@@ -2192,26 +2235,26 @@
       "Scenārijs pēc parauga"
     ],
     "then": [
-      "*",
-      "Tad"
+      "* ",
+      "Tad "
     ],
     "when": [
-      "*",
-      "Ja"
+      "* ",
+      "Ja "
     ]
   },
   "mk-Cyrl": {
     "and": [
-      "*",
-      "И"
+      "* ",
+      "И "
     ],
     "background": [
       "Контекст",
       "Содржина"
     ],
     "but": [
-      "*",
-      "Но"
+      "* ",
+      "Но "
     ],
     "examples": [
       "Примери",
@@ -2223,9 +2266,9 @@
       "Можност"
     ],
     "given": [
-      "*",
-      "Дадено",
-      "Дадена"
+      "* ",
+      "Дадено ",
+      "Дадена "
     ],
     "name": "Macedonian",
     "native": "Македонски",
@@ -2243,26 +2286,26 @@
       "Концепт"
     ],
     "then": [
-      "*",
-      "Тогаш"
+      "* ",
+      "Тогаш "
     ],
     "when": [
-      "*",
-      "Кога"
+      "* ",
+      "Кога "
     ]
   },
   "mk-Latn": {
     "and": [
-      "*",
-      "I"
+      "* ",
+      "I "
     ],
     "background": [
       "Kontekst",
       "Sodrzhina"
     ],
     "but": [
-      "*",
-      "No"
+      "* ",
+      "No "
     ],
     "examples": [
       "Primeri",
@@ -2274,9 +2317,9 @@
       "Mozhnost"
     ],
     "given": [
-      "*",
-      "Dadeno",
-      "Dadena"
+      "* ",
+      "Dadeno ",
+      "Dadena "
     ],
     "name": "Macedonian (Latin)",
     "native": "Makedonski (Latinica)",
@@ -2293,27 +2336,27 @@
       "Koncept"
     ],
     "then": [
-      "*",
-      "Togash"
+      "* ",
+      "Togash "
     ],
     "when": [
-      "*",
-      "Koga"
+      "* ",
+      "Koga "
     ]
   },
   "mn": {
     "and": [
-      "*",
-      "Мөн",
-      "Тэгээд"
+      "* ",
+      "Мөн ",
+      "Тэгээд "
     ],
     "background": [
       "Агуулга"
     ],
     "but": [
-      "*",
-      "Гэхдээ",
-      "Харин"
+      "* ",
+      "Гэхдээ ",
+      "Харин "
     ],
     "examples": [
       "Тухайлбал"
@@ -2323,9 +2366,9 @@
       "Функционал"
     ],
     "given": [
-      "*",
-      "Өгөгдсөн нь",
-      "Анх"
+      "* ",
+      "Өгөгдсөн нь ",
+      "Анх "
     ],
     "name": "Mongolian",
     "native": "монгол",
@@ -2339,27 +2382,27 @@
       "Сценарын төлөвлөгөө"
     ],
     "then": [
-      "*",
-      "Тэгэхэд",
-      "Үүний дараа"
+      "* ",
+      "Тэгэхэд ",
+      "Үүний дараа "
     ],
     "when": [
-      "*",
-      "Хэрэв"
+      "* ",
+      "Хэрэв "
     ]
   },
   "ne": {
     "and": [
-      "*",
-      "र",
-      "अनी"
+      "* ",
+      "र ",
+      "अनी "
     ],
     "background": [
       "पृष्ठभूमी"
     ],
     "but": [
-      "*",
-      "तर"
+      "* ",
+      "तर "
     ],
     "examples": [
       "उदाहरण",
@@ -2370,10 +2413,10 @@
       "विशेषता"
     ],
     "given": [
-      "*",
-      "दिइएको",
-      "दिएको",
-      "यदि"
+      "* ",
+      "दिइएको ",
+      "दिएको ",
+      "यदि "
     ],
     "name": "Nepali",
     "native": "नेपाली",
@@ -2387,26 +2430,26 @@
       "परिदृश्य रूपरेखा"
     ],
     "then": [
-      "*",
-      "त्यसपछि",
-      "अनी"
+      "* ",
+      "त्यसपछि ",
+      "अनी "
     ],
     "when": [
-      "*",
-      "जब"
+      "* ",
+      "जब "
     ]
   },
   "nl": {
     "and": [
-      "*",
-      "En"
+      "* ",
+      "En "
     ],
     "background": [
       "Achtergrond"
     ],
     "but": [
-      "*",
-      "Maar"
+      "* ",
+      "Maar "
     ],
     "examples": [
       "Voorbeelden"
@@ -2415,9 +2458,9 @@
       "Functionaliteit"
     ],
     "given": [
-      "*",
-      "Gegeven",
-      "Stel"
+      "* ",
+      "Gegeven ",
+      "Stel "
     ],
     "name": "Dutch",
     "native": "Nederlands",
@@ -2432,26 +2475,26 @@
       "Abstract Scenario"
     ],
     "then": [
-      "*",
-      "Dan"
+      "* ",
+      "Dan "
     ],
     "when": [
-      "*",
-      "Als",
-      "Wanneer"
+      "* ",
+      "Als ",
+      "Wanneer "
     ]
   },
   "no": {
     "and": [
-      "*",
-      "Og"
+      "* ",
+      "Og "
     ],
     "background": [
       "Bakgrunn"
     ],
     "but": [
-      "*",
-      "Men"
+      "* ",
+      "Men "
     ],
     "examples": [
       "Eksempler"
@@ -2460,8 +2503,8 @@
       "Egenskap"
     ],
     "given": [
-      "*",
-      "Gitt"
+      "* ",
+      "Gitt "
     ],
     "name": "Norwegian",
     "native": "norsk",
@@ -2477,25 +2520,25 @@
       "Abstrakt Scenario"
     ],
     "then": [
-      "*",
-      "Så"
+      "* ",
+      "Så "
     ],
     "when": [
-      "*",
-      "Når"
+      "* ",
+      "Når "
     ]
   },
   "pa": {
     "and": [
-      "*",
-      "ਅਤੇ"
+      "* ",
+      "ਅਤੇ "
     ],
     "background": [
       "ਪਿਛੋਕੜ"
     ],
     "but": [
-      "*",
-      "ਪਰ"
+      "* ",
+      "ਪਰ "
     ],
     "examples": [
       "ਉਦਾਹਰਨਾਂ"
@@ -2503,12 +2546,12 @@
     "feature": [
       "ਖਾਸੀਅਤ",
       "ਮੁਹਾਂਦਰਾ",
-      "ਨਕਸ਼ ਨੁਹਾਰ"
+      "ਨਕਸ਼ ਨੁਹਾਰ"
     ],
     "given": [
-      "*",
-      "ਜੇਕਰ",
-      "ਜਿਵੇਂ ਕਿ"
+      "* ",
+      "ਜੇਕਰ ",
+      "ਜਿਵੇਂ ਕਿ "
     ],
     "name": "Panjabi",
     "native": "ਪੰਜਾਬੀ",
@@ -2524,26 +2567,26 @@
       "ਪਟਕਥਾ ਰੂਪ ਰੇਖਾ"
     ],
     "then": [
-      "*",
-      "ਤਦ"
+      "* ",
+      "ਤਦ "
     ],
     "when": [
-      "*",
-      "ਜਦੋਂ"
+      "* ",
+      "ਜਦੋਂ "
     ]
   },
   "pl": {
     "and": [
-      "*",
-      "Oraz",
-      "I"
+      "* ",
+      "Oraz ",
+      "I "
     ],
     "background": [
       "Założenia"
     ],
     "but": [
-      "*",
-      "Ale"
+      "* ",
+      "Ale "
     ],
     "examples": [
       "Przykłady"
@@ -2555,15 +2598,16 @@
       "Potrzeba biznesowa"
     ],
     "given": [
-      "*",
-      "Zakładając",
-      "Mając",
-      "Zakładając, że"
+      "* ",
+      "Zakładając ",
+      "Mając ",
+      "Zakładając, że "
     ],
     "name": "Polish",
     "native": "polski",
     "rule": [
-      "Rule"
+      "Zasada",
+      "Reguła"
     ],
     "scenario": [
       "Przykład",
@@ -2573,21 +2617,21 @@
       "Szablon scenariusza"
     ],
     "then": [
-      "*",
-      "Wtedy"
+      "* ",
+      "Wtedy "
     ],
     "when": [
-      "*",
-      "Jeżeli",
-      "Jeśli",
-      "Gdy",
-      "Kiedy"
+      "* ",
+      "Jeżeli ",
+      "Jeśli ",
+      "Gdy ",
+      "Kiedy "
     ]
   },
   "pt": {
     "and": [
-      "*",
-      "E"
+      "* ",
+      "E "
     ],
     "background": [
       "Contexto",
@@ -2596,8 +2640,8 @@
       "Fundo"
     ],
     "but": [
-      "*",
-      "Mas"
+      "* ",
+      "Mas "
     ],
     "examples": [
       "Exemplos",
@@ -2610,11 +2654,11 @@
       "Caracteristica"
     ],
     "given": [
-      "*",
-      "Dado",
-      "Dada",
-      "Dados",
-      "Dadas"
+      "* ",
+      "Dado ",
+      "Dada ",
+      "Dados ",
+      "Dadas "
     ],
     "name": "Portuguese",
     "native": "português",
@@ -2633,28 +2677,28 @@
       "Delineacao do Cenario"
     ],
     "then": [
-      "*",
-      "Então",
-      "Entao"
+      "* ",
+      "Então ",
+      "Entao "
     ],
     "when": [
-      "*",
-      "Quando"
+      "* ",
+      "Quando "
     ]
   },
   "ro": {
     "and": [
-      "*",
-      "Si",
-      "Și",
-      "Şi"
+      "* ",
+      "Si ",
+      "Și ",
+      "Şi "
     ],
     "background": [
       "Context"
     ],
     "but": [
-      "*",
-      "Dar"
+      "* ",
+      "Dar "
     ],
     "examples": [
       "Exemple"
@@ -2665,13 +2709,13 @@
       "Funcţionalitate"
     ],
     "given": [
-      "*",
-      "Date fiind",
-      "Dat fiind",
+      "* ",
+      "Date fiind ",
+      "Dat fiind ",
       "Dată fiind",
-      "Dati fiind",
-      "Dați fiind",
-      "Daţi fiind"
+      "Dati fiind ",
+      "Dați fiind ",
+      "Daţi fiind "
     ],
     "name": "Romanian",
     "native": "română",
@@ -2687,31 +2731,31 @@
       "Structură scenariu"
     ],
     "then": [
-      "*",
-      "Atunci"
+      "* ",
+      "Atunci "
     ],
     "when": [
-      "*",
-      "Cand",
-      "Când"
+      "* ",
+      "Cand ",
+      "Când "
     ]
   },
   "ru": {
     "and": [
-      "*",
-      "И",
-      "К тому же",
-      "Также"
+      "* ",
+      "И ",
+      "К тому же ",
+      "Также "
     ],
     "background": [
       "Предыстория",
       "Контекст"
     ],
     "but": [
-      "*",
-      "Но",
-      "А",
-      "Иначе"
+      "* ",
+      "Но ",
+      "А ",
+      "Иначе "
     ],
     "examples": [
       "Примеры"
@@ -2723,10 +2767,10 @@
       "Свойство"
     ],
     "given": [
-      "*",
-      "Допустим",
-      "Дано",
-      "Пусть"
+      "* ",
+      "Допустим ",
+      "Дано ",
+      "Пусть "
     ],
     "name": "Russian",
     "native": "русский",
@@ -2738,34 +2782,35 @@
       "Сценарий"
     ],
     "scenarioOutline": [
-      "Структура сценария"
+      "Структура сценария",
+      "Шаблон сценария"
     ],
     "then": [
-      "*",
-      "То",
-      "Затем",
-      "Тогда"
+      "* ",
+      "То ",
+      "Затем ",
+      "Тогда "
     ],
     "when": [
-      "*",
-      "Когда",
-      "Если"
+      "* ",
+      "Когда ",
+      "Если "
     ]
   },
   "sk": {
     "and": [
-      "*",
-      "A",
-      "A tiež",
-      "A taktiež",
-      "A zároveň"
+      "* ",
+      "A ",
+      "A tiež ",
+      "A taktiež ",
+      "A zároveň "
     ],
     "background": [
       "Pozadie"
     ],
     "but": [
-      "*",
-      "Ale"
+      "* ",
+      "Ale "
     ],
     "examples": [
       "Príklady"
@@ -2776,9 +2821,9 @@
       "Vlastnosť"
     ],
     "given": [
-      "*",
-      "Pokiaľ",
-      "Za predpokladu"
+      "* ",
+      "Pokiaľ ",
+      "Za predpokladu "
     ],
     "name": "Slovak",
     "native": "Slovensky",
@@ -2795,20 +2840,20 @@
       "Osnova Scenára"
     ],
     "then": [
-      "*",
-      "Tak",
-      "Potom"
+      "* ",
+      "Tak ",
+      "Potom "
     ],
     "when": [
-      "*",
-      "Keď",
-      "Ak"
+      "* ",
+      "Keď ",
+      "Ak "
     ]
   },
   "sl": {
     "and": [
-      "In",
-      "Ter"
+      "In ",
+      "Ter "
     ],
     "background": [
       "Kontekst",
@@ -2816,9 +2861,9 @@
       "Ozadje"
     ],
     "but": [
-      "Toda",
-      "Ampak",
-      "Vendar"
+      "Toda ",
+      "Ampak ",
+      "Vendar "
     ],
     "examples": [
       "Primeri",
@@ -2833,10 +2878,10 @@
       "Značilnost"
     ],
     "given": [
-      "Dano",
-      "Podano",
-      "Zaradi",
-      "Privzeto"
+      "Dano ",
+      "Podano ",
+      "Zaradi ",
+      "Privzeto "
     ],
     "name": "Slovenian",
     "native": "Slovenski",
@@ -2855,21 +2900,21 @@
       "Osnutek"
     ],
     "then": [
-      "Nato",
-      "Potem",
-      "Takrat"
+      "Nato ",
+      "Potem ",
+      "Takrat "
     ],
     "when": [
-      "Ko",
-      "Ce",
-      "Če",
-      "Kadar"
+      "Ko ",
+      "Ce ",
+      "Če ",
+      "Kadar "
     ]
   },
   "sr-Cyrl": {
     "and": [
-      "*",
-      "И"
+      "* ",
+      "И "
     ],
     "background": [
       "Контекст",
@@ -2877,8 +2922,8 @@
       "Позадина"
     ],
     "but": [
-      "*",
-      "Али"
+      "* ",
+      "Али "
     ],
     "examples": [
       "Примери",
@@ -2890,15 +2935,15 @@
       "Особина"
     ],
     "given": [
-      "*",
-      "За дато",
-      "За дате",
-      "За дати"
+      "* ",
+      "За дато ",
+      "За дате ",
+      "За дати "
     ],
     "name": "Serbian",
     "native": "Српски",
     "rule": [
-      "Rule"
+      "Правило"
     ],
     "scenario": [
       "Пример",
@@ -2911,19 +2956,19 @@
       "Концепт"
     ],
     "then": [
-      "*",
-      "Онда"
+      "* ",
+      "Онда "
     ],
     "when": [
-      "*",
-      "Када",
-      "Кад"
+      "* ",
+      "Када ",
+      "Кад "
     ]
   },
   "sr-Latn": {
     "and": [
-      "*",
-      "I"
+      "* ",
+      "I "
     ],
     "background": [
       "Kontekst",
@@ -2931,8 +2976,8 @@
       "Pozadina"
     ],
     "but": [
-      "*",
-      "Ali"
+      "* ",
+      "Ali "
     ],
     "examples": [
       "Primeri",
@@ -2945,15 +2990,15 @@
       "Osobina"
     ],
     "given": [
-      "*",
-      "Za dato",
-      "Za date",
-      "Za dati"
+      "* ",
+      "Za dato ",
+      "Za date ",
+      "Za dati "
     ],
     "name": "Serbian (Latin)",
     "native": "Srpski (Latinica)",
     "rule": [
-      "Rule"
+      "Pravilo"
     ],
     "scenario": [
       "Scenario",
@@ -2965,26 +3010,26 @@
       "Koncept"
     ],
     "then": [
-      "*",
-      "Onda"
+      "* ",
+      "Onda "
     ],
     "when": [
-      "*",
-      "Kada",
-      "Kad"
+      "* ",
+      "Kada ",
+      "Kad "
     ]
   },
   "sv": {
     "and": [
-      "*",
-      "Och"
+      "* ",
+      "Och "
     ],
     "background": [
       "Bakgrund"
     ],
     "but": [
-      "*",
-      "Men"
+      "* ",
+      "Men "
     ],
     "examples": [
       "Exempel"
@@ -2993,8 +3038,8 @@
       "Egenskap"
     ],
     "given": [
-      "*",
-      "Givet"
+      "* ",
+      "Givet "
     ],
     "name": "Swedish",
     "native": "Svenska",
@@ -3009,26 +3054,26 @@
       "Scenariomall"
     ],
     "then": [
-      "*",
-      "Så"
+      "* ",
+      "Så "
     ],
     "when": [
-      "*",
-      "När"
+      "* ",
+      "När "
     ]
   },
   "ta": {
     "and": [
-      "*",
-      "மேலும் ",
-      "மற்றும்"
+      "* ",
+      "மேலும்  ",
+      "மற்றும் "
     ],
     "background": [
       "பின்னணி"
     ],
     "but": [
-      "*",
-      "ஆனால் "
+      "* ",
+      "ஆனால்  "
     ],
     "examples": [
       "எடுத்துக்காட்டுகள்",
@@ -3041,8 +3086,8 @@
       "திறன்"
     ],
     "given": [
-      "*",
-      "கொடுக்கப்பட்ட"
+      "* ",
+      "கொடுக்கப்பட்ட "
     ],
     "name": "Tamil",
     "native": "தமிழ்",
@@ -3058,25 +3103,25 @@
       "காட்சி வார்ப்புரு"
     ],
     "then": [
-      "*",
-      "அப்பொழுது"
+      "* ",
+      "அப்பொழுது "
     ],
     "when": [
-      "*",
-      "எப்போது"
+      "* ",
+      "எப்போது "
     ]
   },
   "th": {
     "and": [
-      "*",
-      "และ"
+      "* ",
+      "และ "
     ],
     "background": [
       "แนวคิด"
     ],
     "but": [
-      "*",
-      "แต่"
+      "* ",
+      "แต่ "
     ],
     "examples": [
       "ชุดของตัวอย่าง",
@@ -3088,8 +3133,8 @@
       "ความสามารถ"
     ],
     "given": [
-      "*",
-      "กำหนดให้"
+      "* ",
+      "กำหนดให้ "
     ],
     "name": "Thai",
     "native": "ไทย",
@@ -3104,25 +3149,25 @@
       "โครงสร้างของเหตุการณ์"
     ],
     "then": [
-      "*",
-      "ดังนั้น"
+      "* ",
+      "ดังนั้น "
     ],
     "when": [
-      "*",
-      "เมื่อ"
+      "* ",
+      "เมื่อ "
     ]
   },
   "te": {
     "and": [
-      "*",
-      "మరియు"
+      "* ",
+      "మరియు "
     ],
     "background": [
       "నేపథ్యం"
     ],
     "but": [
-      "*",
-      "కాని"
+      "* ",
+      "కాని "
     ],
     "examples": [
       "ఉదాహరణలు"
@@ -3131,8 +3176,8 @@
       "గుణము"
     ],
     "given": [
-      "*",
-      "చెప్పబడినది"
+      "* ",
+      "చెప్పబడినది "
     ],
     "name": "Telugu",
     "native": "తెలుగు",
@@ -3147,27 +3192,27 @@
       "కథనం"
     ],
     "then": [
-      "*",
-      "అప్పుడు"
+      "* ",
+      "అప్పుడు "
     ],
     "when": [
-      "*",
-      "ఈ పరిస్థితిలో"
+      "* ",
+      "ఈ పరిస్థితిలో "
     ]
   },
   "tlh": {
     "and": [
-      "*",
-      "'ej",
-      "latlh"
+      "* ",
+      "'ej ",
+      "latlh "
     ],
     "background": [
       "mo'"
     ],
     "but": [
-      "*",
-      "'ach",
-      "'a"
+      "* ",
+      "'ach ",
+      "'a "
     ],
     "examples": [
       "ghantoH",
@@ -3181,9 +3226,9 @@
       "laH"
     ],
     "given": [
-      "*",
-      "ghu' noblu'",
-      "DaH ghu' bejlu'"
+      "* ",
+      "ghu' noblu' ",
+      "DaH ghu' bejlu' "
     ],
     "name": "Klingon",
     "native": "tlhIngan",
@@ -3197,26 +3242,26 @@
       "lut chovnatlh"
     ],
     "then": [
-      "*",
-      "vaj"
+      "* ",
+      "vaj "
     ],
     "when": [
-      "*",
-      "qaSDI'"
+      "* ",
+      "qaSDI' "
     ]
   },
   "tr": {
     "and": [
-      "*",
-      "Ve"
+      "* ",
+      "Ve "
     ],
     "background": [
       "Geçmiş"
     ],
     "but": [
-      "*",
-      "Fakat",
-      "Ama"
+      "* ",
+      "Fakat ",
+      "Ama "
     ],
     "examples": [
       "Örnekler"
@@ -3225,13 +3270,13 @@
       "Özellik"
     ],
     "given": [
-      "*",
-      "Diyelim ki"
+      "* ",
+      "Diyelim ki "
     ],
     "name": "Turkish",
     "native": "Türkçe",
     "rule": [
-      "Rule"
+      "Kural"
     ],
     "scenario": [
       "Örnek",
@@ -3241,27 +3286,27 @@
       "Senaryo taslağı"
     ],
     "then": [
-      "*",
-      "O zaman"
+      "* ",
+      "O zaman "
     ],
     "when": [
-      "*",
-      "Eğer ki"
+      "* ",
+      "Eğer ki "
     ]
   },
   "tt": {
     "and": [
-      "*",
-      "Һәм",
-      "Вә"
+      "* ",
+      "Һәм ",
+      "Вә "
     ],
     "background": [
       "Кереш"
     ],
     "but": [
-      "*",
-      "Ләкин",
-      "Әмма"
+      "* ",
+      "Ләкин ",
+      "Әмма "
     ],
     "examples": [
       "Үрнәкләр",
@@ -3272,8 +3317,8 @@
       "Үзенчәлеклелек"
     ],
     "given": [
-      "*",
-      "Әйтик"
+      "* ",
+      "Әйтик "
     ],
     "name": "Tatar",
     "native": "Татарча",
@@ -3287,27 +3332,27 @@
       "Сценарийның төзелеше"
     ],
     "then": [
-      "*",
-      "Нәтиҗәдә"
+      "* ",
+      "Нәтиҗәдә "
     ],
     "when": [
-      "*",
-      "Әгәр"
+      "* ",
+      "Әгәр "
     ]
   },
   "uk": {
     "and": [
-      "*",
-      "І",
-      "А також",
-      "Та"
+      "* ",
+      "І ",
+      "А також ",
+      "Та "
     ],
     "background": [
       "Передумова"
     ],
     "but": [
-      "*",
-      "Але"
+      "* ",
+      "Але "
     ],
     "examples": [
       "Приклади"
@@ -3316,11 +3361,11 @@
       "Функціонал"
     ],
     "given": [
-      "*",
-      "Припустимо",
-      "Припустимо, що",
-      "Нехай",
-      "Дано"
+      "* ",
+      "Припустимо ",
+      "Припустимо, що ",
+      "Нехай ",
+      "Дано "
     ],
     "name": "Ukrainian",
     "native": "Українська",
@@ -3335,27 +3380,27 @@
       "Структура сценарію"
     ],
     "then": [
-      "*",
-      "То",
-      "Тоді"
+      "* ",
+      "То ",
+      "Тоді "
     ],
     "when": [
-      "*",
-      "Якщо",
-      "Коли"
+      "* ",
+      "Якщо ",
+      "Коли "
     ]
   },
   "ur": {
     "and": [
-      "*",
-      "اور"
+      "* ",
+      "اور "
     ],
     "background": [
       "پس منظر"
     ],
     "but": [
-      "*",
-      "لیکن"
+      "* ",
+      "لیکن "
     ],
     "examples": [
       "مثالیں"
@@ -3366,10 +3411,10 @@
       "خصوصیت"
     ],
     "given": [
-      "*",
-      "اگر",
-      "بالفرض",
-      "فرض کیا"
+      "* ",
+      "اگر ",
+      "بالفرض ",
+      "فرض کیا "
     ],
     "name": "Urdu",
     "native": "اردو",
@@ -3383,28 +3428,28 @@
       "منظر نامے کا خاکہ"
     ],
     "then": [
-      "*",
-      "پھر",
-      "تب"
+      "* ",
+      "پھر ",
+      "تب "
     ],
     "when": [
-      "*",
-      "جب"
+      "* ",
+      "جب "
     ]
   },
   "uz": {
     "and": [
-      "*",
-      "Ва"
+      "* ",
+      "Ва "
     ],
     "background": [
       "Тарих"
     ],
     "but": [
-      "*",
-      "Лекин",
-      "Бирок",
-      "Аммо"
+      "* ",
+      "Лекин ",
+      "Бирок ",
+      "Аммо "
     ],
     "examples": [
       "Мисоллар"
@@ -3413,8 +3458,8 @@
       "Функционал"
     ],
     "given": [
-      "*",
-      "Агар"
+      "* ",
+      "Агар "
     ],
     "name": "Uzbek",
     "native": "Узбекча",
@@ -3428,25 +3473,25 @@
       "Сценарий структураси"
     ],
     "then": [
-      "*",
-      "Унда"
+      "* ",
+      "Унда "
     ],
     "when": [
-      "*",
-      "Агар"
+      "* ",
+      "Агар "
     ]
   },
   "vi": {
     "and": [
-      "*",
-      "Và"
+      "* ",
+      "Và "
     ],
     "background": [
       "Bối cảnh"
     ],
     "but": [
-      "*",
-      "Nhưng"
+      "* ",
+      "Nhưng "
     ],
     "examples": [
       "Dữ liệu"
@@ -3455,9 +3500,9 @@
       "Tính năng"
     ],
     "given": [
-      "*",
-      "Biết",
-      "Cho"
+      "* ",
+      "Biết ",
+      "Cho "
     ],
     "name": "Vietnamese",
     "native": "Tiếng Việt",
@@ -3473,17 +3518,17 @@
       "Khung kịch bản"
     ],
     "then": [
-      "*",
-      "Thì"
+      "* ",
+      "Thì "
     ],
     "when": [
-      "*",
-      "Khi"
+      "* ",
+      "Khi "
     ]
   },
   "zh-CN": {
     "and": [
-      "*",
+      "* ",
       "而且",
       "并且",
       "同时"
@@ -3492,7 +3537,7 @@
       "背景"
     ],
     "but": [
-      "*",
+      "* ",
       "但是"
     ],
     "examples": [
@@ -3502,7 +3547,7 @@
       "功能"
     ],
     "given": [
-      "*",
+      "* ",
       "假如",
       "假设",
       "假定"
@@ -3521,17 +3566,17 @@
       "剧本大纲"
     ],
     "then": [
-      "*",
+      "* ",
       "那么"
     ],
     "when": [
-      "*",
+      "* ",
       "当"
     ]
   },
   "zh-TW": {
     "and": [
-      "*",
+      "* ",
       "而且",
       "並且",
       "同時"
@@ -3540,7 +3585,7 @@
       "背景"
     ],
     "but": [
-      "*",
+      "* ",
       "但是"
     ],
     "examples": [
@@ -3550,7 +3595,7 @@
       "功能"
     ],
     "given": [
-      "*",
+      "* ",
       "假如",
       "假設",
       "假定"
@@ -3569,27 +3614,27 @@
       "劇本大綱"
     ],
     "then": [
-      "*",
+      "* ",
       "那麼"
     ],
     "when": [
-      "*",
+      "* ",
       "當"
     ]
   },
   "mr": {
     "and": [
-      "*",
-      "आणि",
-      "तसेच"
+      "* ",
+      "आणि ",
+      "तसेच "
     ],
     "background": [
       "पार्श्वभूमी"
     ],
     "but": [
-      "*",
-      "पण",
-      "परंतु"
+      "* ",
+      "पण ",
+      "परंतु "
     ],
     "examples": [
       "उदाहरण"
@@ -3599,9 +3644,9 @@
       "सुविधा"
     ],
     "given": [
-      "*",
+      "* ",
       "जर",
-      "दिलेल्या प्रमाणे"
+      "दिलेल्या प्रमाणे "
     ],
     "name": "Marathi",
     "native": "मराठी",
@@ -3615,13 +3660,13 @@
       "परिदृश्य रूपरेखा"
     ],
     "then": [
-      "*",
-      "मग",
-      "तेव्हा"
+      "* ",
+      "मग ",
+      "तेव्हा "
     ],
     "when": [
-      "*",
-      "जेव्हा"
+      "* ",
+      "जेव्हा "
     ]
   }
 }
