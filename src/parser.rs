@@ -151,7 +151,6 @@ peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
 
 rule _() = quiet!{[' ' | '\t']*}
 rule __() = quiet!{[' ' | '\t']+}
-rule ___() = quiet!{(!nl0()[_])*}
 
 rule nl0() = quiet!{"\r"? "\n"}
 rule nl() = quiet!{nl0() p:position!() comment()* {
@@ -332,13 +331,14 @@ pub(crate) rule steps() -> Vec<Step>
 
 rule background() -> Background
     = comment()* _ pa:position!()
-      k:keyword((env.keywords().background)) ":" ___ nl_eof()
+      k:keyword((env.keywords().background)) ":" _ n:not_nl()? nl_eof()
       s:steps()?
       pb:position!()
     {
         Background::builder()
             .keyword(k.into())
-            .steps(s.unwrap_or_else(Vec::new))
+            .name(n.map(str::to_string))
+            .steps(s.unwrap_or_default())
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
@@ -373,12 +373,13 @@ rule examples() -> Examples
       t:tags()
       _
       pa:position!()
-      k:keyword((env.keywords().examples)) ":" ___ nl_eof()
+      k:keyword((env.keywords().examples)) ":" _ n:not_nl()? nl_eof()
       tb:table()
       pb:position!()
     {
         Examples::builder()
             .keyword(k.into())
+            .name(n.map(str::to_owned))
             .tags(t)
             .table(tb)
             .span(Span { start: pa, end: pb })

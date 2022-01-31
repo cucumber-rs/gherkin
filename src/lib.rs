@@ -114,6 +114,8 @@ impl LineCol {
 pub struct Background {
     /// The raw keyword used in the original source.
     pub keyword: String,
+    /// The name of the background.
+    pub name: Option<String>,
     /// The parsed steps from the background directive.
     pub steps: Vec<Step>,
     /// The `(start, end)` offset the background directive was found in the .feature file.
@@ -132,6 +134,8 @@ pub struct Background {
 pub struct Examples {
     /// The raw keyword used in the original source.
     pub keyword: String,
+    /// The name of the examples.
+    pub name: Option<String>,
     /// The data table from the examples directive.
     pub table: Table,
     /// The tags for the examples directive if provided.
