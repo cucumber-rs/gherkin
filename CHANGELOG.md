@@ -13,9 +13,9 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### Added
 
-- Support text after `Background` and `Examples` keywords. ([#32])
+- Support text after `Background` and `Examples` keywords. ([#31])
 
-[#32]: /../../pull/32
+[#32]: /../../pull/31
 
 
 
