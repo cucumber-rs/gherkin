@@ -117,7 +117,7 @@ impl GherkinEnv {
         let line = line_offsets
             .iter()
             .position(|x| x > &offset)
-            .unwrap_or(line_offsets.len());
+            .unwrap_or_else(|| line_offsets.len());
 
         let col = offset - line_offsets[line - 1] + 1;
 
