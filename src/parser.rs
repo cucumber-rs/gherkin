@@ -136,7 +136,7 @@ impl GherkinEnv {
 impl Default for GherkinEnv {
     fn default() -> Self {
         GherkinEnv {
-            keywords: RefCell::new(Default::default()),
+            keywords: RefCell::new(Keywords::default()),
             last_error: RefCell::new(None),
             fatal_error: RefCell::new(None),
             last_step: RefCell::new(None),
@@ -167,18 +167,15 @@ rule keyword1(list: &[&'static str]) -> &'static str
         {list.iter().map(|x| x.chars().count()).max().unwrap()}
     >) {?
         // println!("Input: {}", &input);
-        match list.iter().find(|x| input.starts_with(**x)) {
-            Some(v) => {
-                env.set_keyword((*v).to_string());
-                // println!("Found: {}", &v);
-                Err("success")
-            },
-            None => {
-                // println!("Unfound: {}", &input);
-                env.clear_keyword();
-                env.set_last_error(EnvError::UnknownKeyword(input.into()));
-                Err("unknown keyword")
-            }
+        if let Some(v) = list.iter().find(|x| input.starts_with(**x)) {
+            env.set_keyword((*v).to_string());
+            // println!("Found: {}", &v);
+            Err("success")
+        } else {
+            // println!("Unfound: {}", &input);
+            env.clear_keyword();
+            env.set_last_error(EnvError::UnknownKeyword(input.into()));
+            Err("unknown keyword")
         }
     }
 
@@ -331,13 +328,14 @@ pub(crate) rule steps() -> Vec<Step>
 
 rule background() -> Background
     = comment()* _ pa:position!()
-      k:keyword((env.keywords().background)) ":" _ nl_eof()
+      k:keyword((env.keywords().background)) ":" _ n:not_nl()? nl_eof()
       s:steps()?
       pb:position!()
     {
         Background::builder()
             .keyword(k.into())
-            .steps(s.unwrap_or_else(Vec::new))
+            .name(n.map(str::to_string))
+            .steps(s.unwrap_or_default())
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
@@ -372,12 +370,13 @@ rule examples() -> Examples
       t:tags()
       _
       pa:position!()
-      k:keyword((env.keywords().examples)) ":" _ nl_eof()
+      k:keyword((env.keywords().examples)) ":" _ n:not_nl()? nl_eof()
       tb:table()
       pb:position!()
     {
         Examples::builder()
             .keyword(k.into())
+            .name(n.map(str::to_owned))
             .tags(t)
             .table(tb)
             .span(Span { start: pa, end: pb })
@@ -400,7 +399,7 @@ rule scenario() -> Scenario
             .keyword(k.into())
             .name(n.to_string())
             .tags(t)
-            .steps(s.unwrap_or_else(Vec::new))
+            .steps(s.unwrap_or_default())
             .examples(e)
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
@@ -420,7 +419,7 @@ rule scenario() -> Scenario
             .keyword(k.into())
             .name(n.to_string())
             .tags(t)
-            .steps(s.unwrap_or_else(Vec::new))
+            .steps(s.unwrap_or_default())
             .examples(e)
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
@@ -490,17 +489,17 @@ rule rule_() -> Rule
             .name(n.to_string())
             .tags(t)
             .background(b)
-            .scenarios(s.unwrap_or_else(Vec::new))
+            .scenarios(s.unwrap_or_default())
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
     }
 
 rule rules() -> Vec<Rule>
-    = _ r:(rule_() ** _)? { r.unwrap_or_else(Vec::new) }
+    = _ r:(rule_() ** _)? { r.unwrap_or_default() }
 
 pub(crate) rule scenarios() -> Vec<Scenario>
-    = _ s:(scenario() ** _)? { s.unwrap_or_else(Vec::new) }
+    = _ s:(scenario() ** _)? { s.unwrap_or_default() }
 
 pub(crate) rule feature() -> Feature
     = _ language_directive()?
@@ -662,7 +661,7 @@ Scenario: Hello
         println!("{:#?}", feature);
         assert_eq!(feature.scenarios.len(), 1);
         assert!(feature.description.is_some());
-        assert!(feature.scenarios[0].steps[0].position.line != 0)
+        assert!(feature.scenarios[0].steps[0].position.line != 0);
     }
 
     #[test]
