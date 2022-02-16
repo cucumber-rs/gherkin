@@ -111,7 +111,7 @@ impl GherkinEnv {
     fn increment_nl(&self, offset: usize) {
         let mut line_offsets = self.line_offsets.borrow_mut();
         if !line_offsets.contains(&offset) {
-            line_offsets.push(dbg!(offset));
+            line_offsets.push(offset);
         }
     }
 
@@ -120,7 +120,7 @@ impl GherkinEnv {
         let line = line_offsets
             .iter()
             .position(|x| x > &offset)
-            .unwrap_or_else(|| dbg!(line_offsets.len()));
+            .unwrap_or_else(|| line_offsets.len());
 
         let col = offset - line_offsets[line - 1] + 1;
 
@@ -383,7 +383,7 @@ rule examples() -> Examples
             .tags(t)
             .table(tb)
             .span(Span { start: pa, end: pb })
-            .position(env.position(dbg!(pa)))
+            .position(env.position(pa))
             .build()
     }
 
