@@ -109,7 +109,10 @@ impl GherkinEnv {
     }
 
     fn increment_nl(&self, offset: usize) {
-        self.line_offsets.borrow_mut().push(offset);
+        let mut line_offsets = self.line_offsets.borrow_mut();
+        if !line_offsets.contains(&offset) {
+            line_offsets.push(offset);
+        }
     }
 
     fn position(&self, offset: usize) -> LineCol {
@@ -117,7 +120,7 @@ impl GherkinEnv {
         let line = line_offsets
             .iter()
             .position(|x| x > &offset)
-            .unwrap_or_else(|| line_offsets.len());
+            .unwrap_or_else(|| dbg!(line_offsets.len()));
 
         let col = offset - line_offsets[line - 1] + 1;
 
@@ -662,6 +665,51 @@ Scenario: Hello
         assert_eq!(feature.scenarios.len(), 1);
         assert!(feature.description.is_some());
         assert!(feature.scenarios[0].steps[0].position.line != 0);
+    }
+
+    #[test]
+    fn correct_line_number() {
+        let env = GherkinEnv::default();
+        let input = r#"Feature: Basic functionality
+        here's some text
+        really
+@tag
+Scenario: Hello
+  Given a step
+  Then a step
+@tag
+Scenario: Hello
+  Given a step
+  
+  And more
+  
+Rule: rule
+    @tag
+    Scenario: Hello
+        Given a step
+        
+        
+    @tag
+Rule: rule
+    Scenario: Hello
+        Given a step
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.scenarios.len(), 2);
+        assert!(feature.description.is_some());
+        assert_eq!(feature.position.line, 1);
+        assert_eq!(feature.scenarios[0].position.line, 5);
+        assert_eq!(feature.scenarios[0].steps[0].position.line, 6);
+        assert_eq!(feature.scenarios[0].steps[1].position.line, 7);
+        assert_eq!(feature.scenarios[1].position.line, 9);
+        assert_eq!(feature.scenarios[1].steps[0].position.line, 10);
+        assert_eq!(feature.scenarios[1].steps[1].position.line, 12);
+        assert_eq!(feature.rules[0].position.line, 14);
+        assert_eq!(feature.rules[0].scenarios[0].position.line, 16);
+        assert_eq!(feature.rules[0].scenarios[0].steps[0].position.line, 17);
+        assert_eq!(feature.rules[1].position.line, 21);
+        assert_eq!(feature.rules[1].scenarios[0].position.line, 22);
+        assert_eq!(feature.rules[1].scenarios[0].steps[0].position.line, 23);
     }
 
     #[test]

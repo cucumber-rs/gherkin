@@ -14,8 +14,10 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 ### Added
 
 - Support text after `Background` and `Examples` keywords. ([#31])
+- Fix line number reporting ([#33])
 
-[#32]: /../../pull/31
+[#31]: /../../pull/31
+[#33]: /../../pull/33
 
 
 
