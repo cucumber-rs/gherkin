@@ -111,7 +111,7 @@ impl GherkinEnv {
     fn increment_nl(&self, offset: usize) {
         let mut line_offsets = self.line_offsets.borrow_mut();
         if !line_offsets.contains(&offset) {
-            line_offsets.push(offset);
+            line_offsets.push(dbg!(offset));
         }
     }
 
@@ -202,15 +202,15 @@ rule language_directive() -> ()
     }
 
 rule docstring() -> String
-    = "\"\"\"" n:$((!"\"\"\""[_])*) "\"\"\"" nl_eof() {
+    = "\"\"\"" n:$((!"\"\"\"" (nl() / [_]))*) "\"\"\"" nl_eof() {
         textwrap::dedent(n)
     }
-    / "```" n:$((!"```"[_])*) "```" nl_eof() {
+    / "```" n:$((!"```"(nl() / [_]))*) "```" nl_eof() {
         textwrap::dedent(n)
     }
 
 rule table_cell() -> &'input str
-    = "|" _ !(nl0() / eof()) n:$((!"|"[_])*) { n }
+    = "|" _ !(nl0() / eof()) n:$((!("|" / nl0())[_])*) { n }
 
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
@@ -383,7 +383,7 @@ rule examples() -> Examples
             .tags(t)
             .table(tb)
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(dbg!(pa)))
             .build()
     }
 
@@ -685,8 +685,16 @@ Scenario: Hello
   
 Rule: rule
     @tag
-    Scenario: Hello
-        Given a step
+    Scenario Outline: Hello
+        Given <step>
+        """
+        Doc String
+        """
+        
+    Examples:
+        | step |
+        | 1    | 
+        | 2    |
         
         
     @tag
@@ -707,9 +715,21 @@ Rule: rule
         assert_eq!(feature.rules[0].position.line, 14);
         assert_eq!(feature.rules[0].scenarios[0].position.line, 16);
         assert_eq!(feature.rules[0].scenarios[0].steps[0].position.line, 17);
-        assert_eq!(feature.rules[1].position.line, 21);
-        assert_eq!(feature.rules[1].scenarios[0].position.line, 22);
-        assert_eq!(feature.rules[1].scenarios[0].steps[0].position.line, 23);
+        assert_eq!(feature.rules[0].scenarios[0].examples[0].position.line, 22);
+        assert_eq!(
+            feature.rules[0].scenarios[0].examples[0]
+                .table
+                .position
+                .line,
+            23,
+        );
+        assert_eq!(
+            feature.rules[0].scenarios[0].examples[0].table.rows.len(),
+            3,
+        );
+        assert_eq!(feature.rules[1].position.line, 29);
+        assert_eq!(feature.rules[1].scenarios[0].position.line, 30);
+        assert_eq!(feature.rules[1].scenarios[0].steps[0].position.line, 31);
     }
 
     #[test]
