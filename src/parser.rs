@@ -668,7 +668,7 @@ Scenario: Hello
     }
 
     #[test]
-    fn correct_line_number() {
+    fn correct_line_numbers() {
         let env = GherkinEnv::default();
         let input = r#"
 # language: en
@@ -682,9 +682,9 @@ Scenario: Hello
 @tag
 Scenario: Hello
   Given a step
-  
+
   And more
-  
+
 # comment
 Rule: rule
     @tag
@@ -693,13 +693,13 @@ Rule: rule
         """
         Doc String
         """
-        
+
     Examples:
         | step |
-        | 1    | 
+        | 1    |
         | 2    |
-        
-        
+
+
     @tag
 Rule: rule
     #comment

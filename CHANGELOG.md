@@ -17,7 +17,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### Fixed
 
-- Fix line number reporting ([#33])
+- Incorrect line numbers reporting. ([#33])
 
 [#31]: /../../pull/31
 [#33]: /../../pull/33
