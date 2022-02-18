@@ -6,6 +6,20 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## [0.11.2] · 2022-02-18
+[0.11.2]: /../../tree/v0.11.2
+
+[Diff](/../../compare/v0.11.1...v0.11.2)
+
+### Fixed
+
+- Incorrect line numbers reporting. ([#33])
+
+[#33]: /../../pull/33
+
+
+
+
 ## [0.11.1] · 2021-12-08
 [0.11.1]: /../../tree/v0.11.1
 

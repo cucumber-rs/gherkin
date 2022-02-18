@@ -1,6 +1,6 @@
 [package]
 name = "gherkin"
-version = "0.11.1"
+version = "0.11.2"
 edition = "2018"
 description = """\
     Pure Rust implementation of Gherkin language (`.feature` file) for \
@@ -48,7 +48,7 @@ syn = "1.0"
 
 [dev-dependencies]
 async-trait = "0.1.40"
-cucumber = "0.10"
+cucumber = "0.11"
 futures = "0.3.5"
 
 [[test]]
