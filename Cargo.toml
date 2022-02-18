@@ -1,6 +1,6 @@
 [package]
 name = "gherkin"
-version = "0.11.1"
+version = "0.11.2"
 edition = "2018"
 description = """\
     Pure Rust implementation of Gherkin language (`.feature` file) for \
