@@ -109,7 +109,10 @@ impl GherkinEnv {
     }
 
     fn increment_nl(&self, offset: usize) {
-        self.line_offsets.borrow_mut().push(offset);
+        let mut line_offsets = self.line_offsets.borrow_mut();
+        if !line_offsets.contains(&offset) {
+            line_offsets.push(offset);
+        }
     }
 
     fn position(&self, offset: usize) -> LineCol {
@@ -199,15 +202,15 @@ rule language_directive() -> ()
     }
 
 rule docstring() -> String
-    = "\"\"\"" n:$((!"\"\"\""[_])*) "\"\"\"" nl_eof() {
+    = "\"\"\"" n:$((!"\"\"\"" (nl() / [_]))*) "\"\"\"" nl_eof() {
         textwrap::dedent(n)
     }
-    / "```" n:$((!"```"[_])*) "```" nl_eof() {
+    / "```" n:$((!"```"(nl() / [_]))*) "```" nl_eof() {
         textwrap::dedent(n)
     }
 
 rule table_cell() -> &'input str
-    = "|" _ !(nl0() / eof()) n:$((!"|"[_])*) { n }
+    = "|" _ !(nl0() / eof()) n:$((!("|" / nl0())[_])*) { n }
 
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
@@ -662,6 +665,76 @@ Scenario: Hello
         assert_eq!(feature.scenarios.len(), 1);
         assert!(feature.description.is_some());
         assert!(feature.scenarios[0].steps[0].position.line != 0);
+    }
+
+    #[test]
+    fn correct_line_numbers() {
+        let env = GherkinEnv::default();
+        let input = r#"
+# language: en
+Feature: Basic functionality
+        here's some text
+     really
+@tag
+Scenario: Hello
+  Given a step
+  Then a step
+@tag
+Scenario: Hello
+  Given a step
+
+  And more
+
+# comment
+Rule: rule
+    @tag
+    Scenario Outline: Hello
+        Given <step>
+        """
+        Doc String
+        """
+
+    Examples:
+        | step |
+        | 1    |
+        | 2    |
+
+
+    @tag
+Rule: rule
+    #comment
+    Scenario: Hello
+        Given a step
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.scenarios.len(), 2);
+        assert!(feature.description.is_some());
+        assert_eq!(feature.position.line, 3);
+        assert_eq!(feature.scenarios[0].position.line, 7);
+        assert_eq!(feature.scenarios[0].steps[0].position.line, 8);
+        assert_eq!(feature.scenarios[0].steps[1].position.line, 9);
+        assert_eq!(feature.scenarios[1].position.line, 11);
+        assert_eq!(feature.scenarios[1].steps[0].position.line, 12);
+        assert_eq!(feature.scenarios[1].steps[1].position.line, 14);
+        assert_eq!(feature.rules[0].position.line, 17);
+        assert_eq!(feature.rules[0].position.line, 17);
+        assert_eq!(feature.rules[0].scenarios[0].position.line, 19);
+        assert_eq!(feature.rules[0].scenarios[0].steps[0].position.line, 20);
+        assert_eq!(feature.rules[0].scenarios[0].examples[0].position.line, 25);
+        assert_eq!(
+            feature.rules[0].scenarios[0].examples[0]
+                .table
+                .position
+                .line,
+            26,
+        );
+        assert_eq!(
+            feature.rules[0].scenarios[0].examples[0].table.rows.len(),
+            3,
+        );
+        assert_eq!(feature.rules[1].position.line, 32);
+        assert_eq!(feature.rules[1].scenarios[0].position.line, 34);
+        assert_eq!(feature.rules[1].scenarios[0].steps[0].position.line, 35);
     }
 
     #[test]
