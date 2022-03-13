@@ -150,7 +150,7 @@ impl Default for GherkinEnv {
 peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
 
 rule _() = quiet!{[' ' | '\t']*}
-rule __() = quiet!{[' ' | '\t' | '\n']*}
+rule __() = quiet!{[' ' | '\t' | '\r' | '\n']*}
 
 rule nl0() = quiet!{"\r"? "\n"}
 rule nl() = quiet!{nl0() p:position!() comment()* {
@@ -167,6 +167,7 @@ rule keyword1(list: &[&str]) -> &'input str
         {list.iter().map(|x| x.chars().count()).max().unwrap()}
     >) {?
         // println!("Input: {}", &input);
+        // println!("Looking for: {}", list.join(","));
         if let Some(v) = list.iter().find(|x| input.starts_with(**x)) {
             env.set_keyword((*v).to_string());
             // println!("Found: {}", &v);
@@ -514,9 +515,9 @@ pub(crate) rule scenarios() -> Vec<Scenario>
 pub(crate) rule feature() -> Feature
     = _ language_directive()?
       nl()*
-      t:tags() nl()*
+      t:tags()
       pa:position!()
-      k:keyword((env.keywords().feature)) ":" _ n:not_nl()? _ nl()+
+      k:keyword((env.keywords().feature)) ":" _ n:not_nl()? _ nl_eof()
       d:description((&env.keywords().excluded_feature()))? nl()*
       b:background()? nl()*
       s:scenarios() nl()*
@@ -524,7 +525,6 @@ pub(crate) rule feature() -> Feature
       nl()*
     {?
         if let Err(e) = env.assert_no_error() {
-            println!("{:?}", e);
             Err(e)
         } else {
             Ok(Feature::builder()
@@ -540,10 +540,9 @@ pub(crate) rule feature() -> Feature
                 .build())
         }
     }
-    / (comment() / [' ' | '\t' | '\n']+)*
-    {
-        Feature::default()
-    }
+
+pub(crate) rule features() -> Vec<Feature>
+    = __ comment()* f:(feature() ** __ )? __ comment()* { f.unwrap_or_default() }
 
 pub(crate) rule tag_operation() -> TagOperation = precedence!{
     x:@ _ "and" _ y:(@) { TagOperation::And(Box::new(x), Box::new(y)) }
