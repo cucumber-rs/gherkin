@@ -117,7 +117,7 @@ impl GherkinEnv {
         let line = line_offsets
             .iter()
             .position(|x| x > &offset)
-            .unwrap_or_else(|| line_offsets.len());
+            .unwrap_or(line_offsets.len());
 
         let col = offset - line_offsets[line - 1] + 1;
 
@@ -558,6 +558,8 @@ pub(crate) rule tag_operation() -> TagOperation = precedence!{
 
 #[cfg(test)]
 mod test {
+    use crate::ast_checker;
+
     use super::*;
 
     const FOO: &str = "# language: formal\r\n
@@ -688,5 +690,94 @@ Scenario: Hello
         println!("{:#?}", feature);
         assert_eq!(feature.scenarios.len(), 0);
         assert!(feature.description.is_none());
+    }
+
+    #[test]
+    fn empty_feature() {
+        let env = GherkinEnv::default();
+        let input = " \n\t  \t\n\n ";
+        let feature = gherkin_parser::feature(input, &env);
+        assert!(feature.is_err());
+    }
+
+    #[test]
+    fn one_feature() {
+        let env = GherkinEnv::default();
+        let input = r#"Feature: Basic functionality
+        "#;
+        let features = gherkin_parser::features(input, &env).unwrap();
+        assert_eq!(features.len(), 1);
+    }
+
+    #[test]
+    fn no_feature() {
+        let env = GherkinEnv::default();
+        let input = " \n\t  \t\n\n ";
+        let features = gherkin_parser::features(input, &env).unwrap();
+        assert_eq!(features.len(), 0);
+    }
+
+    #[test]
+    fn multiple_features() {
+        let env = GherkinEnv::default();
+        let input = r#"Feature: Basic functionality
+        here's some text
+        really
+Scenario: Hello
+  Given a step
+
+Feature: Another"#;
+
+        // let features = gherkin_parser::features(input, &env);
+        // println!("{:?}", features.unwrap_err());
+        // println!("{:?}", env.last_error);
+        // panic!();
+
+        let features = gherkin_parser::features(input, &env).unwrap();
+        assert_eq!(features.len(), 2);
+    }
+
+    #[test]
+    fn fixture() {
+        // We cannot handle missing features very well yet
+        let skip = ["empty.feature", "incomplete_feature_3.feature"];
+        let mut failed = 0;
+
+        let d = env!("CARGO_MANIFEST_DIR");
+        let files = std::fs::read_dir(format!("{}/tests/fixtures/data/good/", d)).unwrap();
+        for file in files {
+            let file = file.unwrap();
+            let filename = file.file_name();
+            let filename = filename.to_str().unwrap();
+            if filename.ends_with(".feature") {
+                if skip.contains(&filename) {
+                    continue;
+                }
+                let res = std::panic::catch_unwind(|| {
+                    let env = GherkinEnv::default();
+                    let input = std::fs::read_to_string(format!(
+                        "{}/tests/fixtures/data/good/{}",
+                        d, filename
+                    ))
+                    .unwrap();
+                    let feature = gherkin_parser::feature(&input, &env).unwrap();
+                    let fixture = std::fs::read_to_string(format!(
+                        "{}/tests/fixtures/data/good/{}.ast.ndjson",
+                        d, filename
+                    ))
+                    .unwrap();
+                    println!("{:#?}", feature);
+                    ast_checker::check_ast(feature, &fixture);
+                });
+                if res.is_err() {
+                    failed += 1;
+                    println!("{}", filename);
+                }
+            }
+        }
+
+        if failed != 0 {
+            panic!("{} fixtures have failed", failed);
+        }
     }
 }

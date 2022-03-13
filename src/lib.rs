@@ -47,6 +47,9 @@ mod parser;
 #[cfg(feature = "parser")]
 pub mod tagexpr;
 
+#[cfg(test)]
+pub(crate) mod ast_checker;
+
 #[cfg(feature = "parser")]
 use std::path::Path;
 use std::{
