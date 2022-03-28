@@ -6,10 +6,10 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
-## [0.12.0] · 2022-??-??
+## [0.12.0] · 2022-03-28
 [0.12.0]: /../../tree/v0.12.0
 
-[Diff](/../../compare/v0.11.2...v0.12.0)
+[Diff](/../../compare/v0.11.2...v0.12.0) | [Milestone](/../../milestone/2)
 
 ### BC Breaks
 
