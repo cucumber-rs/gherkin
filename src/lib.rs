@@ -115,7 +115,10 @@ pub struct Background {
     /// The raw keyword used in the original source.
     pub keyword: String,
     /// The name of the background.
-    pub name: Option<String>,
+    pub name: String,
+    /// The description of the background, if found.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub description: Option<String>,
     /// The parsed steps from the background directive.
     pub steps: Vec<Step>,
     /// The `(start, end)` offset the background directive was found in the .feature file.
@@ -136,8 +139,11 @@ pub struct Examples {
     pub keyword: String,
     /// The name of the examples.
     pub name: Option<String>,
+    /// The description of the examples, if found.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub description: Option<String>,
     /// The data table from the examples directive.
-    pub table: Table,
+    pub table: Option<Table>,
     /// The tags for the examples directive if provided.
     #[cfg_attr(feature = "parser", builder(default))]
     pub tags: Vec<String>,
@@ -263,6 +269,9 @@ pub struct Rule {
     pub keyword: String,
     /// The name of the scenario.
     pub name: String,
+    /// The description of the rule, if found.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub description: Option<String>,
     /// The background of the rule, if found.
     #[cfg_attr(feature = "parser", builder(default))]
     pub background: Option<Background>,
@@ -289,6 +298,9 @@ pub struct Scenario {
     pub keyword: String,
     /// The name of the scenario.
     pub name: String,
+    /// The description of the scenario, if found.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub description: Option<String>,
     /// The parsed steps from the scenario directive.
     pub steps: Vec<Step>,
     // The parsed examples from the scenario directive if found.

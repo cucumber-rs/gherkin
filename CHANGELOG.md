@@ -11,11 +11,19 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 [Diff](/../../compare/v0.11.2...v0.12.0)
 
+### BC Breaks
+
+- Made `name` field of `Background` required. ([#32])
+- Make `table` field of `Examples` optional. ([#32])
+
 ### Added
 
 - Support text after `Background` and `Examples` keywords. ([#31])
+- `description` field to `Background`, `Examples`, `Rule` and `Scenario`. ([#32], [#10])
 
+[#10]: /../../issues/10
 [#31]: /../../pull/31
+[#32]: /../../pull/32
 
 
 

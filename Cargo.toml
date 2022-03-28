@@ -50,6 +50,7 @@ syn = "1.0"
 async-trait = "0.1.40"
 cucumber = "0.11"
 futures = "0.3.5"
+serde_json = "1.0.78"
 
 [[test]]
 name = "cucumber"
