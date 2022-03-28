@@ -14,8 +14,13 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 ### Added
 
 - Support text after `Background` and `Examples` keywords. ([#31])
+- Add `description` field to the `Background`, `Examples`, `Rule` and `Scenario`. ([#32], [#10])
+- Make `name` field of the `Background` required. ([#32])
+- Make `table` field of the `Examples` optional. ([#32])
 
+[#10]: /../../issues/10
 [#31]: /../../pull/31
+[#32]: /../../pull/32
 
 
 

@@ -153,7 +153,7 @@ impl Default for GherkinEnv {
 peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
 
 rule _() = quiet!{[' ' | '\t']*}
-rule __() = quiet!{[' ' | '\t' | '\r' | '\n']*}
+rule __() = quiet!{([' ' | '\t'] / nl())*}
 
 rule nl0() = quiet!{"\r"? "\n"}
 rule nl() = quiet!{nl0() p:position!() comment()* {
@@ -170,7 +170,6 @@ rule keyword1(list: &[&str]) -> &'input str
         {list.iter().map(|x| x.chars().count()).max().unwrap()}
     >) {?
         // println!("Input: {}", &input);
-        // println!("Looking for: {}", list.join(","));
         if let Some(v) = list.iter().find(|x| input.starts_with(**x)) {
             env.set_keyword((*v).to_string());
             // println!("Found: {}", &v);
@@ -194,11 +193,11 @@ rule keyword0(list: &[&str]) -> usize
 pub(crate) rule keyword<'a>(list: &[&'a str]) -> &'a str
     = comment()* len:keyword0(list) [_]*<{len}> {
         let kw = env.take_keyword();
-        <&[&str]>::clone(&list).iter().find(|x| **x == &*kw).unwrap()
+        list.iter().find(|x| **x == &*kw).unwrap()
     }
 
 rule language_directive() -> ()
-    = _ "#" _ "language" _ ":" _ l:$(not_nl()+) _ nl() {?
+    = __ "#" _ "language" _ ":" _ l:$(not_nl()+) _ nl() {?
         env.set_language(l)
     }
 
@@ -252,7 +251,7 @@ pub(crate) rule step() -> Step
         env.set_last_step(StepType::Given);
         Step::builder().ty(StepType::Given)
             .keyword(k.to_string())
-            .value(n.to_string())
+            .value(n.trim_end().to_string())
             .table(t)
             .docstring(d)
             .span(Span { start: pa, end: pb })
@@ -265,7 +264,7 @@ pub(crate) rule step() -> Step
         env.set_last_step(StepType::When);
         Step::builder().ty(StepType::When)
             .keyword(k.to_string())
-            .value(n.to_string())
+            .value(n.trim_end().to_string())
             .table(t)
             .docstring(d)
             .span(Span { start: pa, end: pb })
@@ -278,7 +277,7 @@ pub(crate) rule step() -> Step
         env.set_last_step(StepType::Then);
         Step::builder().ty(StepType::Then)
             .keyword(k.to_string())
-            .value(n.to_string())
+            .value(n.trim_end().to_string())
             .table(t)
             .docstring(d)
             .span(Span { start: pa, end: pb })
@@ -292,7 +291,7 @@ pub(crate) rule step() -> Step
             Some(v) => {
                 Ok(Step::builder().ty(v)
                     .keyword(k.to_string())
-                    .value(n.to_string())
+                    .value(n.trim_end().to_string())
                     .table(t)
                     .docstring(d)
                     .span(Span { start: pa, end: pb })
@@ -311,7 +310,7 @@ pub(crate) rule step() -> Step
             Some(v) => {
                 Ok(Step::builder().ty(v)
                     .keyword(k.to_string())
-                    .value(n.to_string())
+                    .value(n.trim_end().to_string())
                     .table(t)
                     .docstring(d)
                     .span(Span { start: pa, end: pb })
@@ -333,13 +332,13 @@ pub(crate) rule steps() -> Vec<Step>
 rule background() -> Background
     = comment()* _ pa:position!()
       k:keyword((env.keywords().background)) ":" _ n:not_nl()? nl_eof()
-      d:description((&env.keywords().excluded_background()))? nl()*
+      d:description((&env.keywords().excluded_background()))?
       s:steps()?
       pb:position!()
     {
         Background::builder()
             .keyword(k.into())
-            .name(n.map(str::to_string))
+            .name(n.unwrap_or_default().trim_end().to_string())
             .description(d.flatten())
             .steps(s.unwrap_or_default())
             .span(Span { start: pa, end: pb })
@@ -361,7 +360,7 @@ rule description_line(excluded: &[&str]) -> &'input str
     }
 
 rule description(excluded: &[&str]) -> Option<String>
-    = d:(description_line(excluded) ** _) {
+    = d:(description_line(excluded) ** _) __ {
         let d = d.join("\n");
         if d.trim() == "" {
             None
@@ -377,16 +376,16 @@ rule examples() -> Examples
       _
       pa:position!()
       k:keyword((env.keywords().examples)) ":" _ n:not_nl()? nl_eof()
-      d:description((&env.keywords().excluded_examples()))? nl()*
+      d:description((&env.keywords().excluded_examples()))?
       tb:table()?
       pb:position!()
     {
         Examples::builder()
             .keyword(k.into())
-            .name(n.map(str::to_owned))
+            .name(n.map(|n| n.trim_end().to_string()))
             .description(d.flatten())
             .tags(t)
-            .table(tb.unwrap_or_default())
+            .table(tb)
             .span(Span { start: pa, end: pb })
             .position(env.position(pa))
             .build()
@@ -399,14 +398,14 @@ rule scenario() -> Scenario
       _
       pa:position!()
       k:keyword((env.keywords().scenario)) ":" _ n:not_nl()? _ nl_eof()
-      d:description((&env.keywords().excluded_scenario()))? nl()*
+      d:description((&env.keywords().excluded_scenario()))?
       s:steps()?
       e:examples()*
       pb:position!()
     {
         Scenario::builder()
             .keyword(k.into())
-            .name(n.unwrap_or_default().to_string())
+            .name(n.unwrap_or_default().trim_end().to_string())
             .description(d.flatten())
             .tags(t)
             .steps(s.unwrap_or_default())
@@ -421,14 +420,14 @@ rule scenario() -> Scenario
       _
       pa:position!()
       k:keyword((env.keywords().scenario_outline)) ":" _ n:not_nl()? _ nl_eof()
-      d:description((&env.keywords().excluded_scenario_outline()))? nl()*
+      d:description((&env.keywords().excluded_scenario_outline()))?
       s:steps()?
       e:examples()*
       pb:position!()
     {
         Scenario::builder()
             .keyword(k.into())
-            .name(n.unwrap_or_default().to_string())
+            .name(n.unwrap_or_default().trim_end().to_string())
             .description(d.flatten())
             .tags(t)
             .steps(s.unwrap_or_default())
@@ -491,7 +490,7 @@ rule rule_() -> Rule
       _
       pa:position!()
       k:keyword((env.keywords().rule)) ":" _ n:not_nl()? _ nl_eof()
-      d:description((&env.keywords().excluded_rule()))? nl()*
+      d:description((&env.keywords().excluded_rule()))?
       b:background()? nl()*
       s:scenarios()? nl()*
     //   e:examples()?
@@ -499,7 +498,7 @@ rule rule_() -> Rule
     {
         Rule::builder()
             .keyword(k.into())
-            .name(n.unwrap_or_default().to_string())
+            .name(n.unwrap_or_default().trim_end().to_string())
             .description(d.flatten())
             .tags(t)
             .background(b)
@@ -521,7 +520,7 @@ pub(crate) rule feature() -> Feature
       t:tags()
       pa:position!()
       k:keyword((env.keywords().feature)) ":" _ n:not_nl()? _ nl_eof()
-      d:description((&env.keywords().excluded_feature()))? nl()*
+      d:description((&env.keywords().excluded_feature()))?
       b:background()? nl()*
       s:scenarios() nl()*
       r:rules() pb:position!()
@@ -533,7 +532,7 @@ pub(crate) rule feature() -> Feature
             Ok(Feature::builder()
                 .keyword(k.into())
                 .tags(t)
-                .name(n.unwrap_or_default().to_string())
+                .name(n.unwrap_or_default().trim_end().to_string())
                 .description(d.flatten())
                 .background(b)
                 .scenarios(s)
@@ -543,9 +542,6 @@ pub(crate) rule feature() -> Feature
                 .build())
         }
     }
-
-pub(crate) rule features() -> Vec<Feature>
-    = __ comment()* f:(feature() ** __ )? __ comment()* { f.unwrap_or_default() }
 
 pub(crate) rule tag_operation() -> TagOperation = precedence!{
     x:@ _ "and" _ y:(@) { TagOperation::And(Box::new(x), Box::new(y)) }
@@ -560,7 +556,7 @@ pub(crate) rule tag_operation() -> TagOperation = precedence!{
 
 #[cfg(test)]
 mod test {
-    use crate::ast_checker;
+    use std::collections::HashMap;
 
     use super::*;
 
@@ -740,12 +736,19 @@ Rule: rule
         assert_eq!(
             feature.rules[0].scenarios[0].examples[0]
                 .table
+                .as_ref()
+                .unwrap()
                 .position
                 .line,
             26,
         );
         assert_eq!(
-            feature.rules[0].scenarios[0].examples[0].table.rows.len(),
+            feature.rules[0].scenarios[0].examples[0]
+                .table
+                .as_ref()
+                .unwrap()
+                .rows
+                .len(),
             3,
         );
         assert_eq!(feature.rules[1].position.line, 32);
@@ -765,52 +768,7 @@ Rule: rule
     }
 
     #[test]
-    fn empty_feature() {
-        let env = GherkinEnv::default();
-        let input = " \n\t  \t\n\n ";
-        let feature = gherkin_parser::feature(input, &env);
-        assert!(feature.is_err());
-    }
-
-    #[test]
-    fn one_feature() {
-        let env = GherkinEnv::default();
-        let input = r#"Feature: Basic functionality
-        "#;
-        let features = gherkin_parser::features(input, &env).unwrap();
-        assert_eq!(features.len(), 1);
-    }
-
-    #[test]
-    fn no_feature() {
-        let env = GherkinEnv::default();
-        let input = " \n\t  \t\n\n ";
-        let features = gherkin_parser::features(input, &env).unwrap();
-        assert_eq!(features.len(), 0);
-    }
-
-    #[test]
-    fn multiple_features() {
-        let env = GherkinEnv::default();
-        let input = r#"Feature: Basic functionality
-        here's some text
-        really
-Scenario: Hello
-  Given a step
-
-Feature: Another"#;
-
-        // let features = gherkin_parser::features(input, &env);
-        // println!("{:?}", features.unwrap_err());
-        // println!("{:?}", env.last_error);
-        // panic!();
-
-        let features = gherkin_parser::features(input, &env).unwrap();
-        assert_eq!(features.len(), 2);
-    }
-
-    #[test]
-    fn fixture() {
+    fn fixture_good() {
         // We cannot handle missing features very well yet
         let skip = ["empty.feature", "incomplete_feature_3.feature"];
         let mut failed = 0;
@@ -829,17 +787,17 @@ Feature: Another"#;
                     let env = GherkinEnv::default();
                     let input = std::fs::read_to_string(format!(
                         "{}/tests/fixtures/data/good/{}",
-                        d, filename
+                        d, filename,
                     ))
                     .unwrap();
                     let feature = gherkin_parser::feature(&input, &env).unwrap();
                     let fixture = std::fs::read_to_string(format!(
                         "{}/tests/fixtures/data/good/{}.ast.ndjson",
-                        d, filename
+                        d, filename,
                     ))
                     .unwrap();
-                    println!("{:#?}", feature);
-                    ast_checker::check_ast(feature, &fixture);
+
+                    check_ast(&feature, &fixture);
                 });
                 if res.is_err() {
                     failed += 1;
@@ -848,8 +806,163 @@ Feature: Another"#;
             }
         }
 
-        if failed != 0 {
-            panic!("{} fixtures have failed", failed);
+        assert_eq!(failed, 0, "{} fixtures have failed", failed);
+    }
+
+    #[test]
+    fn fixture_fail() {
+        let d = env!("CARGO_MANIFEST_DIR");
+        let files = std::fs::read_dir(format!("{}/tests/fixtures/data/bad/", d)).unwrap();
+        for file in files {
+            let file = file.unwrap();
+            let filename = file.file_name();
+            let filename = filename.to_str().unwrap();
+            if filename.ends_with(".feature") {
+                let res = std::panic::catch_unwind(|| {
+                    let env = GherkinEnv::default();
+                    let input = std::fs::read_to_string(format!(
+                        "{}/tests/fixtures/data/bad/{}",
+                        d, filename,
+                    ))
+                    .unwrap();
+                    gherkin_parser::feature(&input, &env).unwrap()
+                });
+
+                assert!(res.is_err(), "{}: {:?}", filename, res.unwrap());
+            }
         }
+    }
+
+    // TODO: actually generate `.ndjson` file from the AST to fully assert
+    //       fixtures.
+    fn check_ast(parsed: &Feature, ast_parsed: &str) {
+        let d: HashMap<String, serde_json::Value> = serde_json::from_str(ast_parsed).unwrap();
+
+        let document = d
+            .get("gherkinDocument")
+            .expect("There is no document in the file");
+        let feature = document
+            .get("feature")
+            .expect("There is no feature in the document");
+        let children = feature.get("children");
+
+        if children.is_none() {
+            assert!(parsed.background.is_none());
+            assert_eq!(parsed.scenarios.len(), 0);
+            assert_eq!(parsed.rules.len(), 0);
+            return;
+        }
+
+        let mut backgrounds = 0;
+        let mut scenarios = 0;
+        let mut rules = 0;
+
+        let children = children.unwrap().as_array().unwrap();
+        for child in children {
+            if let Some(background) = child.get("background") {
+                let parsed_background = parsed.background.as_ref().unwrap();
+                let name = background.get("name").unwrap().as_str().unwrap();
+
+                assert_eq!(&parsed_background.name, name);
+
+                let steps = background.get("steps");
+
+                if steps.is_none() {
+                    assert_eq!(parsed_background.steps.len(), 0);
+                    continue;
+                }
+
+                let steps = steps
+                    .expect("steps")
+                    .as_array()
+                    .expect("Steps must be an array");
+                assert!(
+                    check_steps(&parsed_background.steps, steps),
+                    "Background steps are different from fixture",
+                );
+
+                backgrounds += 1;
+            } else if let Some(json_scenario) = child.get("scenario") {
+                assert!(
+                    check_scenario(&parsed.scenarios, json_scenario),
+                    "Scenario steps are different from fixture",
+                );
+
+                scenarios += 1;
+            } else if let Some(json_rule) = child.get("rule") {
+                let json_rule_scenarios = json_rule
+                    .get("children")
+                    .and_then(serde_json::Value::as_array)
+                    .map(|children| {
+                        children
+                            .iter()
+                            .filter_map(|child| child.get("scenario"))
+                            .collect::<Vec<_>>()
+                    });
+                let json_rule_name = json_rule.get("name").unwrap().as_str().unwrap();
+
+                let exists = parsed.rules.iter().any(|rule| {
+                    if rule.name == json_rule_name {
+                        return if let Some(json_scenarios) = &json_rule_scenarios {
+                            json_scenarios.len() == rule.scenarios.len()
+                                && json_scenarios.iter().all(|json_scenario| {
+                                    check_scenario(&rule.scenarios, json_scenario)
+                                })
+                        } else {
+                            rule.scenarios.is_empty()
+                        };
+                    }
+                    false
+                });
+
+                assert!(exists, "Scenario rules are different from fixture");
+
+                rules += 1;
+            } else {
+                panic!("Unknown child type: {:#?}", child);
+            }
+        }
+
+        if parsed.background.is_some() {
+            assert_eq!(1, backgrounds);
+        } else {
+            assert_eq!(0, backgrounds);
+        }
+
+        assert_eq!(parsed.scenarios.len(), scenarios);
+        assert_eq!(parsed.rules.len(), rules);
+    }
+
+    fn check_scenario(parsed: &[Scenario], json: &serde_json::Value) -> bool {
+        let json_steps = json.get("steps").and_then(serde_json::Value::as_array);
+        let json_scenario_name = json.get("name").unwrap().as_str().unwrap();
+
+        parsed.iter().any(|parsed| {
+            if parsed.name == json_scenario_name {
+                return if let Some(json_steps) = json_steps {
+                    check_steps(&parsed.steps, json_steps)
+                } else {
+                    parsed.steps.is_empty()
+                };
+            }
+            false
+        })
+    }
+
+    fn check_steps(parsed: &[Step], json: &[serde_json::Value]) -> bool {
+        if parsed.len() != json.len() {
+            return false;
+        }
+
+        for (step, json) in parsed.iter().zip(json) {
+            if step.keyword != json.get("keyword").unwrap().as_str().unwrap() {
+                return false;
+            }
+            if step.value != json.get("text").unwrap().as_str().unwrap() {
+                return false;
+            }
+        }
+
+        true
     }
 }

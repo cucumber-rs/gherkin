@@ -47,9 +47,6 @@ mod parser;
 #[cfg(feature = "parser")]
 pub mod tagexpr;
 
-#[cfg(test)]
-pub(crate) mod ast_checker;
-
 #[cfg(feature = "parser")]
 use std::path::Path;
 use std::{
@@ -118,7 +115,7 @@ pub struct Background {
     /// The raw keyword used in the original source.
     pub keyword: String,
     /// The name of the background.
-    pub name: Option<String>,
+    pub name: String,
     /// The description of the background, if found.
     #[cfg_attr(feature = "parser", builder(default))]
     pub description: Option<String>,
@@ -146,7 +143,7 @@ pub struct Examples {
     #[cfg_attr(feature = "parser", builder(default))]
     pub description: Option<String>,
     /// The data table from the examples directive.
-    pub table: Table,
+    pub table: Option<Table>,
     /// The tags for the examples directive if provided.
     #[cfg_attr(feature = "parser", builder(default))]
     pub tags: Vec<String>,
@@ -162,7 +159,7 @@ pub struct Examples {
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-#[derive(Debug, Clone, PartialEq, Hash, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Feature {
     /// The raw keyword used in the original source.
     pub keyword: String,
@@ -376,7 +373,7 @@ pub enum StepType {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
-#[derive(Debug, Clone, PartialEq, Hash, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Table {
     /// The rows of the data table. Each row is always the same length as the first row.
     pub rows: Vec<Vec<String>>,
