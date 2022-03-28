@@ -556,7 +556,7 @@ pub(crate) rule tag_operation() -> TagOperation = precedence!{
 
 #[cfg(test)]
 mod test {
-    use std::collections::HashMap;
+    use std::{collections::HashMap, fs};
 
     use super::*;
 
@@ -633,7 +633,7 @@ Scenario: Meow
     fn smoke2() {
         let env = GherkinEnv::default();
         let d = env!("CARGO_MANIFEST_DIR");
-        let s = std::fs::read_to_string(format!("{}/tests/test.feature", d)).unwrap();
+        let s = fs::read_to_string(format!("{}/tests/test.feature", d)).unwrap();
         assert!(gherkin_parser::feature(&s, &env).is_ok());
     }
 
@@ -769,12 +769,12 @@ Rule: rule
 
     #[test]
     fn fixture_good() {
-        // We cannot handle missing features very well yet
+        // We cannot handle missing features very well yet.
         let skip = ["empty.feature", "incomplete_feature_3.feature"];
         let mut failed = 0;
 
         let d = env!("CARGO_MANIFEST_DIR");
-        let files = std::fs::read_dir(format!("{}/tests/fixtures/data/good/", d)).unwrap();
+        let files = fs::read_dir(format!("{}/tests/fixtures/data/good/", d)).unwrap();
         for file in files {
             let file = file.unwrap();
             let filename = file.file_name();
@@ -785,13 +785,11 @@ Rule: rule
                 }
                 let res = std::panic::catch_unwind(|| {
                     let env = GherkinEnv::default();
-                    let input = std::fs::read_to_string(format!(
-                        "{}/tests/fixtures/data/good/{}",
-                        d, filename,
-                    ))
-                    .unwrap();
+                    let input =
+                        fs::read_to_string(format!("{}/tests/fixtures/data/good/{}", d, filename,))
+                            .unwrap();
                     let feature = gherkin_parser::feature(&input, &env).unwrap();
-                    let fixture = std::fs::read_to_string(format!(
+                    let fixture = fs::read_to_string(format!(
                         "{}/tests/fixtures/data/good/{}.ast.ndjson",
                         d, filename,
                     ))
@@ -812,7 +810,7 @@ Rule: rule
     #[test]
     fn fixture_fail() {
         let d = env!("CARGO_MANIFEST_DIR");
-        let files = std::fs::read_dir(format!("{}/tests/fixtures/data/bad/", d)).unwrap();
+        let files = fs::read_dir(format!("{}/tests/fixtures/data/bad/", d)).unwrap();
         for file in files {
             let file = file.unwrap();
             let filename = file.file_name();
@@ -820,11 +818,9 @@ Rule: rule
             if filename.ends_with(".feature") {
                 let res = std::panic::catch_unwind(|| {
                     let env = GherkinEnv::default();
-                    let input = std::fs::read_to_string(format!(
-                        "{}/tests/fixtures/data/bad/{}",
-                        d, filename,
-                    ))
-                    .unwrap();
+                    let input =
+                        fs::read_to_string(format!("{}/tests/fixtures/data/bad/{}", d, filename,))
+                            .unwrap();
                     gherkin_parser::feature(&input, &env).unwrap()
                 });
 
@@ -833,7 +829,7 @@ Rule: rule
         }
     }
 
-    // TODO: actually generate `.ndjson` file from the AST to fully assert
+    // TODO: Actually generate `.ndjson` file from the AST to fully assert
     //       fixtures.
     fn check_ast(parsed: &Feature, ast_parsed: &str) {
         let d: HashMap<String, serde_json::Value> = serde_json::from_str(ast_parsed).unwrap();
