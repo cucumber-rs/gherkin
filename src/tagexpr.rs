@@ -8,9 +8,9 @@
 
 //! ### Tag expressions
 //!
-//! You can read about tag expressions in the [Cucumber documentation](https://cucumber.io/docs/cucumber/api/#tag-expressions).
+//! You can read about tag expressions in the [Cucumber documentation](https://cucumber.io/docs/cucumber/api#tag-expressions).
 //!
-//! This implements the parsing apparatus for these expressions so that other crates like [cucumber_rust](https://github.com/bbqsrc/cucumber-rust)
+//! This implements the parsing apparatus for these expressions so that other crates like [`cucumber`](https://github.com/cucumber-rs/cucumber)
 //! may take advantage of them.
 //!
 //! #### Usage

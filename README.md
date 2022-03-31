@@ -8,20 +8,27 @@ Gherkin language for Rust
 
 [Changelog](https://github.com/cucumber-rs/gherkin/blob/main/CHANGELOG.md)
 
-A pure Rust implementation of the Gherkin (`.feature` file) language for the Cucumber testing framework.
+A pure [Rust] implementation of the [Gherkin] (`.feature` file) language for the [Cucumber] testing framework.
 
-If you want to run Cucumber tests in Rust, try [cucumber-rust](https://github.com/bbqsrc/cucumber-rust)!
+If you want to run [Cucumber] tests in [Rust], try [`cucumber` crate](https://github.com/cucumber-rs/cucumber)!
+
+
+
 
 ## Usage
 
 ```toml
 [dependencies]
-gherkin = "0.11"
+gherkin = "0.12"
 ```
+
+
+
 
 ## Further information
 
-For a detailed description of Gherkin usage, you can refer to upstream Cucumber documentation.
+For a detailed description of [Gherkin] usage, you can refer to upstream [Cucumber] documentation.
+
 
 ### Upstream documentation
 
@@ -29,8 +36,11 @@ For a detailed description of Gherkin usage, you can refer to upstream Cucumber 
    * [the Gherkin readme](https://github.com/cucumber/cucumber/blob/master/gherkin/README.md)
    * [the Gherkin contributing guide](https://github.com/cucumber/cucumber/blob/master/gherkin/CONTRIBUTING.md)
 1. for Cucumber **users**:
-   * [the Cucumber user documentation](https://cucumber.io/docs/cucumber/).
-   * [the Gherkin user documentation](https://cucumber.io/docs/gherkin/).
+   * [the Cucumber user documentation](https://cucumber.io/docs/cucumber).
+   * [the Gherkin user documentation](https://cucumber.io/docs/gherkin).
+
+
+
 
 ## License
 
@@ -42,3 +52,10 @@ This project is licensed under either of
 at your option.
 
 [Original source](https://github.com/cucumber/cucumber/blob/master/gherkin/gherkin-languages.json) of `src/languages.json` is used under the [MIT license](https://github.com/cucumber/cucumber/blob/master/gherkin/LICENSE).
+
+
+
+
+[Cucumber]: https://cucumber.io
+[Gherkin]: https://cucumber.io/docs/gherkin
+[Rust]: https://www.rust-lang.org
