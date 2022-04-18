@@ -1,6 +1,6 @@
 [package]
 name = "gherkin"
-version = "0.12.0"
+version = "0.13.0-dev"
 edition = "2018"
 description = """\
     Pure Rust implementation of Gherkin language (`.feature` file) for \
@@ -27,7 +27,7 @@ parser = ["typed-builder"]
 
 [dependencies]
 peg = "0.6.3"
-textwrap = "0.15.0"
+textwrap = "0.15"
 thiserror = "1.0.20"
 
 # "parser" feature dependencies.

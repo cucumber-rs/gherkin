@@ -6,6 +6,18 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## [0.13.0] · 2022-??-?? · To-be-done
+[0.13.0]: /../../tree/v0.13.0
+
+[Diff](/../../compare/v0.12.0...v0.13.0) | [Milestone](/../../milestone/4)
+
+### BC Breaks
+
+- Bump up [MSRV] to 1.51 to support newer versions of dependencies.
+
+
+
+
 ## [0.12.0] · 2022-03-28
 [0.12.0]: /../../tree/v0.12.0
 
