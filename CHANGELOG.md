@@ -6,14 +6,14 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
-## [0.13.0] · 2022-??-?? · To-be-done
+## [0.13.0] · 2022-??-?? (unreleased)
 [0.13.0]: /../../tree/v0.13.0
 
 [Diff](/../../compare/v0.12.0...v0.13.0) | [Milestone](/../../milestone/4)
 
 ### BC Breaks
 
-- Bump up [MSRV] to 1.51 to support newer versions of dependencies.
+- Bump up [MSRV] to 1.54 to support newer versions of dependencies.
 
 
 
@@ -104,4 +104,5 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+[MSRV]: https://doc.rust-lang.org/cargo/reference/manifest.html#the-rust-version-field
 [Semantic Versioning 2.0.0]: https://semver.org
