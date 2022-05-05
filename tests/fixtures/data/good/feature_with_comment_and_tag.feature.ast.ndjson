@@ -1,0 +1,1 @@
+{"gherkinDocument":{"comments":["comment"],"feature":{"children":[],"description":"","keyword":"Feature","language":"en","location":{"column":1,"line":1},"name":"feature","tags":["tag"]},"uri":"testdata/good/feature_with_comment.feature"}}
