@@ -31,7 +31,7 @@ textwrap = "0.15"
 thiserror = "1.0.20"
 
 # "parser" feature dependencies.
-typed-builder = { version = "0.7", optional = true }
+typed-builder = { version = "0.10", optional = true }
 
 # "serde" feature enables ability to serialize/deserialize AST.
 serde = { version = "1.0.103", features = ["derive"], optional = true }
@@ -40,7 +40,7 @@ serde = { version = "1.0.103", features = ["derive"], optional = true }
 juniper = { version = "0.15.3", default-features = false, optional = true }
 
 [build-dependencies]
-heck = "0.3"
+heck = "0.4"
 quote = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

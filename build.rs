@@ -21,9 +21,9 @@ struct Data {
     when: Vec<String>,
 }
 
-use heck::ShoutySnakeCase;
-
 fn main() {
+    use heck::ToShoutySnakeCase as _;
+
     let out_dir = std::env::var_os("OUT_DIR").unwrap();
     let out_dir = Path::new(&out_dir);
 
