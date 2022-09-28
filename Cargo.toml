@@ -37,7 +37,7 @@ typed-builder = { version = "0.10", optional = true }
 serde = { version = "1.0.103", features = ["derive"], optional = true }
 
 # "juniper" feature enables ability to use AST as GraphQL types.
-juniper = { version = "0.15.3", default-features = false, optional = true }
+juniper = { version = "0.15.10", default-features = false, optional = true }
 
 [build-dependencies]
 heck = "0.4"
@@ -47,8 +47,7 @@ serde_json = "1.0"
 syn = "1.0"
 
 [dev-dependencies]
-async-trait = "0.1.40"
-cucumber = "0.13"
+cucumber = "0.14"
 futures = "0.3.5"
 serde_json = "1.0.78"
 

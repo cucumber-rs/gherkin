@@ -1,20 +1,10 @@
 use std::convert::Infallible;
 
-use async_trait::async_trait;
-use cucumber::WorldInit;
+use cucumber::World;
 use futures::executor;
 
-#[derive(Debug, WorldInit)]
+#[derive(Debug, Default, World)]
 pub struct MyWorld;
-
-#[async_trait(?Send)]
-impl cucumber::World for MyWorld {
-    type Error = Infallible;
-
-    async fn new() -> Result<Self, Self::Error> {
-        Ok(MyWorld {})
-    }
-}
 
 fn main() {
     // Do any setup you need to do before running the Cucumber runner.

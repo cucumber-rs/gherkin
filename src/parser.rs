@@ -526,6 +526,7 @@ pub(crate) rule feature() -> Feature
       r:rules() pb:position!()
       nl()*
     {?
+        #[allow(clippy::question_mark)]
         if let Err(e) = env.assert_no_error() {
             Err(e)
         } else {
