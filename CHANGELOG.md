@@ -13,7 +13,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### BC Breaks
 
-- Bump up [MSRV] to 1.54 to support newer versions of dependencies.
+- Bump up [MSRV] to 1.62 to support newer versions of dependencies.
 
 
 
