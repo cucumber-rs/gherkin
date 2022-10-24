@@ -120,9 +120,14 @@ jobs:
       - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: ${{ matrix.toolchain }}
+          components: rust-src
       - run: rustup default ${{ matrix.toolchain }}
 
-      - run: cargo test --all-features
+      - run: cargo install cargo-careful
+        if: ${{ matrix.toolchain == 'nightly' }}
+
+      - run: cargo ${{ (matrix.toolchain == 'nightly' && 'careful') || '' }}
+                   test --all-features
 
 
 
