@@ -156,12 +156,16 @@ rule _() = quiet!{[' ' | '\t']*}
 rule __() = quiet!{([' ' | '\t'] / nl())*}
 
 rule nl0() = quiet!{"\r"? "\n"}
-rule nl() = quiet!{nl0() p:position!() comment()* {
+rule nl_no_comment() = quiet!{nl0() p:position!() {
+    env.increment_nl(p);
+}}
+rule nl() = quiet!{comment_no_nl()? nl0() p:position!() {
     env.increment_nl(p);
 }}
 rule eof() = quiet!{![_]}
 rule nl_eof() = quiet!{(nl() / [' ' | '\t'])+ / eof()}
-rule comment() = quiet!{[' ' | '\t']* "#" $((!nl0()[_])*) nl_eof()}
+rule comment_no_nl() = quiet!{[' ' | '\t']* "#" $((!nl0()[_])*)}
+rule comment() = quiet!{comment_no_nl() nl_eof()}
 rule not_nl() -> &'input str = n:$((!nl0()[_])+) { n }
 
 rule keyword1(list: &[&str]) -> &'input str
@@ -197,7 +201,7 @@ pub(crate) rule keyword<'a>(list: &[&'a str]) -> &'a str
     }
 
 rule language_directive() -> ()
-    = __ "#" _ "language" _ ":" _ l:$(not_nl()+) _ nl() {?
+    = ([' ' | '\t'] / nl_no_comment())* "#" _ "language" _ ":" _ l:$(not_nl()+) _ nl() {?
         env.set_language(l)
     }
 
