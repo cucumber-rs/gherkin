@@ -17,7 +17,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### Fixed
 
-- Parsing error on `Feature` with comment and tag (#37, #35)
+- Parsing error on a `Feature` having comment and `Tag` simultaneously. (#37, #35)
 
 [#35]: /../../issues/35
 [#37]: /../../pull/37
