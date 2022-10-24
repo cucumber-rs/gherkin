@@ -6,7 +6,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
-## [0.13.0] · 2022-??-?? (unreleased)
+## [0.13.0] · 2022-10-24
 [0.13.0]: /../../tree/v0.13.0
 
 [Diff](/../../compare/v0.12.0...v0.13.0) | [Milestone](/../../milestone/4)

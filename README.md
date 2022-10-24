@@ -19,7 +19,7 @@ If you want to run [Cucumber] tests in [Rust], try [`cucumber` crate](https://gi
 
 ```toml
 [dependencies]
-gherkin = "0.12"
+gherkin = "0.13"
 ```
 
 
