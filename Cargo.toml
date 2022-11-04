@@ -2,6 +2,7 @@
 name = "gherkin"
 version = "0.13.0"
 edition = "2018"
+rust-version = "1.62"
 description = """\
     Pure Rust implementation of Gherkin language (`.feature` file) for \
     Cucumber testing framework.\
@@ -23,7 +24,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 [features]
 default = ["parser"]
 # Enables ability to parse AST.
-parser = ["typed-builder"]
+parser = ["dep:typed-builder"]
 
 [dependencies]
 peg = "0.6.3"
