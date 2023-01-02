@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Brendan Molloy <brendan@bbqsrc.net>
+// Copyright (c) 2018-2023  Brendan Molloy <brendan@bbqsrc.net>
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
