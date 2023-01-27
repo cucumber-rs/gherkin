@@ -1,10 +1,11 @@
 Gherkin language for Rust
 =========================
 
-[![Documentation](https://docs.rs/gherkin/badge.svg)](https://docs.rs/gherkin)
-[![CI](https://github.com/cucumber-rs/gherkin/workflows/CI/badge.svg?branch=main "CI")](https://github.com/cucumber-rs/gherkin/actions?query=workflow%3ACI+branch%3Amain)
+[![crates.io](https://img.shields.io/crates/v/gherkin.svg "crates.io")](https://crates.io/crates/gherkin)
 [![Rust 1.62+](https://img.shields.io/badge/rustc-1.62+-lightgray.svg "Rust 1.62+")](https://blog.rust-lang.org/2022/06/30/Rust-1.62.0.html)
-[![Unsafe Forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](https://github.com/rust-secure-code/safety-dance)
+[![Unsafe Forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg "Unsafe forbidden")](https://github.com/rust-secure-code/safety-dance)  
+[![CI](https://github.com/cucumber-rs/gherkin/workflows/CI/badge.svg?branch=main "CI")](https://github.com/cucumber-rs/gherkin/actions?query=workflow%3ACI+branch%3Amain)
+[![Rust docs](https://docs.rs/gherkin/badge.svg "Rust docs")](https://docs.rs/gherkin)
 
 [Changelog](https://github.com/cucumber-rs/gherkin/blob/main/CHANGELOG.md)
 
