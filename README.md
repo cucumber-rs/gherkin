@@ -34,7 +34,7 @@ For a detailed description of [Gherkin] usage, you can refer to upstream [Cucumb
 ### Upstream documentation
 
 1. for Cucumber **developers**:
-   * [the Gherkin readme](https://github.com/cucumber/cucumber/blob/master/gherkin/README.md)
+   * [the Gherkin readme](https://github.com/cucumber/cucumber/blob/main/README.md)
    * [the Gherkin contributing guide](https://github.com/cucumber/cucumber/blob/master/gherkin/CONTRIBUTING.md)
 1. for Cucumber **users**:
    * [the Cucumber user documentation](https://cucumber.io/docs/cucumber).
