@@ -6,6 +6,25 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## [0.14.0] · 2023-07-14
+[0.14.0]: /../../tree/v0.14.0
+
+[Diff](/../../compare/v0.13.0...v0.14.0)
+
+### BC Breaks
+
+- Bump up [MSRV] to 1.65 to support newer versions of dependencies.
+
+### Upgraded
+
+- [`syn`] crate to 2.0 version. ([bdf31e7c])
+- [`typed-builder`] crate to 0.15 version. ([bdf31e7c])
+
+[bdf31e7c]: /../../commit/bdf31e7c093b6a3c74155d140125978cb3f6a4dc
+
+
+
+
 ## [0.13.0] · 2022-10-24
 [0.13.0]: /../../tree/v0.13.0
 
@@ -111,5 +130,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+[`syn`]: https://docs.rs/syn
+[`typed-builder`]: https://docs.rs/typed-builder
 [MSRV]: https://doc.rust-lang.org/cargo/reference/manifest.html#the-rust-version-field
 [Semantic Versioning 2.0.0]: https://semver.org

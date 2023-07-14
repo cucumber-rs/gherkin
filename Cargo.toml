@@ -2,7 +2,7 @@
 name = "gherkin"
 version = "0.13.0"
 edition = "2018"
-rust-version = "1.62"
+rust-version = "1.65"
 description = """\
     Pure Rust implementation of Gherkin language (`.feature` file) for \
     Cucumber testing framework.\
