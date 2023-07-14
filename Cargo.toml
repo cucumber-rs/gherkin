@@ -32,7 +32,7 @@ textwrap = "0.16"
 thiserror = "1.0.20"
 
 # "parser" feature dependencies.
-typed-builder = { version = "0.11", optional = true }
+typed-builder = { version = "0.15", optional = true }
 
 # "serde" feature enables ability to serialize/deserialize AST.
 serde = { version = "1.0.103", features = ["derive"], optional = true }
@@ -45,10 +45,10 @@ heck = "0.4"
 quote = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-syn = "1.0"
+syn = "2.0"
 
 [dev-dependencies]
-cucumber = "0.19"
+cucumber = "0.20"
 futures = "0.3.5"
 serde_json = "1.0.78"
 
