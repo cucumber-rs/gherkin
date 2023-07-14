@@ -34,8 +34,8 @@ For a detailed description of [Gherkin] usage, you can refer to upstream [Cucumb
 ### Upstream documentation
 
 1. for Cucumber **developers**:
-   * [the Gherkin readme](https://github.com/cucumber/cucumber/blob/master/gherkin/README.md)
-   * [the Gherkin contributing guide](https://github.com/cucumber/cucumber/blob/master/gherkin/CONTRIBUTING.md)
+   * [the Gherkin readme](https://github.com/cucumber/gherkin/blob/main/README.md)
+   * [the Gherkin contributing guide](https://github.com/cucumber/gherkin/blob/main/CONTRIBUTING.md)
 1. for Cucumber **users**:
    * [the Cucumber user documentation](https://cucumber.io/docs/cucumber).
    * [the Gherkin user documentation](https://cucumber.io/docs/gherkin).
@@ -52,7 +52,7 @@ This project is licensed under either of
 
 at your option.
 
-[Original source](https://github.com/cucumber/cucumber/blob/master/gherkin/gherkin-languages.json) of `src/languages.json` is used under the [MIT license](https://github.com/cucumber/cucumber/blob/master/gherkin/LICENSE).
+[Original source](https://github.com/cucumber/gherkin/blob/main/gherkin-languages.json) of `src/languages.json` is used under the [MIT license](https://github.com/cucumber/gherkin/blob/main/LICENSE).
 
 
 
