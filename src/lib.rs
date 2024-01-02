@@ -387,7 +387,7 @@ pub struct Table {
 
 impl Table {
     pub fn row_width(&self) -> usize {
-        self.rows.get(0).map(Vec::len).unwrap_or_default()
+        self.rows.first().map(Vec::len).unwrap_or_default()
     }
 }
 
