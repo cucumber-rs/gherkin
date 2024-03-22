@@ -82,7 +82,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        msrv: ["1.65.0"]
+        msrv: ["1.73.0"]
         os:
           - ubuntu
           - macOS

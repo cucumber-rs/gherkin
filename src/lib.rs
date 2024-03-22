@@ -76,7 +76,7 @@ pub struct Span {
 }
 
 #[cfg(feature = "juniper")]
-#[cfg_attr(feature = "juniper", juniper::graphql_object)]
+#[juniper::graphql_object]
 impl Span {
     pub fn start(&self) -> i32 {
         self.start as i32
@@ -95,7 +95,7 @@ pub struct LineCol {
 }
 
 #[cfg(feature = "juniper")]
-#[cfg_attr(feature = "juniper", juniper::graphql_object)]
+#[juniper::graphql_object]
 impl LineCol {
     pub fn line(&self) -> i32 {
         self.line as i32
@@ -188,7 +188,7 @@ pub struct Feature {
     pub position: LineCol,
     /// The path supplied for the parsed `Feature`, if known.
     #[cfg_attr(feature = "parser", builder(default))]
-    #[cfg_attr(feature = "juniper", graphql(skip))]
+    #[cfg_attr(feature = "juniper", graphql(ignore))]
     pub path: Option<PathBuf>,
 }
 

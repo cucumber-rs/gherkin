@@ -6,6 +6,24 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## [0.15.0] · 2024-??-?? (unreleased)
+[0.15.0]: /../../tree/v0.15.0
+
+[Diff](/../../compare/v0.14.0...v0.15.0)
+
+### BC Breaks
+
+- Bump up [MSRV] to 1.73 to support newer versions of dependencies. ([todo])
+
+### Upgraded
+
+- [`juniper`] crate to 0.16 version. ([todo])
+
+[todo]: /../../commit/todo
+
+
+
+
 ## [0.14.0] · 2023-07-14
 [0.14.0]: /../../tree/v0.14.0
 
