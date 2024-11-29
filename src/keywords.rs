@@ -129,7 +129,7 @@ impl<'a> Keywords<'a> {
     }
 }
 
-impl<'a> Default for Keywords<'a> {
+impl Default for Keywords<'_> {
     fn default() -> Self {
         EN
     }
