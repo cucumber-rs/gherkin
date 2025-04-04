@@ -32,7 +32,7 @@ textwrap = "0.16"
 thiserror = "2.0"
 
 # "parser" feature dependencies.
-typed-builder = { version = "0.20", optional = true }
+typed-builder = { version = "0.21", optional = true }
 
 # "serde" feature enables ability to serialize/deserialize AST.
 serde = { version = "1.0.103", features = ["derive"], optional = true }
