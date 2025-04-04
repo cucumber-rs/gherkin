@@ -4,7 +4,7 @@ Gherkin language for Rust
 [![crates.io](https://img.shields.io/crates/v/gherkin.svg "crates.io")](https://crates.io/crates/gherkin)
 [![Rust 1.73+](https://img.shields.io/badge/rustc-1.73+-lightgray.svg "Rust 1.73+")](https://blog.rust-lang.org/2023/10/05/Rust-1.73.0.html)
 [![Unsafe Forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg "Unsafe forbidden")](https://github.com/rust-secure-code/safety-dance)  
-[![CI](https://github.com/cucumber-rs/gherkin/workflows/CI/badge.svg?branch=main "CI")](https://github.com/cucumber-rs/gherkin/actions?query=workflow%3ACI+branch%3Amain)
+[![CI](https://github.com/cucumber-rs/gherkin/actions/workflows/ci.yml/badge.svg?branch=main "CI")](https://github.com/cucumber-rs/gherkin/actions?query=workflow%3ACI+branch%3Amain)
 [![Rust docs](https://docs.rs/gherkin/badge.svg "Rust docs")](https://docs.rs/gherkin)
 
 [Changelog](https://github.com/cucumber-rs/gherkin/blob/main/CHANGELOG.md)
