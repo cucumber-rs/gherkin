@@ -213,17 +213,20 @@ rule docstring() -> String
         textwrap::dedent(n)
     }
 
-rule table_cell() -> &'input str
-    = "|" _ !(nl0() / eof()) n:$(("\\n" / "\\|" / "\\\\" / !("|" / nl0())[_])*) { n }
+rule escaped_cell_char() -> &'input str
+    = "\\n" { "\n" } / "\\|" { "|" } / "\\\\" { "\\" }
+
+rule table_cell() -> Vec<&'input str>
+    = "|" _ !(nl0() / eof()) n:((escaped_cell_char() / $(!("|" / nl0())[_]))*) { n }
 
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
         n.into_iter()
-            .map(str::trim)
             .map(|s|
-                s.replace("\\n", "\n")
-                    .replace("\\|", "|")
-                    .replace("\\\\", "\\")
+                s.into_iter()
+                    .collect::<String>()
+                    .trim_matches([' ', '\t'])
+                    .to_string()
             )
             .collect()
     }
