@@ -772,6 +772,34 @@ Rule: rule
     }
 
     #[test]
+    fn escape_examples() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Examples:
+      | value |
+      | \n    |
+      | \|    |
+      | \\    |
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+
+        assert_eq!(
+            feature.scenarios[0].examples[0]
+                .table
+                .as_ref()
+                .unwrap()
+                .rows,
+            vec![
+                vec!["\n".to_string()],
+                vec!["|".to_string()],
+                vec!["\\".to_string()]
+            ]
+        );
+    }
+
+    #[test]
     fn fixture_good() {
         // We cannot handle missing features very well yet.
         let skip = ["empty.feature", "incomplete_feature_3.feature"];
