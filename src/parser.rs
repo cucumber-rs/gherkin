@@ -214,13 +214,17 @@ rule docstring() -> String
     }
 
 rule table_cell() -> &'input str
-    = "|" _ !(nl0() / eof()) n:$((!("|" / nl0())[_])*) { n }
+    = "|" _ !(nl0() / eof()) n:$(("\\n" / "\\|" / "\\\\" / !("|" / nl0())[_])*) { n }
 
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
         n.into_iter()
             .map(str::trim)
-            .map(str::to_string)
+            .map(|s|
+                s.replace("\\n", "\n")
+                    .replace("\\|", "|")
+                    .replace("\\\\", "\\")
+            )
             .collect()
     }
 
@@ -792,6 +796,7 @@ Feature: Foo
                 .unwrap()
                 .rows,
             vec![
+                vec!["value".to_string()],
                 vec!["\n".to_string()],
                 vec!["|".to_string()],
                 vec!["\\".to_string()]
