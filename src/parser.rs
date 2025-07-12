@@ -217,7 +217,7 @@ rule escaped_cell_char() -> &'input str
     = "\\n" { "\n" } / "\\|" { "|" } / "\\\\" { "\\" }
 
 rule table_cell() -> Vec<&'input str>
-    = "|" _ !(nl0() / eof()) n:((escaped_cell_char() / $(!("|" / nl0())[_]))*) { n }
+    = "|" _ !(nl0() / eof()) n:((escaped_cell_char() / $(!("|" / "\\" / nl0())[_]))*) { n }
 
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
@@ -809,6 +809,19 @@ Feature: Foo
                 vec!["\\\\".to_string()],
             ]
         );
+    }
+
+    #[test]
+    fn reject_invalid_example_escape_sequence() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Examples:
+      | value |
+      | \     |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
     }
 
     #[test]
