@@ -786,6 +786,8 @@ Feature: Foo
       | \n    |
       | \|    |
       | \\    |
+      | \\n   |
+      | \\\\  |
 "#;
         let feature = gherkin_parser::feature(input, &env).unwrap();
 
@@ -799,7 +801,9 @@ Feature: Foo
                 vec!["value".to_string()],
                 vec!["\n".to_string()],
                 vec!["|".to_string()],
-                vec!["\\".to_string()]
+                vec!["\\".to_string()],
+                vec!["\\n".to_string()],
+                vec!["\\\\".to_string()],
             ]
         );
     }
