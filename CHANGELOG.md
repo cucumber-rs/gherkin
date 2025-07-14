@@ -13,13 +13,18 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### BC Breaks
 
-- Bump up [MSRV] to 1.73 to support newer versions of dependencies. ([todo])
+- Bump up [MSRV] to 1.73 to support newer versions of dependencies. ([32c84349])
+
+### Fixed
+
+- Incorrect parsing of [escape sequences in table cells](https://cucumber.io/docs/gherkin/reference#table-cell-escaping). ([#47])
 
 ### Upgraded
 
-- [`juniper`] crate to 0.16 version. ([todo])
+- [`juniper`] crate to 0.16 version. ([32c84349])
 
-[todo]: /../../commit/todo
+[#47]: /../../pull/47
+[32c84349]: /../../commit/32c843493ee2b7655ccabefb32dc92bccf231adb
 
 
 
