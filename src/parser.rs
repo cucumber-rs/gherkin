@@ -222,19 +222,29 @@ rule table_cell() -> Vec<&'input str>
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
         n.into_iter()
-            .map(|s| match s.len() {
-                0 => String::new(),
-                1 => s.first().unwrap().trim_matches([' ', '\t']).to_owned(),
-                len => iter::once(s.first()
-                        .map(|f| f.trim_start_matches([' ', '\t'])))
-                        .flatten()
-                    .chain(s.iter()
-                        .skip(1).take(len.saturating_sub(2))
-                        .copied())
-                    .chain(iter::once(s.last()
-                        .map(|l| l.trim_end_matches([' ', '\t'])))
-                        .flatten())
-                    .collect::<String>()
+            .map(|s| {
+                let Some((start, first)) = s.iter().enumerate()
+                    .find_map(|(n, s)| {
+                        let trimmed = s.trim_start_matches([' ', '\t']);
+                        (!trimmed.is_empty()).then_some((n, trimmed))
+                    }) else { return String::new() };
+                let Some((end, last)) = s.iter().enumerate().rev()
+                    .find_map(|(n, s)| {
+                        let trimmed = s.trim_end_matches([' ', '\t']);
+                        (!trimmed.is_empty()).then_some((n, trimmed))
+                    }) else { return String::new() };
+
+                if start == end {
+                    first.trim_end_matches([' ', '\t']).to_owned()
+                } else {
+                    iter::once(first)
+                        .chain(
+                            s.into_iter().skip(start + 1)
+                                .take(end.saturating_sub(start + 1))
+                        )
+                        .chain(iter::once(last))
+                        .collect::<String>()
+                }
             })
             .collect()
     }
@@ -794,6 +804,9 @@ Feature: Foo
   Scenario: Bar
     Examples:
       | value |
+      |  alu  |
+      |   l   |
+      |       |
       | \n    |
       | \|    |
       | \\    |
@@ -809,12 +822,15 @@ Feature: Foo
                 .unwrap()
                 .rows,
             vec![
-                vec!["value".to_string()],
-                vec!["\n".to_string()],
-                vec!["|".to_string()],
-                vec!["\\".to_string()],
-                vec!["\\n".to_string()],
-                vec!["\\\\".to_string()],
+                vec!["value".to_owned()],
+                vec!["alu".to_owned()],
+                vec!["l".to_owned()],
+                vec!["".to_owned()],
+                vec!["\n".to_owned()],
+                vec!["|".to_owned()],
+                vec!["\\".to_owned()],
+                vec!["\\n".to_owned()],
+                vec!["\\\\".to_owned()],
             ]
         );
     }
