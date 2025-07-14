@@ -6,7 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::cell::RefCell;
+use std::{cell::RefCell, iter};
 
 use crate::{keywords::Keywords, tagexpr::TagOperation};
 use crate::{Background, Examples, Feature, LineCol, Rule, Scenario, Span, Step, StepType, Table};
@@ -213,14 +213,39 @@ rule docstring() -> String
         textwrap::dedent(n)
     }
 
-rule table_cell() -> &'input str
-    = "|" _ !(nl0() / eof()) n:$((!("|" / nl0())[_])*) { n }
+rule escaped_cell_char() -> &'input str
+    = "\\n" { "\n" } / "\\|" { "|" } / "\\\\" { "\\" }
+
+rule table_cell() -> Vec<&'input str>
+    = "|" _ !(nl0() / eof()) n:((escaped_cell_char() / $(!("|" / "\\" / nl0())[_]))*) { n }
 
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
         n.into_iter()
-            .map(str::trim)
-            .map(str::to_string)
+            .map(|s| {
+                let Some((start, first)) = s.iter().enumerate()
+                    .find_map(|(n, s)| {
+                        let trimmed = s.trim_start_matches([' ', '\t']);
+                        (!trimmed.is_empty()).then_some((n, trimmed))
+                    }) else { return String::new() };
+                let Some((end, last)) = s.iter().enumerate().rev()
+                    .find_map(|(n, s)| {
+                        let trimmed = s.trim_end_matches([' ', '\t']);
+                        (!trimmed.is_empty()).then_some((n, trimmed))
+                    }) else { return String::new() };
+
+                if start == end {
+                    first.trim_end_matches([' ', '\t']).to_owned()
+                } else {
+                    iter::once(first)
+                        .chain(
+                            s.into_iter().skip(start + 1)
+                                .take(end.saturating_sub(start + 1))
+                        )
+                        .chain(iter::once(last))
+                        .collect::<String>()
+                }
+            })
             .collect()
     }
 
@@ -769,6 +794,58 @@ Rule: rule
         println!("{:#?}", feature);
         assert_eq!(feature.scenarios.len(), 0);
         assert!(feature.description.is_none());
+    }
+
+    #[test]
+    fn escape_examples() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Examples:
+      | value |
+      |  alu  |
+      |   l   |
+      |       |
+      | \n    |
+      | \|    |
+      | \\    |
+      | \\n   |
+      | \\\\  |
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+
+        assert_eq!(
+            feature.scenarios[0].examples[0]
+                .table
+                .as_ref()
+                .unwrap()
+                .rows,
+            vec![
+                vec!["value".to_owned()],
+                vec!["alu".to_owned()],
+                vec!["l".to_owned()],
+                vec!["".to_owned()],
+                vec!["\n".to_owned()],
+                vec!["|".to_owned()],
+                vec!["\\".to_owned()],
+                vec!["\\n".to_owned()],
+                vec!["\\\\".to_owned()],
+            ]
+        );
+    }
+
+    #[test]
+    fn reject_invalid_example_escape_sequence() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Examples:
+      | value |
+      | \     |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
     }
 
     #[test]

@@ -7,5 +7,5 @@ Feature: Escaped pipes
       | æ | o |
       | a | ø |
     Given they have arrived
-      | \|æ\\n     | \o\no\  |
-      | \\\|a\\\\n | ø\\\nø\\|
+      | \|æ\\n     | \no      |
+      | \\\|a\\\\n | ø\\\nø\\ |
