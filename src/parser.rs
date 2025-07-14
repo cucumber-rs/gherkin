@@ -6,7 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::cell::RefCell;
+use std::{cell::RefCell, iter};
 
 use crate::{keywords::Keywords, tagexpr::TagOperation};
 use crate::{Background, Examples, Feature, LineCol, Rule, Scenario, Span, Step, StepType, Table};
@@ -222,12 +222,20 @@ rule table_cell() -> Vec<&'input str>
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
         n.into_iter()
-            .map(|s|
-                s.into_iter()
+            .map(|s| match s.len() {
+                0 => String::new(),
+                1 => s.first().unwrap().trim_matches([' ', '\t']).to_owned(),
+                len => iter::once(s.first()
+                        .map(|f| f.trim_start_matches([' ', '\t'])))
+                        .flatten()
+                    .chain(s.iter()
+                        .skip(1).take(len.saturating_sub(2))
+                        .copied())
+                    .chain(iter::once(s.last()
+                        .map(|l| l.trim_end_matches([' ', '\t'])))
+                        .flatten())
                     .collect::<String>()
-                    .trim_matches([' ', '\t'])
-                    .to_string()
-            )
+            })
             .collect()
     }
 
