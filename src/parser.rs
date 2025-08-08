@@ -76,7 +76,7 @@ impl GherkinEnv {
         *self.last_error.borrow_mut() = Some(error);
     }
 
-    fn keywords(&self) -> std::cell::Ref<Keywords<'static>> {
+    fn keywords(&self) -> std::cell::Ref<'_, Keywords<'static>> {
         self.keywords.borrow()
     }
 
@@ -88,7 +88,7 @@ impl GherkinEnv {
         *self.last_keyword.borrow_mut() = None;
     }
 
-    fn last_keyword(&self) -> std::cell::Ref<Option<String>> {
+    fn last_keyword(&self) -> std::cell::Ref<'_, Option<String>> {
         self.last_keyword.borrow()
     }
 
