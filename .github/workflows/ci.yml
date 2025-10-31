@@ -16,6 +16,29 @@ env:
 
 jobs:
 
+  ################
+  # Pull Request #
+  ################
+
+  pr:
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    needs:
+      - clippy
+      - feature
+      - msrv
+      - rustfmt
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - run: ${{ needs.clippy.result == 'success'
+              && needs.feature.result == 'success'
+              && needs.msrv.result == 'success'
+              && needs.rustfmt.result == 'success'
+              && needs.test.result == 'success' }}
+
+
+
+
   ##########################
   # Linting and formatting #
   ##########################
