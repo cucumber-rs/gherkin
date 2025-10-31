@@ -37,9 +37,9 @@
     html_logo_url = "https://avatars.githubusercontent.com/u/91469139?s=128",
     html_favicon_url = "https://avatars.githubusercontent.com/u/91469139?s=256"
 )]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![forbid(non_ascii_idents, unsafe_code)]
 #![warn(clippy::allow_attributes, clippy::allow_attributes_without_reason)]
-#![cfg_attr(docsrs, feature(doc_cfg))]
 
 #[cfg(feature = "parser")]
 mod keywords;
