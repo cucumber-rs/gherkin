@@ -2,7 +2,7 @@
 name = "gherkin"
 version = "0.14.0"
 edition = "2018"
-rust-version = "1.73"
+rust-version = "1.85"
 description = """\
     Pure Rust implementation of Gherkin language (`.feature` file) for \
     Cucumber testing framework.\
@@ -38,7 +38,7 @@ typed-builder = { version = "0.21", optional = true }
 serde = { version = "1.0.103", features = ["derive"], optional = true }
 
 # "juniper" feature enables ability to use AST as GraphQL types.
-juniper = { version = "0.16", default-features = false, optional = true }
+juniper = { version = "0.17", default-features = false, optional = true }
 
 [build-dependencies]
 heck = "0.5"
