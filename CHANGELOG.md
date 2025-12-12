@@ -13,7 +13,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### BC Breaks
 
-- Bump up [MSRV] to 1.85 to support newer versions of dependencies. ([todo])
+- Bump up [MSRV] to 1.88 to support newer versions of dependencies. ([todo])
 
 ### Fixed
 
@@ -21,9 +21,10 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### Upgraded
 
-- [`juniper`] crate to 0.17 version. ([todo])
+- [`juniper`] crate to 0.17 version. ([f1dbe13a])
 
 [#47]: /../../pull/47
+[f1dbe13a]: /../../commit/f1dbe13a8db50500ff23da6a74c9b04df5bd617f
 [todo]: /../../commit/todo
 
 
