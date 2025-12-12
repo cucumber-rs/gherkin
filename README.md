@@ -7,7 +7,7 @@ Gherkin language for Rust
 [![CI](https://github.com/cucumber-rs/gherkin/actions/workflows/ci.yml/badge.svg?branch=main "CI")](https://github.com/cucumber-rs/gherkin/actions?query=workflow%3ACI+branch%3Amain)
 [![Rust docs](https://docs.rs/gherkin/badge.svg "Rust docs")](https://docs.rs/gherkin)
 
-[Changelog](https://github.com/cucumber-rs/gherkin/blob/main/CHANGELOG.md)
+[Changelog](https://github.com/cucumber-rs/gherkin/blob/v0.15.0/CHANGELOG.md)
 
 A pure [Rust] implementation of the [Gherkin] (`.feature` file) language for the [Cucumber] testing framework.
 
@@ -20,7 +20,7 @@ If you want to run [Cucumber] tests in [Rust], try [`cucumber` crate](https://gi
 
 ```toml
 [dependencies]
-gherkin = "0.14"
+gherkin = "0.15"
 ```
 
 
@@ -52,7 +52,7 @@ This project is licensed under either of
 
 at your option.
 
-[Original source](https://github.com/cucumber/gherkin/blob/main/gherkin-languages.json) of `src/languages.json` is used under the [MIT license](https://github.com/cucumber/gherkin/blob/main/LICENSE).
+[Original source](https://github.com/cucumber/gherkin/blob/main/gherkin-languages.json) of `src/languages.json` is used under the [MIT license](https://github.com/cucumber/gherkin/blob/v0.15.0/LICENSE).
 
 
 
