@@ -573,12 +573,14 @@ pub(crate) rule feature() -> Feature
     }
 
 pub(crate) rule tag_operation() -> TagOperation = precedence!{
-    x:@ _ "and" _ y:(@) { TagOperation::And(Box::new(x), Box::new(y)) }
-    x:@ _ "or" _ y:(@) { TagOperation::Or(Box::new(x), Box::new(y)) }
+    x:(@) _ "or" _ y:@ { TagOperation::Or(Box::new(x), Box::new(y)) }
+    --
+    x:(@) _ "and" _ y:@ { TagOperation::And(Box::new(x), Box::new(y)) }
+    --
     "not" _ x:(@) { TagOperation::Not(Box::new(x)) }
     --
+    "(" _ t:tag_operation() _ ")" _ { t }
     t:tag_in_expr() { TagOperation::Tag(t) }
-    "(" t:tag_operation() ")" _ { t }
 }
 
 }}
