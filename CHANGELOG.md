@@ -6,7 +6,10 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
-## main
+## [0.16.0] · 2026-04-23
+[0.16.0]: https://github.com/cucumber-rs/gherkin/tree/v0.16.0
+
+[Diff](https://github.com/cucumber-rs/gherkin/compare/v0.15.0...v0.16.0) | [Milestone](https://github.com/cucumber-rs/gherkin/milestone/5)
 
 ### BC Breaks
 
