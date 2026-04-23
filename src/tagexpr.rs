@@ -50,11 +50,13 @@ mod tests {
     fn parse_tag_expr1() {
         let foo: TagOperation = "@foo and @bar".parse().unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(format!("{foo:?}"), "And(Tag(\"foo\"), Tag(\"bar\"))");
     }
     #[test]
     fn parse_tag_expr2() {
         let foo: TagOperation = "@foo or @bar".parse().unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(format!("{foo:?}"), "Or(Tag(\"foo\"), Tag(\"bar\"))");
     }
 
     #[test]
@@ -63,17 +65,20 @@ mod tests {
             .parse()
             .unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(format!("{foo:?}"), "And(Tag(\"foo\"), Tag(\"bar\"))");
     }
     #[test]
     fn parse_tag_expr2b() {
         let foo: TagOperation = "(@foo or @bar)".parse().unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(format!("{foo:?}"), "Or(Tag(\"foo\"), Tag(\"bar\"))");
     }
 
     #[test]
     fn parse_tag_expr3() {
         let foo: TagOperation = "not @fat".parse().unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(format!("{foo:?}"), "Not(Tag(\"fat\"))");
     }
 
     #[test]
@@ -88,6 +93,10 @@ mod tests {
             .parse()
             .unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(
+            format!("{foo:?}"),
+            "And(Not(Tag(\"foo\")), Not(Or(Tag(\"haha\"), Tag(\"bar\"))))",
+        );
     }
 
     #[test]
@@ -96,6 +105,10 @@ mod tests {
             .parse()
             .unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(
+            format!("{foo:?}"),
+            "Or(And(Not(Tag(\"foo\")), Not(Tag(\"haha\"))), Tag(\"bar\"))",
+        );
     }
 
     #[test]
@@ -104,6 +117,10 @@ mod tests {
             .parse()
             .unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(
+            format!("{foo:?}"),
+            "And(Not(Or(Tag(\"a\"), Tag(\"b\"))), Or(Tag(\"c\"), Not(Tag(\"d\"))))",
+        );
     }
 
     #[test]
@@ -112,6 +129,10 @@ mod tests {
             .parse()
             .unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(
+            format!("{foo:?}"),
+            "Or(Or(Tag(\"a\"), And(Tag(\"b\"), Tag(\"c\"))), Not(Tag(\"d\")))",
+        );
     }
 
     #[test]
@@ -120,6 +141,7 @@ mod tests {
             .parse()
             .unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(format!("{foo:?}"), "Tag(\"bar\\\\) (\")");
     }
 
     #[test]
@@ -136,11 +158,31 @@ mod tests {
             .parse()
             .unwrap_or_else(|e| panic!("{}", e));
         println!("{:#?}", foo);
+        assert_eq!(
+            format!("{foo:?}"),
+            "And(Not(Or(Tag(\")a\"), Tag(\"(b\"))), Or(Tag(\"c\"), Not(Tag(\"d\"))))",
+        );
     }
 
     #[test]
     fn parse_tag_expr12() {
         let err = "@bar\\".parse::<TagOperation>().unwrap_err();
         println!("{:#?}", err);
+    }
+
+    #[test]
+    fn parse_tag_expr13() {
+        let foo: TagOperation = "not @a or @b and not @c or not @d or @e and @f"
+            .parse()
+            .unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", foo);
+
+        let foo2: TagOperation = "( ( ( not ( @a ) or ( @b and not ( @c ) ) ) \
+                                  or not ( @d ) ) or ( @e and @f ) )"
+            .parse()
+            .unwrap_or_else(|e| panic!("{}", e));
+        println!("{:#?}", foo2);
+
+        assert_eq!(format!("{foo:?}"), format!("{foo2:?}"));
     }
 }
