@@ -780,9 +780,10 @@ Rule: rule
     #[test]
     fn and_as_first_step() {
         let env = GherkinEnv::default();
-        let input = r#"Feature: First step with And
-Scenario: And as first step
-  And a step
+        let input = r#"
+Feature: First step with And
+  Scenario: And as first step
+    And a step
 "#;
         let feature = gherkin_parser::feature(input, &env).unwrap();
         assert_eq!(feature.scenarios.len(), 1);
@@ -793,8 +794,9 @@ Scenario: And as first step
     #[test]
     fn but_as_first_step() {
         let env = GherkinEnv::default();
-        let input = r#"Feature: First step with But
-Scenario: But as first step
+        let input = r#"
+Feature: First step with But
+  Scenario: But as first step
     But a step
 "#;
         let feature = gherkin_parser::feature(input, &env).unwrap();
@@ -806,8 +808,9 @@ Scenario: But as first step
     #[test]
     fn scenario_description() {
         let env = GherkinEnv::default();
-        let input = r#"Feature: First step with Besides
-Scenario: Besides as first step
+        let input = r#"
+Feature: First step with Besides
+  Scenario: Besides as first step
     Besides a step
 "#;
         let feature = gherkin_parser::feature(input, &env).unwrap();
