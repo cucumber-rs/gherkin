@@ -6,6 +6,18 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## main
+
+### BC Breaks
+
+- Fixed precedence of operations in tag expressions to align with upstream. ([#52], [#51])
+
+[#51]: https://github.com/cucumber-rs/gherkin/issues/51
+[#52]: https://github.com/cucumber-rs/gherkin/pull/52
+
+
+
+
 ## [0.15.0] · 2025-12-12
 [0.15.0]: https://github.com/cucumber-rs/gherkin/tree/v0.15.0
 
