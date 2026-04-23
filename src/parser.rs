@@ -315,41 +315,31 @@ pub(crate) rule step() -> Step
     }
     / pa:position!() k:keyword((env.keywords().and)) _ n:not_nl() pb:position!() _ nl_eof() _
       d:docstring()? t:table()?
-    {?
-        match env.last_step() {
-            Some(v) => {
-                Ok(Step::builder().ty(v)
-                    .keyword(k.to_string())
-                    .value(n.trim_end().to_string())
-                    .table(t)
-                    .docstring(d)
-                    .span(Span { start: pa, end: pb })
-                    .position(env.position(pa))
-                    .build())
-            }
-            None => {
-                Err("given, when or then")
-            }
-        }
+    {
+        let ty = env.last_step().unwrap_or(StepType::Given);
+        env.set_last_step(ty);
+        Step::builder().ty(ty)
+            .keyword(k.to_string())
+            .value(n.trim_end().to_string())
+            .table(t)
+            .docstring(d)
+            .span(Span { start: pa, end: pb })
+            .position(env.position(pa))
+            .build()
     }
     / pa:position!() k:keyword((env.keywords().but)) _ n:not_nl() pb:position!() _ nl_eof() _
       d:docstring()? t:table()?
-    {?
-        match env.last_step() {
-            Some(v) => {
-                Ok(Step::builder().ty(v)
-                    .keyword(k.to_string())
-                    .value(n.trim_end().to_string())
-                    .table(t)
-                    .docstring(d)
-                    .span(Span { start: pa, end: pb })
-                    .position(env.position(pa))
-                    .build())
-            }
-            None => {
-                Err("given, when or then")
-            }
-        }
+    {
+        let ty = env.last_step().unwrap_or(StepType::Given);
+        env.set_last_step(ty);
+        Step::builder().ty(ty)
+            .keyword(k.to_string())
+            .value(n.trim_end().to_string())
+            .table(t)
+            .docstring(d)
+            .span(Span { start: pa, end: pb })
+            .position(env.position(pa))
+            .build()
     }
 
 pub(crate) rule steps() -> Vec<Step>
@@ -785,6 +775,47 @@ Rule: rule
         assert_eq!(feature.rules[1].position.line, 32);
         assert_eq!(feature.rules[1].scenarios[0].position.line, 34);
         assert_eq!(feature.rules[1].scenarios[0].steps[0].position.line, 35);
+    }
+
+    #[test]
+    fn and_as_first_step() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: First step with And
+  Scenario: And as first step
+    And a step
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.scenarios.len(), 1);
+        assert_eq!(feature.scenarios[0].steps.len(), 1);
+        assert_eq!(feature.scenarios[0].steps[0].ty, StepType::Given);
+    }
+
+    #[test]
+    fn but_as_first_step() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: First step with But
+  Scenario: But as first step
+    But a step
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.scenarios.len(), 1);
+        assert_eq!(feature.scenarios[0].steps.len(), 1);
+        assert_eq!(feature.scenarios[0].steps[0].ty, StepType::Given);
+    }
+
+    #[test]
+    fn scenario_description() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: First step with Besides
+  Scenario: Besides as first step
+    Besides a step
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.scenarios.len(), 1);
+        assert_eq!(feature.scenarios[0].steps.len(), 0);
     }
 
     #[test]

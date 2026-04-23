@@ -12,8 +12,13 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 - Fixed precedence of operations in tag expressions to align with upstream. ([#52], [#51])
 
+### Changed
+
+- Allowed `And`-like and `But`-like keywords at the beginning of `Scenario`, automatically considering them as `Given`-type steps. ([#53])
+
 [#51]: https://github.com/cucumber-rs/gherkin/issues/51
 [#52]: https://github.com/cucumber-rs/gherkin/pull/52
+[#53]: https://github.com/cucumber-rs/gherkin/pull/53
 
 
 
