@@ -62,7 +62,10 @@ use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
 #[cfg(feature = "parser")]
-pub use self::parser::{EnvError, GherkinEnv};
+pub use self::{
+    keywords::Keywords,
+    parser::{EnvError, GherkinEnv},
+};
 
 #[cfg(feature = "parser")]
 pub fn is_language_supported(lang: &str) -> bool {

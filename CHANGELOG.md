@@ -6,6 +6,18 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## main
+
+### Added
+
+- `Keywords` type and its `Keywords::get()` method, giving the keywords of every supported language. ([#56], [#55])
+
+[#55]: https://github.com/cucumber-rs/gherkin/issues/55
+[#56]: https://github.com/cucumber-rs/gherkin/pull/56
+
+
+
+
 ## [0.16.0] · 2026-04-23
 [0.16.0]: https://github.com/cucumber-rs/gherkin/tree/v0.16.0
 

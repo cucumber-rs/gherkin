@@ -8,22 +8,50 @@
 
 use std::ops::Deref;
 
+/// The words that start each part of a feature file in one language.
+///
+/// Step keywords keep their trailing space where the language has one, such as
+/// `"Given "`, and `"* "` appears among the step keywords of every language.
+///
+/// ```
+/// let english = gherkin::Keywords::get("en").unwrap();
+/// assert!(english.given.contains(&"Given "));
+/// assert!(english.and.contains(&"And "));
+///
+/// let formal = gherkin::Keywords::get("formal").unwrap();
+/// assert_eq!(formal.feature, ["Section"]);
+///
+/// assert!(gherkin::Keywords::get("no-such-language").is_none());
+/// ```
 #[derive(Debug, Clone)]
-pub(crate) struct Keywords<'a> {
+pub struct Keywords<'a> {
+    /// Words that start a feature, such as `Feature`.
     pub feature: &'a [&'a str],
+    /// Words that start a background, such as `Background`.
     pub background: &'a [&'a str],
+    /// Words that start a rule, such as `Rule`.
     pub rule: &'a [&'a str],
+    /// Words that start a scenario, such as `Scenario` or `Example`.
     pub scenario: &'a [&'a str],
+    /// Words that start a scenario outline, such as `Scenario Outline`.
     pub scenario_outline: &'a [&'a str],
+    /// Words that start a table of examples, such as `Examples`.
     pub examples: &'a [&'a str],
+    /// Words that start a `Given` step.
     pub given: &'a [&'a str],
+    /// Words that start a `When` step.
     pub when: &'a [&'a str],
+    /// Words that start a `Then` step.
     pub then: &'a [&'a str],
+    /// Words that start an `And` step, which continues the step before it.
     pub and: &'a [&'a str],
+    /// Words that start a `But` step, which continues the step before it.
     pub but: &'a [&'a str],
 }
 
 impl<'a> Keywords<'a> {
+    /// Returns the keywords of the language named in a `# language:` line, such as `en`,
+    /// `fr` or `formal`, or `None` if the language isn't supported.
     pub fn get(key: &str) -> Option<Keywords<'a>> {
         let result = include!(concat!(env!("OUT_DIR"), "/match.gen.rs"));
 
@@ -37,7 +65,7 @@ impl<'a> Keywords<'a> {
         })
     }
 
-    pub fn all(&self) -> Vec<&'a str> {
+    pub(crate) fn all(&self) -> Vec<&'a str> {
         let mut v = [
             self.feature,
             self.background,
@@ -60,7 +88,7 @@ impl<'a> Keywords<'a> {
         v
     }
 
-    pub fn excluded_feature(&'a self) -> Vec<&'a str> {
+    pub(crate) fn excluded_feature(&'a self) -> Vec<&'a str> {
         [
             self.background,
             self.rule,
@@ -70,11 +98,11 @@ impl<'a> Keywords<'a> {
         .concat()
     }
 
-    pub fn excluded_rule(&'a self) -> Vec<&'a str> {
+    pub(crate) fn excluded_rule(&'a self) -> Vec<&'a str> {
         [self.background, self.scenario, self.scenario_outline].concat()
     }
 
-    pub fn excluded_background(&'a self) -> Vec<&'a str> {
+    pub(crate) fn excluded_background(&'a self) -> Vec<&'a str> {
         [
             self.scenario,
             self.scenario_outline,
@@ -87,7 +115,7 @@ impl<'a> Keywords<'a> {
         .concat()
     }
 
-    pub fn excluded_scenario(&'a self) -> Vec<&'a str> {
+    pub(crate) fn excluded_scenario(&'a self) -> Vec<&'a str> {
         [
             self.scenario,
             self.scenario_outline,
@@ -100,7 +128,7 @@ impl<'a> Keywords<'a> {
         .concat()
     }
 
-    pub fn excluded_scenario_outline(&'a self) -> Vec<&'a str> {
+    pub(crate) fn excluded_scenario_outline(&'a self) -> Vec<&'a str> {
         [
             self.scenario,
             self.scenario_outline,
@@ -113,7 +141,7 @@ impl<'a> Keywords<'a> {
         .concat()
     }
 
-    pub fn excluded_examples(&'a self) -> Vec<&'a str> {
+    pub(crate) fn excluded_examples(&'a self) -> Vec<&'a str> {
         let mut r = [
             self.scenario,
             self.scenario_outline,
