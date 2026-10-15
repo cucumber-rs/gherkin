@@ -370,17 +370,20 @@ rule any_directive() -> &'static str
         k
     }
 
-rule description_line(excluded: &[&str]) -> &'input str
-    = _
-      !"@" !keyword((excluded))
-      _ n:not_nl() nl_eof()
-    {
-        n
+rule spaces() = [' ' | '\t']*
+
+rule description_line(excluded: &[&str]) -> String
+    = indent:$([' ' | '\t']*) !"@" !keyword((excluded)) n:not_nl() (nl() / eof()) {
+        format!("{}{}", indent.replace(' ', ""), n)
+    }
+    / spaces() nl() {
+        String::new()
     }
 
 rule description(excluded: &[&str]) -> Option<String>
-    = d:(description_line(excluded) ** _) __ {
+    = d:description_line(excluded)* __ {
         let d = d.join("\n");
+
         if d.trim() == "" {
             None
         } else {
@@ -816,6 +819,34 @@ Feature: First step with Besides
         let feature = gherkin_parser::feature(input, &env).unwrap();
         assert_eq!(feature.scenarios.len(), 1);
         assert_eq!(feature.scenarios[0].steps.len(), 0);
+    }
+
+    #[test]
+    fn scenario_description_with_newlines() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: First step with Besides
+  Scenario: Besides as first step
+    Besides a step
+
+    a newline
+
+    - list
+        - sub item
+	- tab-indented item
+
+    Given test
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.scenarios.len(), 1);
+        assert_eq!(
+            feature.scenarios[0]
+                .description
+                .as_deref()
+                .expect("a description"),
+            "Besides a step\n\na newline\n\n- list\n- sub item\n\t- tab-indented item\n"
+        );
+        assert_eq!(feature.scenarios[0].steps.len(), 1);
     }
 
     #[test]
