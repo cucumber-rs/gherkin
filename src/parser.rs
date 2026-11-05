@@ -413,7 +413,7 @@ rule examples() -> Examples
       _
       pa:position!()
       k:keyword((env.keywords().examples)) ":" _ n:not_nl()? nl_eof()
-      d:description((&env.keywords().excluded_examples()), (&["|"]))?
+      d:description((&env.keywords().excluded_scenario()), (&["|"]))?
       tb:table()?
       pb:position!()
     {
@@ -457,7 +457,7 @@ rule scenario() -> Scenario
       _
       pa:position!()
       k:keyword((env.keywords().scenario_outline)) ":" _ n:not_nl()? _ nl_eof()
-      d:description((&env.keywords().excluded_scenario_outline()), (&env.keywords().steps()))?
+      d:description((&env.keywords().excluded_scenario()), (&env.keywords().steps()))?
       s:steps()?
       e:examples()*
       pb:position!()
@@ -947,6 +947,109 @@ Feature: First step with Besides
         let feature = gherkin_parser::feature(input, &env).unwrap();
         assert_eq!(feature.rules[0].keyword, "Regla de negocio");
         assert_eq!(feature.rules[0].name, "r");
+    }
+
+    #[test]
+    fn longest_step_keyword_wins() {
+        let env = GherkinEnv::default();
+        let input = "# language: sk\nPožiadavka: f\n  Scenár: s\n    A tiež y\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let step = &feature.scenarios[0].steps[0];
+        assert_eq!(step.keyword, "A tiež ");
+        assert_eq!(step.value, "y");
+    }
+
+    #[test]
+    fn examples_description_may_start_with_step_keyword() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario Outline: s\n    Given <a>\n    Examples:\n      Given text\n      | a |\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let examples = &feature.scenarios[0].examples[0];
+        assert_eq!(examples.description.as_deref(), Some("Given text"));
+        assert_eq!(examples.table.as_ref().unwrap().rows.len(), 1);
+    }
+
+    #[test]
+    fn examples_after_scenario_outline_description() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario Outline: s\n    some text\n    Given <a>\n    Examples:\n      | a |\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let outline = &feature.scenarios[0];
+        assert_eq!(outline.description.as_deref(), Some("some text"));
+        assert_eq!(outline.examples.len(), 1);
+
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario Outline: s\n    some text\n  Examples:\n      | a |\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let outline = &feature.scenarios[0];
+        assert_eq!(outline.description.as_deref(), Some("some text"));
+        assert_eq!(outline.examples.len(), 1);
+    }
+
+    #[test]
+    fn description_keeps_step_keyword_in_the_middle() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    I have a Given thing\n    Given x\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let scenario = &feature.scenarios[0];
+        assert_eq!(
+            scenario.description.as_deref(),
+            Some("I have a Given thing")
+        );
+        assert_eq!(scenario.steps.len(), 1);
+    }
+
+    #[test]
+    fn consecutive_examples_are_separate_blocks() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario Outline: s\n    Given <a>\n    Examples: one\n    Examples: two\n      | a |\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.scenarios[0].examples.len(), 2);
+    }
+
+    #[test]
+    fn scenario_after_examples_without_table() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario Outline: s\n    Given <a>\n    Examples:\n  Scenario: t\n    Given x\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.scenarios.len(), 2);
+    }
+
+    #[test]
+    fn scenario_outline_ends_background_description() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Background:\n    text\n  Scenario Outline: o\n    Given <a>\n    Examples:\n      | a |\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let background = feature.background.unwrap();
+        assert_eq!(background.description.as_deref(), Some("text"));
+        assert_eq!(feature.scenarios.len(), 1);
+    }
+
+    #[test]
+    fn every_step_keyword_ends_scenario_description() {
+        for (kw, ty) in [
+            ("Given", StepType::Given),
+            ("When", StepType::When),
+            ("Then", StepType::Then),
+            ("And", StepType::Given),
+            ("But", StepType::Given),
+        ] {
+            let env = GherkinEnv::default();
+            let input = format!("Feature: f\n  Scenario: s\n    text\n    {kw} x\n");
+            let feature = gherkin_parser::feature(&input, &env).unwrap();
+            let scenario = &feature.scenarios[0];
+            assert_eq!(scenario.description.as_deref(), Some("text"), "{kw}");
+            assert_eq!(scenario.steps.len(), 1, "{kw}");
+            assert_eq!(scenario.steps[0].ty, ty, "{kw}");
+        }
+    }
+
+    #[test]
+    fn step_keyword_text_under_rule_is_description() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Rule: r\n    Given text\n  Scenario: s\n    Given x\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.rules[0].description.as_deref(), Some("Given text"));
     }
 
     #[test]

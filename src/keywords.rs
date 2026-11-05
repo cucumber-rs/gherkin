@@ -82,14 +82,6 @@ impl<'a> Keywords<'a> {
         [self.scenario, self.scenario_outline, self.examples].concat()
     }
 
-    pub fn excluded_scenario_outline(&'a self) -> Vec<&'a str> {
-        [self.scenario, self.scenario_outline, self.examples].concat()
-    }
-
-    pub fn excluded_examples(&'a self) -> Vec<&'a str> {
-        [self.scenario, self.scenario_outline, self.examples].concat()
-    }
-
     pub fn steps(&'a self) -> Vec<&'a str> {
         [self.given, self.when, self.then, self.and, self.but].concat()
     }
