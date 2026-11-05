@@ -923,6 +923,24 @@ Feature: f
     }
 
     #[test]
+    fn reject_trailing_backslash_before_line_break_in_table_cell() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given t\n      | a\\\n      | b |\n";
+        assert!(gherkin_parser::feature(input, &env).is_err());
+    }
+
+    #[test]
+    fn keep_backslash_before_closing_pipe_in_table_cell() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given t\n      |a\\ |\n      | \\\t|\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(
+            feature.scenarios[0].steps[0].table.as_ref().unwrap().rows,
+            vec![vec!["a\\".to_owned()], vec!["\\".to_owned()]],
+        );
+    }
+
+    #[test]
     fn fixture_good() {
         // We cannot handle missing features very well yet.
         let skip = ["empty.feature", "incomplete_feature_3.feature"];
