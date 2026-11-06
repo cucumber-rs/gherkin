@@ -6,6 +6,18 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## main
+
+### BC Breaks
+
+- Made `Step::docstring` a new `Docstring` type with `content`, `media_type`, `delimiter`, `span` and `position` fields, instead of a `String`.
+- Fixed parsing of docstrings to align with upstream: the media type is no longer a part of the content, the content is dedented relative to the opening delimiter, has no leading and trailing newlines, and has its escaped delimiters unescaped.
+- Docstrings are now rejected when the closing delimiter is on the same line as the opening one (`"""x"""`), as upstream does; the text after the opening delimiter is always its media type.
+- This also changes the `serde` output and the `juniper` (GraphQL) type of `Step::docstring` from a string to an object.
+
+
+
+
 ## [0.16.0] · 2026-04-23
 [0.16.0]: https://github.com/cucumber-rs/gherkin/tree/v0.16.0
 

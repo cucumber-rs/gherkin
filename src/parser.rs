@@ -9,7 +9,9 @@
 use std::{cell::RefCell, iter};
 
 use crate::{keywords::Keywords, tagexpr::TagOperation};
-use crate::{Background, Examples, Feature, LineCol, Rule, Scenario, Span, Step, StepType, Table};
+use crate::{
+    Background, Docstring, Examples, Feature, LineCol, Rule, Scenario, Span, Step, StepType, Table,
+};
 
 #[derive(Debug)]
 pub struct GherkinEnv {
@@ -150,6 +152,55 @@ impl Default for GherkinEnv {
     }
 }
 
+/// Builds a [`Docstring`] from the `raw` text found between its `delimiter`s.
+///
+/// The rest of the opening delimiter's line is the media type. Every other line
+/// has the opening delimiter's indentation removed (or all of its indentation,
+/// if it has less), and escaped delimiters are unescaped.
+fn docstring(delimiter: &str, raw: &str, span: Span, position: LineCol) -> Docstring {
+    let indent = position.col - 1;
+    let escaped = delimiter
+        .chars()
+        .map(|c| format!("\\{c}"))
+        .collect::<String>();
+
+    let mut lines = raw.split('\n').map(|l| l.strip_suffix('\r').unwrap_or(l));
+    let media_type = lines
+        .next()
+        .map(str::trim)
+        .filter(|m| !m.is_empty())
+        .map(ToOwned::to_owned);
+    let mut lines = lines.collect::<Vec<_>>();
+    // The last line only holds the indentation of the closing delimiter.
+    if lines.last().is_some_and(|l| l.trim().is_empty()) {
+        lines.pop();
+    }
+
+    let content = lines
+        .into_iter()
+        .map(|line| {
+            let trimmed = line.trim_start();
+            let line = if line.chars().count() - trimmed.chars().count() < indent {
+                trimmed
+            } else {
+                line.char_indices()
+                    .nth(indent)
+                    .map_or("", |(i, _)| &line[i..])
+            };
+            line.replace(&escaped, delimiter)
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    Docstring::builder()
+        .content(content)
+        .media_type(media_type)
+        .delimiter(delimiter.to_owned())
+        .span(span)
+        .position(position)
+        .build()
+}
+
 peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
 
 rule _() = quiet!{[' ' | '\t']*}
@@ -205,12 +256,12 @@ rule language_directive() -> ()
         env.set_language(l)
     }
 
-rule docstring() -> String
-    = "\"\"\"" n:$((!"\"\"\"" (nl() / [_]))*) "\"\"\"" nl_eof() {
-        textwrap::dedent(n)
+rule docstring() -> Docstring
+    = pa:position!() "\"\"\"" n:$((!nl0() [_])* nl() (!"\"\"\"" (nl() / [_]))*) "\"\"\"" pb:position!() nl_eof() {
+        docstring("\"\"\"", n, Span { start: pa, end: pb }, env.position(pa))
     }
-    / "```" n:$((!"```"(nl() / [_]))*) "```" nl_eof() {
-        textwrap::dedent(n)
+    / pa:position!() "```" n:$((!nl0() [_])* nl() (!"```" (nl() / [_]))*) "```" pb:position!() nl_eof() {
+        docstring("```", n, Span { start: pa, end: pb }, env.position(pa))
     }
 
 rule escaped_cell_char() -> &'input str
@@ -686,6 +737,179 @@ Scenario: Meow
     }
 
     #[test]
+    fn docstring_media_type_and_indentation() {
+        let env = GherkinEnv::default();
+        let input = r#"Feature: f
+  Scenario: s
+    Given a body
+      ```json
+      {
+        "a": 1
+      }
+      ```
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let start = input.find("```json").unwrap();
+        let end = input.rfind("```").unwrap() + 3;
+        assert_eq!(
+            feature.scenarios[0].steps[0].docstring,
+            Some(
+                Docstring::builder()
+                    .content("{\n  \"a\": 1\n}".to_owned())
+                    .media_type(Some("json".to_owned()))
+                    .delimiter("```".to_owned())
+                    .span(Span { start, end })
+                    .position(LineCol { line: 4, col: 7 })
+                    .build()
+            ),
+        );
+    }
+
+    #[test]
+    fn docstring_keeps_indentation_past_delimiter() {
+        let env = GherkinEnv::default();
+        let input = r#"Feature: f
+  Scenario: s
+    Given a body
+      """
+        indented
+      """
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let docstring = feature.scenarios[0].steps[0].docstring().unwrap();
+        assert_eq!(docstring.content, "  indented");
+        assert_eq!(docstring.media_type, None);
+        assert_eq!(docstring.delimiter, "\"\"\"");
+        assert_eq!(docstring.position, LineCol { line: 4, col: 7 });
+    }
+
+    #[test]
+    fn docstring_has_no_surrounding_newlines() {
+        let env = GherkinEnv::default();
+        let input = r#"Feature: f
+  Scenario: s
+    Given a body
+      """
+      x
+        y
+      """
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let docstring = feature.scenarios[0].steps[0].docstring().unwrap();
+        assert_eq!(docstring.content, "x\n  y");
+    }
+
+    #[test]
+    fn docstring_with_crlf_and_less_indented_line() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\r\n  Scenario: s\r\n    Given a body\r\n      ```xml\r\n      <a>\r\n        <b/>\r\n\r\n    </a>\r\n      ```\r\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let docstring = feature.scenarios[0].steps[0].docstring().unwrap();
+        assert_eq!(docstring.content, "<a>\n  <b/>\n\n</a>");
+        assert_eq!(docstring.media_type.as_deref(), Some("xml"));
+        assert_eq!(docstring.position, LineCol { line: 4, col: 7 });
+    }
+
+    #[test]
+    fn docstring_trims_media_type() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given a body\n      \"\"\" json \r\n      x\n      \"\"\"\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let docstring = feature.scenarios[0].steps[0].docstring().unwrap();
+        assert_eq!(docstring.media_type.as_deref(), Some("json"));
+        assert_eq!(docstring.content, "x");
+    }
+
+    #[test]
+    fn docstring_span_with_double_quotes() {
+        let env = GherkinEnv::default();
+        let input =
+            "Feature: f\n  Scenario: s\n    Given a body\n      \"\"\"\n      x\n      \"\"\"\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let start = input.find("\"\"\"").unwrap();
+        let end = input.rfind("\"\"\"").unwrap() + 3;
+        let docstring = feature.scenarios[0].steps[0].docstring().unwrap();
+        assert_eq!(docstring.span, Span { start, end });
+    }
+
+    #[test]
+    fn docstring_with_non_ascii_leading_whitespace() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given a body\n      \"\"\"\n  \u{a0} x\n      \u{a0}y\n      \"\"\"\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let docstring = feature.scenarios[0].steps[0].docstring().unwrap();
+        assert_eq!(docstring.content, "x\n\u{a0}y");
+    }
+
+    #[test]
+    fn docstring_empty() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given a\n      \"\"\"\n      \"\"\"\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let docstring = feature.scenarios[0].steps[0].docstring().unwrap();
+        assert_eq!(docstring.content, "");
+        assert_eq!(docstring.media_type, None);
+    }
+
+    #[test]
+    fn docstring_with_tab_indentation() {
+        let env = GherkinEnv::default();
+        let input =
+            "Feature: f\n  Scenario: s\n    Given a\n\t\t\"\"\"\n\t\tx\n\t\t\ty\n\t\t\"\"\"\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let docstring = feature.scenarios[0].steps[0].docstring().unwrap();
+        assert_eq!(docstring.content, "x\n\ty");
+        assert_eq!(docstring.position, LineCol { line: 4, col: 3 });
+    }
+
+    #[test]
+    fn docstring_in_background_and_rule_background() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Background:\n    Given a\n      \"\"\"\n      x\n      \"\"\"\n  Rule: r\n    Background:\n      Given b\n        ```md\n        y\n        ```\n    Scenario: s\n      Then c\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let docstring = feature.background.unwrap().steps[0]
+            .docstring()
+            .cloned()
+            .unwrap();
+        assert_eq!(docstring.content, "x");
+        assert_eq!(docstring.position, LineCol { line: 4, col: 7 });
+        let docstring = feature.rules[0].background.as_ref().unwrap().steps[0]
+            .docstring()
+            .unwrap();
+        assert_eq!(docstring.content, "y");
+        assert_eq!(docstring.media_type.as_deref(), Some("md"));
+        assert_eq!(docstring.delimiter, "```");
+        assert_eq!(docstring.position, LineCol { line: 10, col: 9 });
+    }
+
+    #[test]
+    fn docstring_containing_the_other_delimiter() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given a\n      ```\n      \"\"\"\n      y\n      \"\"\"\n      ```\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let docstring = feature.scenarios[0].steps[0].docstring().unwrap();
+        assert_eq!(docstring.content, "\"\"\"\ny\n\"\"\"");
+        assert_eq!(docstring.delimiter, "```");
+    }
+
+    #[test]
+    fn docstring_with_unescaped_delimiters() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given a\n      \"\"\"\n      \\\"\\\"\\\" x\n      \"\"\"\n    Then b\n      ```\n      \\`\\`\\` y\n      ```\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let steps = &feature.scenarios[0].steps;
+        assert_eq!(steps[0].docstring().unwrap().content, "\"\"\" x");
+        assert_eq!(steps[1].docstring().unwrap().content, "``` y");
+    }
+
+    #[test]
+    fn docstring_on_one_line_is_rejected() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given a\n      \"\"\"x\"\"\"\n    Then b\n";
+        assert!(gherkin_parser::feature(input, &env).is_err());
+    }
+
+    #[test]
     fn feature_name_and_scenario() {
         let env = GherkinEnv::default();
         let input = r#"Feature: Basic functionality
@@ -1070,6 +1294,21 @@ Feature: Foo
             }
             if step.value != json.get("text").unwrap().as_str().unwrap() {
                 return false;
+            }
+            match (&step.docstring, json.get("docString")) {
+                (None, None) => {}
+                (Some(docstring), Some(json)) => {
+                    if json["content"] != docstring.content
+                        || json["delimiter"] != docstring.delimiter
+                        || json.get("mediaType").and_then(serde_json::Value::as_str)
+                            != docstring.media_type.as_deref()
+                        || json["location"]["line"] != docstring.position.line
+                        || json["location"]["column"] != docstring.position.col
+                    {
+                        return false;
+                    }
+                }
+                _ => return false,
             }
         }
 

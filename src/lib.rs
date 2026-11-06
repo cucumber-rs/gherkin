@@ -332,7 +332,7 @@ pub struct Step {
     pub value: String,
     /// A docstring, if provided.
     #[cfg_attr(feature = "parser", builder(default))]
-    pub docstring: Option<String>,
+    pub docstring: Option<Docstring>,
     /// A data table, if provided.
     #[cfg_attr(feature = "parser", builder(default))]
     pub table: Option<Table>,
@@ -345,7 +345,8 @@ pub struct Step {
 }
 
 impl Step {
-    pub fn docstring(&self) -> Option<&String> {
+    /// Returns the docstring of this step, if it has one.
+    pub fn docstring(&self) -> Option<&Docstring> {
         self.docstring.as_ref()
     }
 
@@ -368,6 +369,29 @@ pub enum StepType {
     Given,
     When,
     Then,
+}
+
+/// A docstring.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "parser", derive(TypedBuilder))]
+#[cfg_attr(feature = "juniper", derive(juniper::GraphQLObject))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
+pub struct Docstring {
+    /// The content of the docstring, without its delimiters and with the
+    /// indentation of the opening delimiter removed from each line.
+    pub content: String,
+    /// The media type written after the opening delimiter, if provided.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub media_type: Option<String>,
+    /// The delimiter used in the original source, either `"""` or ```` ``` ````.
+    pub delimiter: String,
+    /// The `(start, end)` byte offset of the docstring in the .feature file,
+    /// from the start of the opening delimiter to the end of the closing one.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub span: Span,
+    /// The `(line, col)` position of the opening delimiter in the .feature file.
+    #[cfg_attr(feature = "parser", builder(default))]
+    pub position: LineCol,
 }
 
 /// A data table
