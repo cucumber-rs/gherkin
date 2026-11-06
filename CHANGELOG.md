@@ -6,6 +6,22 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## [0.17.0] · 2026-??-?? (unreleased)
+[0.17.0]: https://github.com/cucumber-rs/gherkin/tree/v0.17.0
+
+[Diff](https://github.com/cucumber-rs/gherkin/compare/v0.16.0...v0.17.0)
+
+### BC Breaks
+
+- Made `Feature::parse()` and `Feature::parse_path()` return `Result<Option<Feature>, _>`, being `Ok(None)` for a document without a `Feature`. ([todo])
+
+### Fixed
+
+- Valid document without a `Feature` (empty or holding only comments) being rejected. ([todo])
+
+
+
+
 ## [0.16.0] · 2026-04-23
 [0.16.0]: https://github.com/cucumber-rs/gherkin/tree/v0.16.0
 

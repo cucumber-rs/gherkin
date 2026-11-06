@@ -562,6 +562,19 @@ pub(crate) rule feature() -> Feature
         }
     }
 
+// A document holding only blank lines and comments has no feature. A
+// `# language: <code>` line is a directive rather than a comment, so a feature
+// has to follow it. Like the reference parser, anything else after the colon
+// makes the line a plain comment.
+rule empty_line()
+    = !(_ "#" _ "language" _ ":" _ ['a'..='z' | 'A'..='Z' | '-' | '_']+ _ (nl0() / eof()))
+      _ comment_no_nl()?
+rule empty_document() = quiet!{empty_line() ** nl0() eof()}
+
+pub(crate) rule document() -> Option<Feature>
+    = empty_document() { None }
+    / f:feature() { Some(f) }
+
 pub(crate) rule tag_operation() -> TagOperation = precedence!{
     x:(@) _ "or" _ y:@ { TagOperation::Or(Box::new(x), Box::new(y)) }
     --
@@ -882,9 +895,58 @@ Feature: Foo
     }
 
     #[test]
+    fn document_without_feature() {
+        for input in [
+            "",
+            "\n",
+            "  \n\t\n",
+            "# only a comment\n",
+            "# only a comment",
+            "# a\n\n  # b\r\n",
+            "# languages are fun\n",
+            "# language is not a directive\n",
+            "# language:\n",
+            "# language:   \n",
+            "# language: not a lang\n",
+            "# language: fr extra\n",
+            "# language: fr # x\n",
+        ] {
+            let env = GherkinEnv::default();
+            assert_eq!(
+                gherkin_parser::document(input, &env).unwrap(),
+                None,
+                "{:?}",
+                input,
+            );
+        }
+    }
+
+    #[test]
+    fn reject_document_without_feature_after_header() {
+        for input in [
+            "# language: fr\n",
+            "# a\n# language: fr\n",
+            "# language: xx-invalid\n",
+            "  # language: fr\n",
+            "\t# language: fr\n",
+            "# language : fr\n",
+            "# language: fr   \n",
+            "@tag\n",
+            "Rule: Foo\n",
+            "Scenario: Foo\n",
+            "Background:\n",
+        ] {
+            let env = GherkinEnv::default();
+            assert!(
+                gherkin_parser::document(input, &env).is_err(),
+                "{:?}",
+                input
+            );
+        }
+    }
+
+    #[test]
     fn fixture_good() {
-        // We cannot handle missing features very well yet.
-        let skip = ["empty.feature", "incomplete_feature_3.feature"];
         let mut failed = 0;
 
         let d = env!("CARGO_MANIFEST_DIR");
@@ -894,15 +956,12 @@ Feature: Foo
             let filename = file.file_name();
             let filename = filename.to_str().unwrap();
             if filename.ends_with(".feature") {
-                if skip.contains(&filename) {
-                    continue;
-                }
                 let res = std::panic::catch_unwind(|| {
                     let env = GherkinEnv::default();
                     let input =
                         fs::read_to_string(format!("{}/tests/fixtures/data/good/{}", d, filename,))
                             .unwrap();
-                    let feature = gherkin_parser::feature(&input, &env).unwrap();
+                    let feature = gherkin_parser::document(&input, &env).unwrap();
                     let fixture = fs::read_to_string(format!(
                         "{}/tests/fixtures/data/good/{}.ast.ndjson",
                         d, filename,
@@ -935,7 +994,7 @@ Feature: Foo
                     let input =
                         fs::read_to_string(format!("{}/tests/fixtures/data/bad/{}", d, filename,))
                             .unwrap();
-                    gherkin_parser::feature(&input, &env).unwrap()
+                    gherkin_parser::document(&input, &env).unwrap()
                 });
 
                 assert!(res.is_err(), "{}: {:?}", filename, res.unwrap());
@@ -945,15 +1004,22 @@ Feature: Foo
 
     // TODO: Actually generate `.ndjson` file from the AST to fully assert
     //       fixtures.
-    fn check_ast(parsed: &Feature, ast_parsed: &str) {
+    fn check_ast(parsed: &Option<Feature>, ast_parsed: &str) {
         let d: HashMap<String, serde_json::Value> = serde_json::from_str(ast_parsed).unwrap();
 
         let document = d
             .get("gherkinDocument")
             .expect("There is no document in the file");
-        let feature = document
-            .get("feature")
-            .expect("There is no feature in the document");
+        let Some(feature) = document.get("feature") else {
+            assert_eq!(
+                parsed, &None,
+                "Feature is parsed, but the document has none"
+            );
+            return;
+        };
+        let parsed = parsed
+            .as_ref()
+            .expect("Feature is not parsed, but the document has one");
         let children = feature.get("children");
 
         if children.is_none() {

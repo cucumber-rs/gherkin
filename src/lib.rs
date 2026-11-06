@@ -195,8 +195,20 @@ pub struct Feature {
 
 #[cfg(feature = "parser")]
 impl Feature {
+    /// Parses the `.feature` file at the given `path`.
+    ///
+    /// Returns [`None`] if the file holds no `Feature`, i.e. it is empty or
+    /// contains only blank lines and comments. A `# language:` header without
+    /// a `Feature` after it is an error.
+    ///
+    /// # Errors
+    ///
+    /// If the file cannot be read or is not a valid Gherkin document.
     #[inline]
-    pub fn parse_path<P: AsRef<Path>>(path: P, env: GherkinEnv) -> Result<Feature, ParseFileError> {
+    pub fn parse_path<P: AsRef<Path>>(
+        path: P,
+        env: GherkinEnv,
+    ) -> Result<Option<Feature>, ParseFileError> {
         let mut s =
             std::fs::read_to_string(path.as_ref()).map_err(|e| ParseFileError::Reading {
                 path: path.as_ref().to_path_buf(),
@@ -208,8 +220,8 @@ impl Feature {
             s.push('\n');
         }
 
-        let mut feature =
-            parser::gherkin_parser::feature(&s, &env).map_err(|e| ParseFileError::Parsing {
+        let feature =
+            parser::gherkin_parser::document(&s, &env).map_err(|e| ParseFileError::Parsing {
                 path: path.as_ref().to_path_buf(),
                 error: env
                     .fatal_error
@@ -225,12 +237,23 @@ impl Feature {
                 },
             })?;
 
-        feature.path = Some(path.as_ref().to_path_buf());
-        Ok(feature)
+        Ok(feature.map(|mut feature| {
+            feature.path = Some(path.as_ref().to_path_buf());
+            feature
+        }))
     }
 
+    /// Parses the given `.feature` file contents.
+    ///
+    /// Returns [`None`] if the `input` holds no `Feature`, i.e. it is empty or
+    /// contains only blank lines and comments. A `# language:` header without
+    /// a `Feature` after it is an error.
+    ///
+    /// # Errors
+    ///
+    /// If the `input` is not a valid Gherkin document.
     #[inline]
-    pub fn parse<S: AsRef<str>>(input: S, env: GherkinEnv) -> Result<Feature, ParseError> {
+    pub fn parse<S: AsRef<str>>(input: S, env: GherkinEnv) -> Result<Option<Feature>, ParseError> {
         use std::borrow::Cow;
 
         let input: Cow<'_, str> = match input.as_ref().ends_with('\n') {
@@ -238,7 +261,7 @@ impl Feature {
             // Add a new line at the end, because our parser is bad and we should feel bad.
             false => Cow::Owned(format!("{}\n", input.as_ref())),
         };
-        parser::gherkin_parser::feature(&input, &env).map_err(|e| ParseError {
+        parser::gherkin_parser::document(&input, &env).map_err(|e| ParseError {
             position: LineCol {
                 line: e.location.line,
                 col: e.location.column,

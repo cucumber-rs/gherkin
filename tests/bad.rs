@@ -2,7 +2,7 @@ use std::path::Path;
 
 use gherkin::{Feature, ParseFileError};
 
-fn load_feature<P: AsRef<Path>>(path: P) -> Result<Feature, ParseFileError> {
+fn load_feature<P: AsRef<Path>>(path: P) -> Result<Option<Feature>, ParseFileError> {
     Feature::parse_path(path.as_ref(), Default::default())
 }
 
