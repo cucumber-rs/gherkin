@@ -10,7 +10,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### Fixed
 
-- Step with both a doc string and a data table being accepted, while a step may have only one argument.
+- Accepting a step with both a doc string and a data table, while a step may have only one argument.
 
 
 

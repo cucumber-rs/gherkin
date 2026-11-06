@@ -893,31 +893,79 @@ Feature: Foo
     #[test]
     fn reject_step_with_docstring_and_table() {
         let env = GherkinEnv::default();
-        let input = r#"
-Feature: Foo
-  Scenario: Bar
-    Given a
-      """
-      x
-      """
-      | a |
-"#;
-        assert!(gherkin_parser::feature(input, &env).is_err());
+        for keyword in ["Given", "When", "Then", "And", "But", "*"] {
+            for fence in ["\"\"\"", "```"] {
+                let input = format!(
+                    "Feature: Foo\n  Scenario: Bar\n    Given a\n    \
+                     {keyword} b\n      {fence}\n      x\n      {fence}\n      \
+                     | a |\n",
+                );
+                assert!(
+                    gherkin_parser::feature(&input, &env).is_err(),
+                    "accepted:\n{}",
+                    input,
+                );
+            }
+        }
     }
 
     #[test]
     fn reject_step_with_table_and_docstring() {
         let env = GherkinEnv::default();
-        let input = r#"
-Feature: Foo
-  Scenario: Bar
-    Given a
-      | a |
-      """
-      x
-      """
-"#;
+        for keyword in ["Given", "When", "Then", "And", "But", "*"] {
+            for fence in ["\"\"\"", "```"] {
+                let input = format!(
+                    "Feature: Foo\n  Scenario: Bar\n    Given a\n    \
+                     {keyword} b\n      | a |\n      {fence}\n      x\n      \
+                     {fence}\n",
+                );
+                assert!(
+                    gherkin_parser::feature(&input, &env).is_err(),
+                    "accepted:\n{}",
+                    input,
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn reject_step_with_docstring_and_table_in_other_contexts() {
+        let env = GherkinEnv::default();
+        let step = "      \"\"\"\n      x\n      \"\"\"\n      | a |\n";
+        for head in [
+            "Feature: Foo\n  Background:\n    Given a\n",
+            "Feature: Foo\n  Scenario Outline: Bar\n    Given a\n",
+            "Feature: Foo\n  Rule: R\n    Scenario: Bar\n      Given a\n",
+        ] {
+            let input = format!("{head}{step}");
+            assert!(
+                gherkin_parser::feature(&input, &env).is_err(),
+                "accepted:\n{}",
+                input,
+            );
+        }
+    }
+
+    #[test]
+    fn reject_step_with_docstring_comment_and_table() {
+        let env = GherkinEnv::default();
+        let input = "Feature: Foo\n  Scenario: Bar\n    Given a\n      \
+                     \"\"\"\n      x\n      \"\"\"\n\n      # note\n      | a |\n";
         assert!(gherkin_parser::feature(input, &env).is_err());
+    }
+
+    #[test]
+    fn accept_step_with_single_argument() {
+        let env = GherkinEnv::default();
+        let input = "Feature: Foo\n  Scenario: Bar\n    Given a\n      \
+                     \"\"\"\n      x\n      \"\"\"\n    When b\n      | a |\n    \
+                     Then c\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let steps = &feature.scenarios[0].steps;
+        assert_eq!(steps.len(), 3);
+        assert!(steps[0].docstring.is_some() && steps[0].table.is_none());
+        assert!(steps[1].docstring.is_none() && steps[1].table.is_some());
+        assert!(steps[2].docstring.is_none() && steps[2].table.is_none());
     }
 
     #[test]
