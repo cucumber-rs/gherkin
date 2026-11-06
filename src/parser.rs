@@ -923,6 +923,51 @@ Feature: Foo
     }
 
     #[test]
+    fn reject_step_table_row_shorter_than_first() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Given a table
+      | a | b |
+      | 1 |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        match env.fatal_error.into_inner() {
+            Some(EnvError::InconsistentCellCount(rows)) => assert_eq!(
+                rows,
+                vec![vec!["a".to_owned(), "b".to_owned()], vec!["1".to_owned()]],
+            ),
+            e => panic!("expected `InconsistentCellCount`, got: {:?}", e),
+        }
+    }
+
+    #[test]
+    fn reject_examples_table_row_shorter_than_first() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario Outline: Bar
+    Given the <what>
+
+    Examples:
+      | what | other |
+      | x    |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        match env.fatal_error.into_inner() {
+            Some(EnvError::InconsistentCellCount(rows)) => assert_eq!(
+                rows,
+                vec![
+                    vec!["what".to_owned(), "other".to_owned()],
+                    vec!["x".to_owned()],
+                ],
+            ),
+            e => panic!("expected `InconsistentCellCount`, got: {:?}", e),
+        }
+    }
+
+    #[test]
     fn reject_later_table_row_longer_than_first() {
         let env = GherkinEnv::default();
         let input = r#"
