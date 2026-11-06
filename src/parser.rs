@@ -882,6 +882,7 @@ Feature: Foo
       | \a\b  |
       | x\\y  |
       | \\\   |
+      | \x\| |
 "#;
         let feature = gherkin_parser::feature(input, &env).unwrap();
 
@@ -899,6 +900,7 @@ Feature: Foo
                 vec!["\\a\\b".to_owned()],
                 vec!["x\\y".to_owned()],
                 vec!["\\\\".to_owned()],
+                vec!["\\x|".to_owned()],
             ]
         );
     }
