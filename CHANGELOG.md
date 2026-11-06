@@ -8,9 +8,9 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ## main
 
-### Fixed
+### BC Breaks
 
-- Accepting a step with both a doc string and a data table, while a step may have only one argument.
+- Rejected a step with both a doc string and a data table, as a step may have only one argument.
 
 
 
@@ -44,7 +44,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 - Bump up [MSRV] to 1.88 to support newer versions of dependencies. ([17c13206])
 
-### Fixed
+### BC Breaks
 
 - Incorrect parsing of [escape sequences in table cells](https://cucumber.io/docs/gherkin/reference#table-cell-escaping). ([#47])
 
@@ -87,7 +87,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 - Bump up [MSRV] to 1.62 to support newer versions of dependencies.
 
-### Fixed
+### BC Breaks
 
 - Parsing error on a `Feature` having comment and `Tag` simultaneously. ([#37], [#35])
 
@@ -124,7 +124,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 [Diff](https://github.com/cucumber-rs/gherkin/compare/v0.11.1...v0.11.2)
 
-### Fixed
+### BC Breaks
 
 - Incorrect line numbers reporting. ([#33])
 
@@ -138,7 +138,7 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 [Diff](https://github.com/cucumber-rs/gherkin/compare/v0.11.0...v0.11.1)
 
-### Fixed
+### BC Breaks
 
 - Allowed keywords in `Feature`s `Description`. ([#30], [cucumber#175])
 - Allowed characters in `Tag`s. ([#30], [cucumber#174])
