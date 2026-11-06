@@ -1053,6 +1053,20 @@ Feature: First step with Besides
     }
 
     #[test]
+    fn comments_and_tags_around_feature_description() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  text\n  # comment\n  Examples:\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.description.as_deref(), Some("text\nExamples:"));
+
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Examples\n  @tag\n  Scenario: s\n    Given x\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(feature.description.as_deref(), Some("Examples"));
+        assert_eq!(feature.scenarios.len(), 1);
+    }
+
+    #[test]
     fn escape_examples() {
         let env = GherkinEnv::default();
         let input = r#"
