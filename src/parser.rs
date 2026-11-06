@@ -923,6 +923,56 @@ Feature: Foo
     }
 
     #[test]
+    fn reject_later_table_row_longer_than_first() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Background:
+    Given a table
+      | a | b |
+      | 1 | 2 |
+      | 3 | 4 | 5 |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        assert!(matches!(
+            env.fatal_error.into_inner(),
+            Some(EnvError::InconsistentCellCount(_)),
+        ));
+    }
+
+    #[test]
+    fn reject_table_row_with_trailing_empty_cell() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Given a table
+      | a | b |
+      | 1 | 2 | |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        assert!(matches!(
+            env.fatal_error.into_inner(),
+            Some(EnvError::InconsistentCellCount(_)),
+        ));
+    }
+
+    #[test]
+    fn accept_table_row_with_escaped_pipe() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Given a table
+      | a | b |
+      | 1 \| 2 | 3 |
+"#;
+        let f = gherkin_parser::feature(input, &env).unwrap();
+        let table = f.scenarios[0].steps[0].table.as_ref().unwrap();
+        assert_eq!(table.rows[1], vec!["1 | 2".to_owned(), "3".to_owned()]);
+    }
+
+    #[test]
     fn fixture_good() {
         // We cannot handle missing features very well yet.
         let skip = ["empty.feature", "incomplete_feature_3.feature"];
