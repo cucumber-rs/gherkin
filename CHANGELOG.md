@@ -6,6 +6,18 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## main
+
+### Fixed
+
+- Incorrect rejection of table cells with a backslash not starting an [escape sequence](https://cucumber.io/docs/gherkin/reference#table-cell-escaping) (`\n`, `\|` or `\\`), instead of keeping such a backslash as is. ([#60], [#59])
+
+[#59]: https://github.com/cucumber-rs/gherkin/issues/59
+[#60]: https://github.com/cucumber-rs/gherkin/pull/60
+
+
+
+
 ## [0.16.0] · 2026-04-23
 [0.16.0]: https://github.com/cucumber-rs/gherkin/tree/v0.16.0
 

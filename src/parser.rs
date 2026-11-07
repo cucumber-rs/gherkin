@@ -217,7 +217,7 @@ rule escaped_cell_char() -> &'input str
     = "\\n" { "\n" } / "\\|" { "|" } / "\\\\" { "\\" }
 
 rule table_cell() -> Vec<&'input str>
-    = "|" _ !(nl0() / eof()) n:((escaped_cell_char() / $(!("|" / "\\" / nl0())[_]))*) { n }
+    = "|" _ !(nl0() / eof()) n:((escaped_cell_char() / $(!("|" / nl0())[_]))*) { n }
 
 pub(crate) rule table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
@@ -869,7 +869,7 @@ Feature: Foo
     }
 
     #[test]
-    fn reject_invalid_example_escape_sequence() {
+    fn keep_unknown_example_escape_sequence() {
         let env = GherkinEnv::default();
         let input = r#"
 Feature: Foo
@@ -877,8 +877,67 @@ Feature: Foo
     Examples:
       | value |
       | \     |
+      | g\h   |
+      | g\    |
+      | \a\b  |
+      | x\\y  |
+      | \\\   |
+      | \x\| |
 "#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+
+        assert_eq!(
+            feature.scenarios[0].examples[0]
+                .table
+                .as_ref()
+                .unwrap()
+                .rows,
+            vec![
+                vec!["value".to_owned()],
+                vec!["\\".to_owned()],
+                vec!["g\\h".to_owned()],
+                vec!["g\\".to_owned()],
+                vec!["\\a\\b".to_owned()],
+                vec!["x\\y".to_owned()],
+                vec!["\\\\".to_owned()],
+                vec!["\\x|".to_owned()],
+            ]
+        );
+    }
+
+    #[test]
+    fn keep_unknown_step_table_escape_sequence() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: f
+  Scenario: s
+    Given a table
+      | g\h |
+"#;
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+
+        assert_eq!(
+            feature.scenarios[0].steps[0].table.as_ref().unwrap().rows,
+            vec![vec!["g\\h".to_owned()]],
+        );
+    }
+
+    #[test]
+    fn reject_trailing_backslash_before_line_break_in_table_cell() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given t\n      | a\\\n      | b |\n";
         assert!(gherkin_parser::feature(input, &env).is_err());
+    }
+
+    #[test]
+    fn keep_backslash_before_closing_pipe_in_table_cell() {
+        let env = GherkinEnv::default();
+        let input = "Feature: f\n  Scenario: s\n    Given t\n      |a\\ |\n      | \\\t|\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        assert_eq!(
+            feature.scenarios[0].steps[0].table.as_ref().unwrap().rows,
+            vec![vec!["a\\".to_owned()], vec!["\\".to_owned()]],
+        );
     }
 
     #[test]
