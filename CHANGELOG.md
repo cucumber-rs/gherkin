@@ -10,7 +10,9 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### BC Breaks
 
-- Rejected a step with both a doc string and a data table, as a step may have only one argument.
+- Rejected a step with both a doc string and a data table, as a step may have only one argument. ([#64])
+
+[#64]: https://github.com/cucumber-rs/gherkin/pull/64
 
 
 
