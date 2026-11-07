@@ -28,7 +28,6 @@ parser = ["dep:typed-builder"]
 
 [dependencies]
 peg = "0.6.3"
-textwrap = "0.16"
 thiserror = "2.0"
 
 # "parser" feature dependencies.
