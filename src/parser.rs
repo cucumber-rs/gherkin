@@ -250,14 +250,7 @@ pub(crate) rule table_row() -> Vec<String>
     }
 
 pub(crate) rule table0() -> Vec<Vec<String>>
-    = _ d:(table_row() ++ _) {
-        if d.is_empty() {
-            d
-        } else {
-            let len = d[0].len();
-            d.into_iter().map(|mut x| { x.truncate(len); x }).collect()
-        }
-    }
+    = _ d:(table_row() ++ _) { d }
 
 pub(crate) rule table() -> Table
     = pa:position!() t:table0() pb:position!() {?
@@ -879,6 +872,149 @@ Feature: Foo
       | \     |
 "#;
         assert!(gherkin_parser::feature(input, &env).is_err());
+    }
+
+    #[test]
+    fn reject_step_table_row_longer_than_first() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Given a table
+      | a | b |
+      | 1 | 2 | 3 |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        match env.fatal_error.into_inner() {
+            Some(EnvError::InconsistentCellCount(rows)) => assert_eq!(
+                rows,
+                vec![
+                    vec!["a".to_owned(), "b".to_owned()],
+                    vec!["1".to_owned(), "2".to_owned(), "3".to_owned()],
+                ],
+            ),
+            e => panic!("expected `InconsistentCellCount`, got: {:?}", e),
+        }
+    }
+
+    #[test]
+    fn reject_examples_table_row_longer_than_first() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario Outline: Bar
+    Given the <what>
+
+    Examples:
+      | what |
+      | x    | extra |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        match env.fatal_error.into_inner() {
+            Some(EnvError::InconsistentCellCount(rows)) => assert_eq!(
+                rows,
+                vec![
+                    vec!["what".to_owned()],
+                    vec!["x".to_owned(), "extra".to_owned()],
+                ],
+            ),
+            e => panic!("expected `InconsistentCellCount`, got: {:?}", e),
+        }
+    }
+
+    #[test]
+    fn reject_step_table_row_shorter_than_first() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Given a table
+      | a | b |
+      | 1 |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        match env.fatal_error.into_inner() {
+            Some(EnvError::InconsistentCellCount(rows)) => assert_eq!(
+                rows,
+                vec![vec!["a".to_owned(), "b".to_owned()], vec!["1".to_owned()]],
+            ),
+            e => panic!("expected `InconsistentCellCount`, got: {:?}", e),
+        }
+    }
+
+    #[test]
+    fn reject_examples_table_row_shorter_than_first() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario Outline: Bar
+    Given the <what>
+
+    Examples:
+      | what | other |
+      | x    |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        match env.fatal_error.into_inner() {
+            Some(EnvError::InconsistentCellCount(rows)) => assert_eq!(
+                rows,
+                vec![
+                    vec!["what".to_owned(), "other".to_owned()],
+                    vec!["x".to_owned()],
+                ],
+            ),
+            e => panic!("expected `InconsistentCellCount`, got: {:?}", e),
+        }
+    }
+
+    #[test]
+    fn reject_later_table_row_longer_than_first() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Background:
+    Given a table
+      | a | b |
+      | 1 | 2 |
+      | 3 | 4 | 5 |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        assert!(matches!(
+            env.fatal_error.into_inner(),
+            Some(EnvError::InconsistentCellCount(_)),
+        ));
+    }
+
+    #[test]
+    fn reject_table_row_with_trailing_empty_cell() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Given a table
+      | a | b |
+      | 1 | 2 | |
+"#;
+        assert!(gherkin_parser::feature(input, &env).is_err());
+        assert!(matches!(
+            env.fatal_error.into_inner(),
+            Some(EnvError::InconsistentCellCount(_)),
+        ));
+    }
+
+    #[test]
+    fn accept_table_row_with_escaped_pipe() {
+        let env = GherkinEnv::default();
+        let input = r#"
+Feature: Foo
+  Scenario: Bar
+    Given a table
+      | a | b |
+      | 1 \| 2 | 3 |
+"#;
+        let f = gherkin_parser::feature(input, &env).unwrap();
+        let table = f.scenarios[0].steps[0].table.as_ref().unwrap();
+        assert_eq!(table.rows[1], vec!["1 | 2".to_owned(), "3".to_owned()]);
     }
 
     #[test]
