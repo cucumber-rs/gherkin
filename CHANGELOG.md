@@ -6,6 +6,17 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 
 
+## main
+
+### BC Breaks
+
+- Rejected a step with both a doc string and a data table, as a step may have only one argument. ([#64])
+
+[#64]: https://github.com/cucumber-rs/gherkin/pull/64
+
+
+
+
 ## [0.16.0] · 2026-04-23
 [0.16.0]: https://github.com/cucumber-rs/gherkin/tree/v0.16.0
 

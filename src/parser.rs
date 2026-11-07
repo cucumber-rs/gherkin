@@ -273,10 +273,15 @@ pub(crate) rule table() -> Table
         }
     }
 
+rule step_argument() -> (Option<String>, Option<Table>)
+    = d:docstring() { (Some(d), None) }
+    / t:table() { (None, Some(t)) }
+
 pub(crate) rule step() -> Step
     = comment()* pa:position!() k:keyword((env.keywords().given)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      a:step_argument()?
     {
+        let (d, t) = a.unwrap_or_default();
         env.set_last_step(StepType::Given);
         Step::builder().ty(StepType::Given)
             .keyword(k.to_string())
@@ -288,8 +293,9 @@ pub(crate) rule step() -> Step
             .build()
     }
     / pa:position!() k:keyword((env.keywords().when)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      a:step_argument()?
     {
+        let (d, t) = a.unwrap_or_default();
         env.set_last_step(StepType::When);
         Step::builder().ty(StepType::When)
             .keyword(k.to_string())
@@ -301,8 +307,9 @@ pub(crate) rule step() -> Step
             .build()
     }
     / pa:position!() k:keyword((env.keywords().then)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      a:step_argument()?
     {
+        let (d, t) = a.unwrap_or_default();
         env.set_last_step(StepType::Then);
         Step::builder().ty(StepType::Then)
             .keyword(k.to_string())
@@ -314,8 +321,9 @@ pub(crate) rule step() -> Step
             .build()
     }
     / pa:position!() k:keyword((env.keywords().and)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      a:step_argument()?
     {
+        let (d, t) = a.unwrap_or_default();
         let ty = env.last_step().unwrap_or(StepType::Given);
         env.set_last_step(ty);
         Step::builder().ty(ty)
@@ -328,8 +336,9 @@ pub(crate) rule step() -> Step
             .build()
     }
     / pa:position!() k:keyword((env.keywords().but)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      a:step_argument()?
     {
+        let (d, t) = a.unwrap_or_default();
         let ty = env.last_step().unwrap_or(StepType::Given);
         env.set_last_step(ty);
         Step::builder().ty(ty)
@@ -879,6 +888,84 @@ Feature: Foo
       | \     |
 "#;
         assert!(gherkin_parser::feature(input, &env).is_err());
+    }
+
+    #[test]
+    fn reject_step_with_docstring_and_table() {
+        let env = GherkinEnv::default();
+        for keyword in ["Given", "When", "Then", "And", "But", "*"] {
+            for fence in ["\"\"\"", "```"] {
+                let input = format!(
+                    "Feature: Foo\n  Scenario: Bar\n    Given a\n    \
+                     {keyword} b\n      {fence}\n      x\n      {fence}\n      \
+                     | a |\n",
+                );
+                assert!(
+                    gherkin_parser::feature(&input, &env).is_err(),
+                    "accepted:\n{}",
+                    input,
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn reject_step_with_table_and_docstring() {
+        let env = GherkinEnv::default();
+        for keyword in ["Given", "When", "Then", "And", "But", "*"] {
+            for fence in ["\"\"\"", "```"] {
+                let input = format!(
+                    "Feature: Foo\n  Scenario: Bar\n    Given a\n    \
+                     {keyword} b\n      | a |\n      {fence}\n      x\n      \
+                     {fence}\n",
+                );
+                assert!(
+                    gherkin_parser::feature(&input, &env).is_err(),
+                    "accepted:\n{}",
+                    input,
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn reject_step_with_docstring_and_table_in_other_contexts() {
+        let env = GherkinEnv::default();
+        let step = "      \"\"\"\n      x\n      \"\"\"\n      | a |\n";
+        for head in [
+            "Feature: Foo\n  Background:\n    Given a\n",
+            "Feature: Foo\n  Scenario Outline: Bar\n    Given a\n",
+            "Feature: Foo\n  Rule: R\n    Scenario: Bar\n      Given a\n",
+        ] {
+            let input = format!("{head}{step}");
+            assert!(
+                gherkin_parser::feature(&input, &env).is_err(),
+                "accepted:\n{}",
+                input,
+            );
+        }
+    }
+
+    #[test]
+    fn reject_step_with_docstring_comment_and_table() {
+        let env = GherkinEnv::default();
+        let input = "Feature: Foo\n  Scenario: Bar\n    Given a\n      \
+                     \"\"\"\n      x\n      \"\"\"\n\n      # note\n      | a |\n";
+        assert!(gherkin_parser::feature(input, &env).is_err());
+    }
+
+    #[test]
+    fn accept_step_with_single_argument() {
+        let env = GherkinEnv::default();
+        let input = "Feature: Foo\n  Scenario: Bar\n    Given a\n      \
+                     \"\"\"\n      x\n      \"\"\"\n    When b\n      | a |\n    \
+                     Then c\n";
+        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let steps = &feature.scenarios[0].steps;
+        assert_eq!(steps.len(), 3);
+        assert!(steps[0].docstring.is_some() && steps[0].table.is_none());
+        assert!(steps[1].docstring.is_none() && steps[1].table.is_some());
+        assert!(steps[2].docstring.is_none() && steps[2].table.is_none());
     }
 
     #[test]
