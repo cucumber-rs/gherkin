@@ -10,13 +10,15 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### BC Breaks
 
-- `Examples` following a `Scenario` or `Scenario Outline` parsed as its description in some languages (e.g. `Esempi` in `it`), now parsed as `Examples` to align with upstream. Affects 45 languages.
-- Keyword shadowed by a shorter keyword of the same type prefixing it (e.g. `Regla de negocio` by `Regla` in `es`), now the longest one wins. Also changes the `keyword` and `value` of steps in existing files (e.g. `A tiež y` in `sk` and `Sipoze ke x` in `ht`).
+- `Examples` following a `Scenario` or `Scenario Outline` parsed as its description in some languages (e.g. `Esempi` in `it`), now parsed as `Examples` to align with upstream. Affects 45 languages. ([#65])
+- Keyword shadowed by a shorter keyword of the same type prefixing it (e.g. `Regla de negocio` by `Regla` in `es`), now the longest one wins. Also changes the `keyword` and `value` of steps in existing files (e.g. `A tiež y` in `sk` and `Sipoze ke x` in `ht`). ([#65])
 
 ### Fixed
 
-- Parsing error on a `Feature`, `Rule` or `Background` description line starting with an `Examples` keyword (`Examples:`, `Scenarios:`), now read as description to align with upstream.
-- Parsing error on an `Examples` description line starting with a `Step` keyword.
+- Parsing error on a `Feature`, `Rule` or `Background` description line starting with an `Examples` keyword (`Examples:`, `Scenarios:`), now read as description to align with upstream. ([#65])
+- Parsing error on an `Examples` description line starting with a `Step` keyword. ([#65])
+
+[#65]: https://github.com/cucumber-rs/gherkin/pull/65
 
 
 
