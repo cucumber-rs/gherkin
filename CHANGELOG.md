@@ -10,9 +10,9 @@ All user visible changes to `gherkin` crate will be documented in this file. Thi
 
 ### BC Breaks
 
-- Rejected table rows having more cells than the first row with `EnvError::InconsistentCellCount`, as rows having fewer cells already were, instead of silently truncating them. ([#7])
+- Rejected table rows having more cells than the first row with `EnvError::InconsistentCellCount`, as rows having fewer cells already were, instead of silently truncating them. ([#61])
 
-[#7]: https://github.com/rob-mur/gherkin/pull/7
+[#61]: https://github.com/cucumber-rs/gherkin/pull/61
 
 
 
