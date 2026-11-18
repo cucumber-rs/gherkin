@@ -15,7 +15,7 @@ repository = "https://github.com/cucumber-rs/gherkin"
 readme = "README.md"
 categories = ["compilers", "parser-implementations"]
 keywords = ["gherkin", "cucumber", "cucumber-gherkin", "testing", "bdd"]
-include = ["/src/", "/build.rs", "/tests/cucumber.rs", "/LICENSE-*", "/README.md", "/CHANGELOG.md"]
+include = ["/src/", "/build.rs", "/tests/cucumber.rs", "/tests/step_arguments.rs", "/tests/features/compatibility/", "/tests/fixtures/", "/LICENSE-*", "/README.md", "/CHANGELOG.md"]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -54,4 +54,9 @@ serde_json = "1.0.78"
 
 [[test]]
 name = "cucumber"
+harness = false
+
+# Focused Gherkin 43 compatibility acceptance; no Rust unit-test harness.
+[[test]]
+name = "step_arguments"
 harness = false

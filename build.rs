@@ -22,19 +22,38 @@ struct Data {
 }
 
 fn main() {
+    println!("cargo:rerun-if-changed=src/languages.json");
+    println!("cargo:rerun-if-changed=src/languages-43.json");
+    generate("./src/languages.json", "", false);
+    generate("./src/languages-43.json", "latest-", true);
+}
+
+fn generate(source: &str, prefix: &str, latest: bool) {
     use heck::ToShoutySnakeCase as _;
 
     let out_dir = std::env::var_os("OUT_DIR").unwrap();
     let out_dir = Path::new(&out_dir);
 
-    let f = std::fs::read_to_string("./src/languages.json").unwrap();
+    let f = std::fs::read_to_string(source).unwrap();
     let langs: BTreeMap<String, Data> = serde_json::from_str(&f).unwrap();
 
     let mut keyword_defs = vec![];
     let mut match_arms = vec![];
 
-    for (lang, data) in langs {
-        let lang_upper = lang.to_shouty_snake_case();
+    for (lang, mut data) in langs {
+        if latest {
+            // Official Gherkin's compareStepKeywords prefers the longest prefix.
+            // Keep legacy ordering untouched for existing parser consumers.
+            for words in [
+                &mut data.feature, &mut data.background, &mut data.rule,
+                &mut data.scenario, &mut data.scenario_outline, &mut data.examples,
+                &mut data.given, &mut data.when, &mut data.then,
+                &mut data.and, &mut data.but,
+            ] {
+                words.sort_by_key(|word| std::cmp::Reverse(word.chars().count()));
+            }
+        }
+        let lang_upper = format!("{}{}", prefix, lang).to_shouty_snake_case();
         let lang_ident: Ident = Ident::new(&lang_upper, Span::call_site());
 
         let Data {
@@ -90,6 +109,6 @@ fn main() {
     }
     .to_string();
 
-    std::fs::write(out_dir.join("keywords.gen.rs"), keyword_defs).unwrap();
-    std::fs::write(out_dir.join("match.gen.rs"), match_arms).unwrap();
+    std::fs::write(out_dir.join(format!("{}keywords.gen.rs", prefix)), keyword_defs).unwrap();
+    std::fs::write(out_dir.join(format!("{}match.gen.rs", prefix)), match_arms).unwrap();
 }

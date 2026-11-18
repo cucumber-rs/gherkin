@@ -1,0 +1,1094 @@
+[
+  {
+    "language": "af",
+    "kind": "rule",
+    "keyword": "Reël",
+    "source": "# language: af\nFunksie: Portable accounts\n  Reël: Account policy\n  Voorbeeld: Account state\n    Gegewe account remains\n"
+  },
+  {
+    "language": "af",
+    "kind": "rule",
+    "keyword": "Reel",
+    "source": "# language: af\nFunksie: Portable accounts\n  Reel: Account policy\n  Voorbeeld: Account state\n    Gegewe account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "and",
+    "keyword": "እና ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ምሳሌ: Account state\n    የተሰጠ account exists\n    እና account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "background",
+    "keyword": "ቅድመ ሁኔታ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ቅድመ ሁኔታ: Shared context\n    የተሰጠ account exists\n  ምሳሌ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "background",
+    "keyword": "መነሻ",
+    "source": "# language: amh\nስራ: Portable accounts\n  መነሻ: Shared context\n    የተሰጠ account exists\n  ምሳሌ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "background",
+    "keyword": "መነሻ ሀሳብ",
+    "source": "# language: amh\nስራ: Portable accounts\n  መነሻ ሀሳብ: Shared context\n    የተሰጠ account exists\n  ምሳሌ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "but",
+    "keyword": "ግን ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ምሳሌ: Account state\n    የተሰጠ account exists\n    ግን account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "examples",
+    "keyword": "ምሳሌዎች",
+    "source": "# language: amh\nስራ: Portable accounts\n  ምሳሌ: Account state\n    የተሰጠ account remains\n    ምሳሌዎች: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "amh",
+    "kind": "examples",
+    "keyword": "ሁናቴዎች",
+    "source": "# language: amh\nስራ: Portable accounts\n  ምሳሌ: Account state\n    የተሰጠ account remains\n    ሁናቴዎች: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "amh",
+    "kind": "feature",
+    "keyword": "ስራ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ምሳሌ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "feature",
+    "keyword": "የተፈለገው ስራ",
+    "source": "# language: amh\nየተፈለገው ስራ: Portable accounts\n  ምሳሌ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "feature",
+    "keyword": "የሚፈለገው ድርጊት",
+    "source": "# language: amh\nየሚፈለገው ድርጊት: Portable accounts\n  ምሳሌ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "given",
+    "keyword": "የተሰጠ ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ምሳሌ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "rule",
+    "keyword": "ህግ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ህግ: Account policy\n  ምሳሌ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "scenario",
+    "keyword": "ምሳሌ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ምሳሌ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "scenario",
+    "keyword": "ሁናቴ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ሁናቴ: Account state\n    የተሰጠ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "scenarioOutline",
+    "keyword": "ሁናቴ ዝርዝር",
+    "source": "# language: amh\nስራ: Portable accounts\n  ሁናቴ ዝርዝር: Account state\n    የተሰጠ account remains\n    ምሳሌዎች: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "amh",
+    "kind": "scenarioOutline",
+    "keyword": "ሁናቴ አብነት",
+    "source": "# language: amh\nስራ: Portable accounts\n  ሁናቴ አብነት: Account state\n    የተሰጠ account remains\n    ምሳሌዎች: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "amh",
+    "kind": "then",
+    "keyword": "ከዚያ ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ምሳሌ: Account state\n    ከዚያ account remains\n"
+  },
+  {
+    "language": "amh",
+    "kind": "when",
+    "keyword": "መቼ ",
+    "source": "# language: amh\nስራ: Portable accounts\n  ምሳሌ: Account state\n    መቼ account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "and",
+    "keyword": "I ",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Няхай account exists\n    I account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "and",
+    "keyword": "Ды ",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Няхай account exists\n    Ды account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "and",
+    "keyword": "Таксама ",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Няхай account exists\n    Таксама account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "background",
+    "keyword": "Кантэкст",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Кантэкст: Shared context\n    Няхай account exists\n  Сцэнарый: Account state\n    Няхай account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "but",
+    "keyword": "Але ",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Няхай account exists\n    Але account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "but",
+    "keyword": "Інакш ",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Няхай account exists\n    Інакш account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "examples",
+    "keyword": "Прыклады",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Няхай account remains\n    Прыклады: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "be",
+    "kind": "feature",
+    "keyword": "Функцыянальнасць",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Няхай account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "feature",
+    "keyword": "Фіча",
+    "source": "# language: be\nФіча: Portable accounts\n  Сцэнарый: Account state\n    Няхай account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "given",
+    "keyword": "Няхай ",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Няхай account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "given",
+    "keyword": "Дадзена ",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Дадзена account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "rule",
+    "keyword": "Правілы",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Правілы: Account policy\n  Сцэнарый: Account state\n    Няхай account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "scenario",
+    "keyword": "Сцэнарый",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Няхай account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "scenario",
+    "keyword": "Cцэнар",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Cцэнар: Account state\n    Няхай account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "scenarioOutline",
+    "keyword": "Шаблон сцэнарыя",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Шаблон сцэнарыя: Account state\n    Няхай account remains\n    Прыклады: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "be",
+    "kind": "scenarioOutline",
+    "keyword": "Узор сцэнара",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Узор сцэнара: Account state\n    Няхай account remains\n    Прыклады: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "be",
+    "kind": "then",
+    "keyword": "Тады ",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Тады account remains\n"
+  },
+  {
+    "language": "be",
+    "kind": "when",
+    "keyword": "Калі ",
+    "source": "# language: be\nФункцыянальнасць: Portable accounts\n  Сцэнарый: Account state\n    Калі account remains\n"
+  },
+  {
+    "language": "da",
+    "kind": "rule",
+    "keyword": "Regel",
+    "source": "# language: da\nEgenskab: Portable accounts\n  Regel: Account policy\n  Eksempel: Account state\n    Givet account remains\n"
+  },
+  {
+    "language": "en-old",
+    "kind": "when",
+    "keyword": "Bæþsealf ",
+    "source": "# language: en-old\nHwaet: Portable accounts\n  Swa: Account state\n    Bæþsealf account remains\n"
+  },
+  {
+    "language": "en-old",
+    "kind": "when",
+    "keyword": "Bæþsealfa ",
+    "source": "# language: en-old\nHwaet: Portable accounts\n  Swa: Account state\n    Bæþsealfa account remains\n"
+  },
+  {
+    "language": "en-old",
+    "kind": "when",
+    "keyword": "Bæþsealfe ",
+    "source": "# language: en-old\nHwaet: Portable accounts\n  Swa: Account state\n    Bæþsealfe account remains\n"
+  },
+  {
+    "language": "en-old",
+    "kind": "when",
+    "keyword": "Ciricæw ",
+    "source": "# language: en-old\nHwaet: Portable accounts\n  Swa: Account state\n    Ciricæw account remains\n"
+  },
+  {
+    "language": "en-old",
+    "kind": "when",
+    "keyword": "Ciricæwe ",
+    "source": "# language: en-old\nHwaet: Portable accounts\n  Swa: Account state\n    Ciricæwe account remains\n"
+  },
+  {
+    "language": "en-old",
+    "kind": "when",
+    "keyword": "Ciricæwa ",
+    "source": "# language: en-old\nHwaet: Portable accounts\n  Swa: Account state\n    Ciricæwa account remains\n"
+  },
+  {
+    "language": "en-tx",
+    "kind": "rule",
+    "keyword": "Rule",
+    "source": "# language: en-tx\nThis ain’t my first rodeo: Portable accounts\n  Rule: Account policy\n  All hat and no cattle: Account state\n    Fixin' to account remains\n"
+  },
+  {
+    "language": "eo",
+    "kind": "rule",
+    "keyword": "Regulo",
+    "source": "# language: eo\nTrajto: Portable accounts\n  Regulo: Account policy\n  Ekzemplo: Account state\n    Donitaĵo account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "background",
+    "keyword": "پیش زمینه",
+    "source": "# language: fa\nویژگی: Portable accounts\n  پیش زمینه: Shared context\n    با فرض account exists\n  مثال: Account state\n    با فرض account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "background",
+    "keyword": "مقدمات",
+    "source": "# language: fa\nویژگی: Portable accounts\n  مقدمات: Shared context\n    با فرض account exists\n  مثال: Account state\n    با فرض account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "feature",
+    "keyword": "ویژگی",
+    "source": "# language: fa\nویژگی: Portable accounts\n  مثال: Account state\n    با فرض account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "feature",
+    "keyword": "قابلیت",
+    "source": "# language: fa\nقابلیت: Portable accounts\n  مثال: Account state\n    با فرض account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "given",
+    "keyword": "فرض کنید ",
+    "source": "# language: fa\nویژگی: Portable accounts\n  مثال: Account state\n    فرض کنید account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "given",
+    "keyword": "با در نظر گرفتن ",
+    "source": "# language: fa\nویژگی: Portable accounts\n  مثال: Account state\n    با در نظر گرفتن account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "rule",
+    "keyword": "قانون",
+    "source": "# language: fa\nویژگی: Portable accounts\n  قانون: Account policy\n  مثال: Account state\n    با فرض account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "then",
+    "keyword": "سپس ",
+    "source": "# language: fa\nویژگی: Portable accounts\n  مثال: Account state\n    سپس account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "then",
+    "keyword": "انتظار می رود ",
+    "source": "# language: fa\nویژگی: Portable accounts\n  مثال: Account state\n    انتظار می رود account remains\n"
+  },
+  {
+    "language": "fa",
+    "kind": "when",
+    "keyword": "وقتی ",
+    "source": "# language: fa\nویژگی: Portable accounts\n  مثال: Account state\n    وقتی account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "and",
+    "keyword": "Agus ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Cuir i gcás go account exists\n    Agus account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "but",
+    "keyword": "Ach ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Cuir i gcás go account exists\n    Ach account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "given",
+    "keyword": "Cuir i gcás go ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Cuir i gcás go account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "given",
+    "keyword": "Cuir i gcás nach ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Cuir i gcás nach account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "given",
+    "keyword": "Cuir i gcás gur ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Cuir i gcás gur account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "given",
+    "keyword": "Cuir i gcás nár ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Cuir i gcás nár account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "rule",
+    "keyword": "Riail",
+    "source": "# language: ga\nGné: Portable accounts\n  Riail: Account policy\n  Sampla: Account state\n    Cuir i gcás go account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "then",
+    "keyword": "Ansin ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Ansin account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "when",
+    "keyword": "Nuair a ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Nuair a account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "when",
+    "keyword": "Nuair nach ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Nuair nach account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "when",
+    "keyword": "Nuair ba ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Nuair ba account remains\n"
+  },
+  {
+    "language": "ga",
+    "kind": "when",
+    "keyword": "Nuair nár ",
+    "source": "# language: ga\nGné: Portable accounts\n  Sampla: Account state\n    Nuair nár account remains\n"
+  },
+  {
+    "language": "gj",
+    "kind": "rule",
+    "keyword": "નિયમ",
+    "source": "# language: gj\nલક્ષણ: Portable accounts\n  નિયમ: Account policy\n  ઉદાહરણ: Account state\n    આપેલ છે account remains\n"
+  },
+  {
+    "language": "it",
+    "kind": "and",
+    "keyword": "Ed ",
+    "source": "# language: it\nFunzionalità: Portable accounts\n  Esempio: Account state\n    Dato account exists\n    Ed account remains\n"
+  },
+  {
+    "language": "ja",
+    "kind": "and",
+    "keyword": "且つ",
+    "source": "# language: ja\nフィーチャ: Portable accounts\n  シナリオ: Account state\n    前提account exists\n    且つaccount remains\n"
+  },
+  {
+    "language": "ja",
+    "kind": "but",
+    "keyword": "然し",
+    "source": "# language: ja\nフィーチャ: Portable accounts\n  シナリオ: Account state\n    前提account exists\n    然しaccount remains\n"
+  },
+  {
+    "language": "ja",
+    "kind": "rule",
+    "keyword": "ルール",
+    "source": "# language: ja\nフィーチャ: Portable accounts\n  ルール: Account policy\n  シナリオ: Account state\n    前提account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "and",
+    "keyword": "და ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    მოცემული account exists\n    და account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "and",
+    "keyword": "ასევე ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    მოცემული account exists\n    ასევე account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "but",
+    "keyword": "მაგრამ ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    მოცემული account exists\n    მაგრამ account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "but",
+    "keyword": "თუმცა ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    მოცემული account exists\n    თუმცა account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "feature",
+    "keyword": "მოთხოვნა",
+    "source": "# language: ka\nმოთხოვნა: Portable accounts\n  მაგალითად: Account state\n    მოცემული account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "given",
+    "keyword": "მოცემული ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    მოცემული account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "given",
+    "keyword": "მოცემულია ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    მოცემულია account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "given",
+    "keyword": "ვთქვათ ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    ვთქვათ account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "rule",
+    "keyword": "წესი",
+    "source": "# language: ka\nთვისება: Portable accounts\n  წესი: Account policy\n  მაგალითად: Account state\n    მოცემული account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "scenario",
+    "keyword": "მაგალითი",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითი: Account state\n    მოცემული account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "scenario",
+    "keyword": "მაგ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგ: Account state\n    მოცემული account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "scenario",
+    "keyword": "სცენარი",
+    "source": "# language: ka\nთვისება: Portable accounts\n  სცენარი: Account state\n    მოცემული account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "scenarioOutline",
+    "keyword": "სცენარის შაბლონი",
+    "source": "# language: ka\nთვისება: Portable accounts\n  სცენარის შაბლონი: Account state\n    მოცემული account remains\n    მაგალითები: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "ka",
+    "kind": "scenarioOutline",
+    "keyword": "ნიმუში",
+    "source": "# language: ka\nთვისება: Portable accounts\n  ნიმუში: Account state\n    მოცემული account remains\n    მაგალითები: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "ka",
+    "kind": "scenarioOutline",
+    "keyword": "შაბლონი",
+    "source": "# language: ka\nთვისება: Portable accounts\n  შაბლონი: Account state\n    მოცემული account remains\n    მაგალითები: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "ka",
+    "kind": "then",
+    "keyword": "მაშინ ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    მაშინ account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "when",
+    "keyword": "როდესაც ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    როდესაც account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "when",
+    "keyword": "როცა ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    როცა account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "when",
+    "keyword": "როგორც კი ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    როგორც კი account remains\n"
+  },
+  {
+    "language": "ka",
+    "kind": "when",
+    "keyword": "თუ ",
+    "source": "# language: ka\nთვისება: Portable accounts\n  მაგალითად: Account state\n    თუ account remains\n"
+  },
+  {
+    "language": "ko",
+    "kind": "and",
+    "keyword": "그리고 ",
+    "source": "# language: ko\n기능: Portable accounts\n  시나리오: Account state\n    조건 account exists\n    그리고 account remains\n"
+  },
+  {
+    "language": "ko",
+    "kind": "but",
+    "keyword": "하지만 ",
+    "source": "# language: ko\n기능: Portable accounts\n  시나리오: Account state\n    조건 account exists\n    하지만 account remains\n"
+  },
+  {
+    "language": "ko",
+    "kind": "but",
+    "keyword": "단 ",
+    "source": "# language: ko\n기능: Portable accounts\n  시나리오: Account state\n    조건 account exists\n    단 account remains\n"
+  },
+  {
+    "language": "ko",
+    "kind": "given",
+    "keyword": "조건 ",
+    "source": "# language: ko\n기능: Portable accounts\n  시나리오: Account state\n    조건 account remains\n"
+  },
+  {
+    "language": "ko",
+    "kind": "given",
+    "keyword": "먼저 ",
+    "source": "# language: ko\n기능: Portable accounts\n  시나리오: Account state\n    먼저 account remains\n"
+  },
+  {
+    "language": "ko",
+    "kind": "rule",
+    "keyword": "규칙",
+    "source": "# language: ko\n기능: Portable accounts\n  규칙: Account policy\n  시나리오: Account state\n    조건 account remains\n"
+  },
+  {
+    "language": "ko",
+    "kind": "then",
+    "keyword": "그러면 ",
+    "source": "# language: ko\n기능: Portable accounts\n  시나리오: Account state\n    그러면 account remains\n"
+  },
+  {
+    "language": "ko",
+    "kind": "when",
+    "keyword": "만일 ",
+    "source": "# language: ko\n기능: Portable accounts\n  시나리오: Account state\n    만일 account remains\n"
+  },
+  {
+    "language": "ko",
+    "kind": "when",
+    "keyword": "만약 ",
+    "source": "# language: ko\n기능: Portable accounts\n  시나리오: Account state\n    만약 account remains\n"
+  },
+  {
+    "language": "ml",
+    "kind": "and",
+    "keyword": "ഒപ്പം",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  രംഗം: Account state\n    നൽകിയത്account exists\n    ഒപ്പംaccount remains\n"
+  },
+  {
+    "language": "ml",
+    "kind": "background",
+    "keyword": "പശ്ചാത്തലം",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  പശ്ചാത്തലം: Shared context\n    നൽകിയത്account exists\n  രംഗം: Account state\n    നൽകിയത്account remains\n"
+  },
+  {
+    "language": "ml",
+    "kind": "but",
+    "keyword": "പക്ഷേ",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  രംഗം: Account state\n    നൽകിയത്account exists\n    പക്ഷേaccount remains\n"
+  },
+  {
+    "language": "ml",
+    "kind": "examples",
+    "keyword": "ഉദാഹരണങ്ങൾ",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  രംഗം: Account state\n    നൽകിയത്account remains\n    ഉദാഹരണങ്ങൾ: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "ml",
+    "kind": "feature",
+    "keyword": "സവിശേഷത",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  രംഗം: Account state\n    നൽകിയത്account remains\n"
+  },
+  {
+    "language": "ml",
+    "kind": "given",
+    "keyword": "നൽകിയത്",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  രംഗം: Account state\n    നൽകിയത്account remains\n"
+  },
+  {
+    "language": "ml",
+    "kind": "rule",
+    "keyword": "നിയമം",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  നിയമം: Account policy\n  രംഗം: Account state\n    നൽകിയത്account remains\n"
+  },
+  {
+    "language": "ml",
+    "kind": "scenario",
+    "keyword": "രംഗം",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  രംഗം: Account state\n    നൽകിയത്account remains\n"
+  },
+  {
+    "language": "ml",
+    "kind": "scenarioOutline",
+    "keyword": "സാഹചര്യത്തിന്റെ രൂപരേഖ",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  സാഹചര്യത്തിന്റെ രൂപരേഖ: Account state\n    നൽകിയത്account remains\n    ഉദാഹരണങ്ങൾ: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "ml",
+    "kind": "then",
+    "keyword": "പിന്നെ",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  രംഗം: Account state\n    പിന്നെaccount remains\n"
+  },
+  {
+    "language": "ml",
+    "kind": "when",
+    "keyword": "എപ്പോൾ",
+    "source": "# language: ml\nസവിശേഷത: Portable accounts\n  രംഗം: Account state\n    എപ്പോൾaccount remains\n"
+  },
+  {
+    "language": "ne",
+    "kind": "and",
+    "keyword": "अनि ",
+    "source": "# language: ne\nसुविधा: Portable accounts\n  परिदृश्य: Account state\n    दिइएको account exists\n    अनि account remains\n"
+  },
+  {
+    "language": "nl",
+    "kind": "rule",
+    "keyword": "Regel",
+    "source": "# language: nl\nFunctionaliteit: Portable accounts\n  Regel: Account policy\n  Voorbeeld: Account state\n    Gegeven account remains\n"
+  },
+  {
+    "language": "ru",
+    "kind": "examples",
+    "keyword": "Значения",
+    "source": "# language: ru\nФункция: Portable accounts\n  Пример: Account state\n    Допустим account remains\n    Значения: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "ru",
+    "kind": "feature",
+    "keyword": "Фича",
+    "source": "# language: ru\nФича: Portable accounts\n  Пример: Account state\n    Допустим account remains\n"
+  },
+  {
+    "language": "sr-Cyrl",
+    "kind": "scenario",
+    "keyword": "Сценарио",
+    "source": "# language: sr-Cyrl\nФункционалност: Portable accounts\n  Сценарио: Account state\n    За дато account remains\n"
+  },
+  {
+    "language": "ta",
+    "kind": "and",
+    "keyword": "மேலும் ",
+    "source": "# language: ta\nஅம்சம்: Portable accounts\n  உதாரணமாக: Account state\n    கொடுக்கப்பட்ட account exists\n    மேலும் account remains\n"
+  },
+  {
+    "language": "ta",
+    "kind": "but",
+    "keyword": "ஆனால் ",
+    "source": "# language: ta\nஅம்சம்: Portable accounts\n  உதாரணமாக: Account state\n    கொடுக்கப்பட்ட account exists\n    ஆனால் account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "and",
+    "keyword": "Hem de ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Hem de account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "and",
+    "keyword": "Bir de ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Bir de account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "and",
+    "keyword": "Ayrıca ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Ayrıca account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "and",
+    "keyword": "İlaveten ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    İlaveten account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "and",
+    "keyword": "Buna ek olarak ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Buna ek olarak account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "background",
+    "keyword": "Arka Plan",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Arka Plan: Shared context\n    Mevcut account exists\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "background",
+    "keyword": "Ön Koşul",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Ön Koşul: Shared context\n    Mevcut account exists\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "background",
+    "keyword": "Önkoşul",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Önkoşul: Shared context\n    Mevcut account exists\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "background",
+    "keyword": "Önceki Durum",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Önceki Durum: Shared context\n    Mevcut account exists\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "background",
+    "keyword": "Giriş",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Giriş: Shared context\n    Mevcut account exists\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "background",
+    "keyword": "Mukaddime",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Mukaddime: Shared context\n    Mevcut account exists\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "background",
+    "keyword": "Mevcut Durum",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Mevcut Durum: Shared context\n    Mevcut account exists\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "but",
+    "keyword": "Ancak ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Ancak account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "but",
+    "keyword": "Yalnız ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Yalnız account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "but",
+    "keyword": "Lakin ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Lakin account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "but",
+    "keyword": "Meğer ki ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Meğer ki account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "but",
+    "keyword": "Buna mukabil ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Buna mukabil account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "but",
+    "keyword": "Aksi halde ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account exists\n    Aksi halde account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "examples",
+    "keyword": "Değerler",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account remains\n    Değerler: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "tr",
+    "kind": "feature",
+    "keyword": "İş Gereksinimi",
+    "source": "# language: tr\nİş Gereksinimi: Portable accounts\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "feature",
+    "keyword": "Gereksinim",
+    "source": "# language: tr\nGereksinim: Portable accounts\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "feature",
+    "keyword": "İşlev",
+    "source": "# language: tr\nİşlev: Portable accounts\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "feature",
+    "keyword": "Kullanıcı Hikayesi",
+    "source": "# language: tr\nKullanıcı Hikayesi: Portable accounts\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "feature",
+    "keyword": "Yetenek",
+    "source": "# language: tr\nYetenek: Portable accounts\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "feature",
+    "keyword": "Teknik Gereksinim",
+    "source": "# language: tr\nTeknik Gereksinim: Portable accounts\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Mevcut ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Önceden ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Önceden account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Geçmişte ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Geçmişte account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Daha önce ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Daha önce account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Halihazırda ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Halihazırda account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Zaten ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Zaten account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Sistemde ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Sistemde account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Varsayalım ki ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Varsayalım ki account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Farz edelim ki ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Farz edelim ki account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Kabul edelim ki ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Kabul edelim ki account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Başlangıçta ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Başlangıçta account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Varsayılan olarak ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Varsayılan olarak account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "given",
+    "keyword": "Biliniyor ki ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Biliniyor ki account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "rule",
+    "keyword": "İş Kuralı",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  İş Kuralı: Account policy\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "rule",
+    "keyword": "Kaide",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Kaide: Account policy\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "rule",
+    "keyword": "Hüküm",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Hüküm: Account policy\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "rule",
+    "keyword": "Madde",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Madde: Account policy\n  Örnek: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "scenario",
+    "keyword": "Durum",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Durum: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "scenario",
+    "keyword": "Vaka",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Vaka: Account state\n    Mevcut account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "scenarioOutline",
+    "keyword": "Senaryo şablonu",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Senaryo şablonu: Account state\n    Mevcut account remains\n    Örnekler: Account examples\n      | value |\n      | ready |\n"
+  },
+  {
+    "language": "tr",
+    "kind": "then",
+    "keyword": "Beklenen ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Beklenen account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "then",
+    "keyword": "Sonuç olarak ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Sonuç olarak account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "then",
+    "keyword": "Böylece ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Böylece account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "then",
+    "keyword": "Bunun üzerine ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Bunun üzerine account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "then",
+    "keyword": "Bu durumda ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Bu durumda account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "then",
+    "keyword": "O takdirde ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    O takdirde account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "then",
+    "keyword": "Şu halde ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Şu halde account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "then",
+    "keyword": "Netice itibariyle ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Netice itibariyle account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "then",
+    "keyword": "Buna binaen ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Buna binaen account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "when",
+    "keyword": "Eğer ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Eğer account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "when",
+    "keyword": "Ne zaman ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Ne zaman account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "when",
+    "keyword": "Ne zaman ki ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Ne zaman ki account remains\n"
+  },
+  {
+    "language": "tr",
+    "kind": "when",
+    "keyword": "Şayet ",
+    "source": "# language: tr\nÖzellik: Portable accounts\n  Örnek: Account state\n    Şayet account remains\n"
+  },
+  {
+    "language": "uz",
+    "kind": "given",
+    "keyword": "Belgilangan ",
+    "source": "# language: uz\nФункционал: Portable accounts\n  Сценарий: Account state\n    Belgilangan account remains\n"
+  },
+  {
+    "language": "vi",
+    "kind": "rule",
+    "keyword": "Quy tắc",
+    "source": "# language: vi\nTính năng: Portable accounts\n  Quy tắc: Account policy\n  Tình huống: Account state\n    Biết account remains\n"
+  },
+  {
+    "language": "zh-CN",
+    "kind": "rule",
+    "keyword": "规则",
+    "source": "# language: zh-CN\n功能: Portable accounts\n  规则: Account policy\n  场景: Account state\n    假如account remains\n"
+  }
+]

@@ -45,6 +45,11 @@
 mod keywords;
 #[cfg(feature = "parser")]
 mod parser;
+
+/// Native Gherkin-in-Markdown parser and source representation.
+#[cfg(feature = "parser")]
+pub mod markdown;
+
 #[cfg(feature = "parser")]
 pub mod tagexpr;
 
@@ -62,11 +67,19 @@ use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
 #[cfg(feature = "parser")]
-pub use self::parser::{EnvError, GherkinEnv};
+pub use self::parser::{DocStringSemantics, EnvError, GherkinEnv, LexicalSemantics, TableSemantics};
 
 #[cfg(feature = "parser")]
 pub fn is_language_supported(lang: &str) -> bool {
     keywords::Keywords::get(lang).is_some()
+}
+
+/// Whether the explicit official Gherkin 43.0.0 catalogue supports `lang`.
+///
+/// The legacy `is_language_supported` catalogue is unchanged.
+#[cfg(feature = "parser")]
+pub fn is_latest_language_supported(lang: &str) -> bool {
+    keywords::Keywords::get_latest(lang).is_some()
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -156,6 +169,50 @@ pub struct Examples {
     pub position: LineCol,
 }
 
+/// A parsed Gherkin document, which may contain only comments or be empty.
+///
+/// Additive document parsing does not change the existing Feature API's
+/// requirement that its input contain a feature.
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
+pub struct Document {
+    /// The optional native feature; comments remain in the caller's source.
+    pub feature: Option<Feature>,
+}
+
+#[cfg(feature = "parser")]
+impl Document {
+    /// Parses a complete document with explicit environment policies.
+    pub fn parse<S: AsRef<str>>(input: S, env: GherkinEnv) -> Result<Self, ParseError> {
+        let input = input.as_ref();
+        let source = if input.ends_with('\n') { std::borrow::Cow::Borrowed(input) }
+            else { std::borrow::Cow::Owned(format!("{}\n", input)) };
+        parser::gherkin_parser::document(&source, &env, &source).map(|feature| Self { feature })
+            .map_err(|error| ParseError {
+                position: LineCol { line: error.location.line, col: error.location.column },
+                expected: error.expected.tokens().collect(), detail: String::new(),
+            })
+    }
+
+    /// Parses supplied document bytes with a source path, without rereading them.
+    /// A feature, if present, receives that path; featureless documents remain so.
+    pub fn parse_file_source<P: AsRef<Path>, S: AsRef<str>>(
+        path: P, source: S, env: GherkinEnv,
+    ) -> Result<Self, ParseFileError> {
+        let input = source.as_ref();
+        let source = if input.ends_with('\n') { std::borrow::Cow::Borrowed(input) }
+            else { std::borrow::Cow::Owned(format!("{}\n", input)) };
+        let feature = parser::gherkin_parser::document(&source, &env, &source).map_err(|error| ParseFileError::Parsing {
+            path: path.as_ref().to_path_buf(),
+            error: env.fatal_error.borrow_mut().take().or_else(|| env.last_error.borrow_mut().take()),
+            source: ParseError { position: LineCol { line: error.location.line, col: error.location.column },
+                expected: error.expected.tokens().collect(), detail: String::new() },
+        })?;
+        Ok(Self { feature: feature.map(|mut feature| { feature.path = Some(path.as_ref().to_path_buf()); feature }) })
+    }
+
+}
+
 /// A feature
 #[cfg_attr(feature = "parser", derive(TypedBuilder))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -197,19 +254,34 @@ pub struct Feature {
 impl Feature {
     #[inline]
     pub fn parse_path<P: AsRef<Path>>(path: P, env: GherkinEnv) -> Result<Feature, ParseFileError> {
-        let mut s =
+        let s =
             std::fs::read_to_string(path.as_ref()).map_err(|e| ParseFileError::Reading {
                 path: path.as_ref().to_path_buf(),
                 source: e,
             })?;
 
-        if !s.ends_with('\n') {
-            // Add a new line at the end, because our parser is bad and we should feel bad.
-            s.push('\n');
-        }
+        Self::parse_file_source(path, s, env)
+    }
+
+    /// Parses the supplied source with file-path diagnostics, without reading it again.
+    ///
+    /// This lets callers retain the exact bytes that produced the native AST.
+    /// Like `parse_path`, a missing final newline is added only for parsing.
+    #[inline]
+    pub fn parse_file_source<P: AsRef<Path>, S: AsRef<str>>(
+        path: P,
+        source: S,
+        env: GherkinEnv,
+    ) -> Result<Feature, ParseFileError> {
+        let input = source.as_ref();
+        let s = if input.ends_with('\n') {
+            std::borrow::Cow::Borrowed(input)
+        } else {
+            std::borrow::Cow::Owned(format!("{}\n", input))
+        };
 
         let mut feature =
-            parser::gherkin_parser::feature(&s, &env).map_err(|e| ParseFileError::Parsing {
+            parser::gherkin_parser::feature(&s, &env, &s).map_err(|e| ParseFileError::Parsing {
                 path: path.as_ref().to_path_buf(),
                 error: env
                     .fatal_error
@@ -221,7 +293,7 @@ impl Feature {
                         line: e.location.line,
                         col: e.location.column,
                     },
-                    expected: e.expected.tokens().collect(),
+                    expected: e.expected.tokens().collect(), detail: String::new(),
                 },
             })?;
 
@@ -238,12 +310,12 @@ impl Feature {
             // Add a new line at the end, because our parser is bad and we should feel bad.
             false => Cow::Owned(format!("{}\n", input.as_ref())),
         };
-        parser::gherkin_parser::feature(&input, &env).map_err(|e| ParseError {
+        parser::gherkin_parser::feature(&input, &env, &input).map_err(|e| ParseError {
             position: LineCol {
                 line: e.location.line,
                 col: e.location.column,
             },
-            expected: e.expected.tokens().collect(),
+            expected: e.expected.tokens().collect(), detail: String::new(),
         })
     }
 }
@@ -393,10 +465,24 @@ impl Table {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[error("Error at {}:{}: {expected:?}", .position.line, .position.col)]
+#[error("Error at {}:{}: {expected:?}{detail}", .position.line, .position.col)]
 pub struct ParseError {
     position: LineCol,
     expected: HashSet<&'static str>,
+    detail: String,
+}
+
+impl ParseError {
+    /// Creates a positioned diagnostic for an additive source parser.
+    /// Existing classic diagnostics retain their original formatting.
+    pub fn with_message(position: LineCol, message: impl Into<String>) -> Self {
+        Self { position, expected: HashSet::new(), detail: format!("; {}", message.into()) }
+    }
+
+    /// Returns the native parser's structured error location.
+    pub const fn position(&self) -> LineCol {
+        LineCol { line: self.position.line, col: self.position.col }
+    }
 }
 
 #[cfg(feature = "parser")]
