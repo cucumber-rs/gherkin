@@ -1,0 +1,919 @@
+[
+  {
+    "language": "af",
+    "changes": {
+      "rule": {
+        "old": [
+          "Regel"
+        ],
+        "new": [
+          "Reël",
+          "Reel"
+        ]
+      }
+    }
+  },
+  {
+    "language": "amh",
+    "added": {
+      "and": [
+        "* ",
+        "እና "
+      ],
+      "background": [
+        "ቅድመ ሁኔታ",
+        "መነሻ",
+        "መነሻ ሀሳብ"
+      ],
+      "but": [
+        "* ",
+        "ግን "
+      ],
+      "examples": [
+        "ምሳሌዎች",
+        "ሁናቴዎች"
+      ],
+      "feature": [
+        "ስራ",
+        "የተፈለገው ስራ",
+        "የሚፈለገው ድርጊት"
+      ],
+      "given": [
+        "* ",
+        "የተሰጠ "
+      ],
+      "name": "Amharic",
+      "native": "አማርኛ",
+      "rule": [
+        "ህግ"
+      ],
+      "scenario": [
+        "ምሳሌ",
+        "ሁናቴ"
+      ],
+      "scenarioOutline": [
+        "ሁናቴ ዝርዝር",
+        "ሁናቴ አብነት"
+      ],
+      "then": [
+        "* ",
+        "ከዚያ "
+      ],
+      "when": [
+        "* ",
+        "መቼ "
+      ]
+    }
+  },
+  {
+    "language": "be",
+    "added": {
+      "and": [
+        "* ",
+        "I ",
+        "Ды ",
+        "Таксама "
+      ],
+      "background": [
+        "Кантэкст"
+      ],
+      "but": [
+        "* ",
+        "Але ",
+        "Інакш "
+      ],
+      "examples": [
+        "Прыклады"
+      ],
+      "feature": [
+        "Функцыянальнасць",
+        "Фіча"
+      ],
+      "given": [
+        "* ",
+        "Няхай ",
+        "Дадзена "
+      ],
+      "name": "Belarusian",
+      "native": "Беларуская",
+      "rule": [
+        "Правілы"
+      ],
+      "scenario": [
+        "Сцэнарый",
+        "Cцэнар"
+      ],
+      "scenarioOutline": [
+        "Шаблон сцэнарыя",
+        "Узор сцэнара"
+      ],
+      "then": [
+        "* ",
+        "Тады "
+      ],
+      "when": [
+        "* ",
+        "Калі "
+      ]
+    }
+  },
+  {
+    "language": "da",
+    "changes": {
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "Regel"
+        ]
+      }
+    }
+  },
+  {
+    "language": "en-old",
+    "changes": {
+      "when": {
+        "old": [
+          "* ",
+          "Tha ",
+          "Þa ",
+          "Ða "
+        ],
+        "new": [
+          "* ",
+          "Bæþsealf ",
+          "Bæþsealfa ",
+          "Bæþsealfe ",
+          "Ciricæw ",
+          "Ciricæwe ",
+          "Ciricæwa "
+        ]
+      }
+    }
+  },
+  {
+    "language": "en-tx",
+    "changes": {
+      "rule": {
+        "old": [
+          "Rule "
+        ],
+        "new": [
+          "Rule"
+        ]
+      }
+    }
+  },
+  {
+    "language": "eo",
+    "changes": {
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "Regulo"
+        ]
+      }
+    }
+  },
+  {
+    "language": "fa",
+    "changes": {
+      "background": {
+        "old": [
+          "زمینه"
+        ],
+        "new": [
+          "زمینه",
+          "پیش زمینه",
+          "مقدمات"
+        ]
+      },
+      "feature": {
+        "old": [
+          "وِیژگی"
+        ],
+        "new": [
+          "ویژگی",
+          "قابلیت"
+        ]
+      },
+      "given": {
+        "old": [
+          "* ",
+          "با فرض "
+        ],
+        "new": [
+          "* ",
+          "با فرض ",
+          "فرض کنید ",
+          "با در نظر گرفتن "
+        ]
+      },
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "قانون"
+        ]
+      },
+      "then": {
+        "old": [
+          "* ",
+          "آنگاه "
+        ],
+        "new": [
+          "* ",
+          "آنگاه ",
+          "سپس ",
+          "انتظار می رود "
+        ]
+      },
+      "when": {
+        "old": [
+          "* ",
+          "هنگامی "
+        ],
+        "new": [
+          "* ",
+          "هنگامی ",
+          "وقتی "
+        ]
+      }
+    }
+  },
+  {
+    "language": "ga",
+    "changes": {
+      "and": {
+        "old": [
+          "* ",
+          "Agus"
+        ],
+        "new": [
+          "* ",
+          "Agus "
+        ]
+      },
+      "but": {
+        "old": [
+          "* ",
+          "Ach"
+        ],
+        "new": [
+          "* ",
+          "Ach "
+        ]
+      },
+      "given": {
+        "old": [
+          "* ",
+          "Cuir i gcás go",
+          "Cuir i gcás nach",
+          "Cuir i gcás gur",
+          "Cuir i gcás nár"
+        ],
+        "new": [
+          "* ",
+          "Cuir i gcás go ",
+          "Cuir i gcás nach ",
+          "Cuir i gcás gur ",
+          "Cuir i gcás nár "
+        ]
+      },
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "Riail"
+        ]
+      },
+      "then": {
+        "old": [
+          "* ",
+          "Ansin"
+        ],
+        "new": [
+          "* ",
+          "Ansin "
+        ]
+      },
+      "when": {
+        "old": [
+          "* ",
+          "Nuair a",
+          "Nuair nach",
+          "Nuair ba",
+          "Nuair nár"
+        ],
+        "new": [
+          "* ",
+          "Nuair a ",
+          "Nuair nach ",
+          "Nuair ba ",
+          "Nuair nár "
+        ]
+      }
+    }
+  },
+  {
+    "language": "gj",
+    "changes": {
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "નિયમ"
+        ]
+      }
+    }
+  },
+  {
+    "language": "it",
+    "changes": {
+      "and": {
+        "old": [
+          "* ",
+          "E "
+        ],
+        "new": [
+          "* ",
+          "E ",
+          "Ed "
+        ]
+      }
+    }
+  },
+  {
+    "language": "ja",
+    "changes": {
+      "and": {
+        "old": [
+          "* ",
+          "かつ"
+        ],
+        "new": [
+          "* ",
+          "且つ",
+          "かつ"
+        ]
+      },
+      "but": {
+        "old": [
+          "* ",
+          "しかし",
+          "但し",
+          "ただし"
+        ],
+        "new": [
+          "* ",
+          "然し",
+          "しかし",
+          "但し",
+          "ただし"
+        ]
+      },
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "ルール"
+        ]
+      }
+    }
+  },
+  {
+    "language": "ka",
+    "changes": {
+      "and": {
+        "old": [
+          "* ",
+          "და"
+        ],
+        "new": [
+          "* ",
+          "და ",
+          "ასევე "
+        ]
+      },
+      "but": {
+        "old": [
+          "* ",
+          "მაგ­რამ"
+        ],
+        "new": [
+          "* ",
+          "მაგრამ ",
+          "თუმცა "
+        ]
+      },
+      "feature": {
+        "old": [
+          "თვისება"
+        ],
+        "new": [
+          "თვისება",
+          "მოთხოვნა"
+        ]
+      },
+      "given": {
+        "old": [
+          "* ",
+          "მოცემული"
+        ],
+        "new": [
+          "* ",
+          "მოცემული ",
+          "მოცემულია ",
+          "ვთქვათ "
+        ]
+      },
+      "native": {
+        "old": "ქართველი",
+        "new": "ქართული"
+      },
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "წესი"
+        ]
+      },
+      "scenario": {
+        "old": [
+          "მაგალითად",
+          "სცენარის"
+        ],
+        "new": [
+          "მაგალითად",
+          "მაგალითი",
+          "მაგ",
+          "სცენარი"
+        ]
+      },
+      "scenarioOutline": {
+        "old": [
+          "სცენარის ნიმუში"
+        ],
+        "new": [
+          "სცენარის ნიმუში",
+          "სცენარის შაბლონი",
+          "ნიმუში",
+          "შაბლონი"
+        ]
+      },
+      "then": {
+        "old": [
+          "* ",
+          "მაშინ"
+        ],
+        "new": [
+          "* ",
+          "მაშინ "
+        ]
+      },
+      "when": {
+        "old": [
+          "* ",
+          "როდესაც"
+        ],
+        "new": [
+          "* ",
+          "როდესაც ",
+          "როცა ",
+          "როგორც კი ",
+          "თუ "
+        ]
+      }
+    }
+  },
+  {
+    "language": "ko",
+    "changes": {
+      "and": {
+        "old": [
+          "* ",
+          "그리고"
+        ],
+        "new": [
+          "* ",
+          "그리고 "
+        ]
+      },
+      "but": {
+        "old": [
+          "* ",
+          "하지만",
+          "단"
+        ],
+        "new": [
+          "* ",
+          "하지만 ",
+          "단 "
+        ]
+      },
+      "given": {
+        "old": [
+          "* ",
+          "조건",
+          "먼저"
+        ],
+        "new": [
+          "* ",
+          "조건 ",
+          "먼저 "
+        ]
+      },
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "규칙"
+        ]
+      },
+      "then": {
+        "old": [
+          "* ",
+          "그러면"
+        ],
+        "new": [
+          "* ",
+          "그러면 "
+        ]
+      },
+      "when": {
+        "old": [
+          "* ",
+          "만일",
+          "만약"
+        ],
+        "new": [
+          "* ",
+          "만일 ",
+          "만약 "
+        ]
+      }
+    }
+  },
+  {
+    "language": "ml",
+    "added": {
+      "and": [
+        "* ",
+        "ഒപ്പം"
+      ],
+      "background": [
+        "പശ്ചാത്തലം"
+      ],
+      "but": [
+        "* ",
+        "പക്ഷേ"
+      ],
+      "examples": [
+        "ഉദാഹരണങ്ങൾ"
+      ],
+      "feature": [
+        "സവിശേഷത"
+      ],
+      "given": [
+        "* ",
+        "നൽകിയത്"
+      ],
+      "name": "Malayalam",
+      "native": "മലയാളം",
+      "rule": [
+        "നിയമം"
+      ],
+      "scenario": [
+        "രംഗം"
+      ],
+      "scenarioOutline": [
+        "സാഹചര്യത്തിന്റെ രൂപരേഖ"
+      ],
+      "then": [
+        "* ",
+        "പിന്നെ"
+      ],
+      "when": [
+        "എപ്പോൾ"
+      ]
+    }
+  },
+  {
+    "language": "ne",
+    "changes": {
+      "and": {
+        "old": [
+          "* ",
+          "र ",
+          "अनी "
+        ],
+        "new": [
+          "* ",
+          "र ",
+          "अनि "
+        ]
+      }
+    }
+  },
+  {
+    "language": "nl",
+    "changes": {
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "Regel"
+        ]
+      }
+    }
+  },
+  {
+    "language": "ru",
+    "changes": {
+      "examples": {
+        "old": [
+          "Примеры"
+        ],
+        "new": [
+          "Примеры",
+          "Значения"
+        ]
+      },
+      "feature": {
+        "old": [
+          "Функция",
+          "Функциональность",
+          "Функционал",
+          "Свойство"
+        ],
+        "new": [
+          "Функция",
+          "Функциональность",
+          "Функционал",
+          "Свойство",
+          "Фича"
+        ]
+      }
+    }
+  },
+  {
+    "language": "sr-Cyrl",
+    "changes": {
+      "scenario": {
+        "old": [
+          "Пример",
+          "Сценарио",
+          "Пример"
+        ],
+        "new": [
+          "Сценарио",
+          "Пример"
+        ]
+      }
+    }
+  },
+  {
+    "language": "ta",
+    "changes": {
+      "and": {
+        "old": [
+          "* ",
+          "மேலும்  ",
+          "மற்றும் "
+        ],
+        "new": [
+          "* ",
+          "மேலும் ",
+          "மற்றும் "
+        ]
+      },
+      "but": {
+        "old": [
+          "* ",
+          "ஆனால்  "
+        ],
+        "new": [
+          "* ",
+          "ஆனால் "
+        ]
+      }
+    }
+  },
+  {
+    "language": "tr",
+    "changes": {
+      "and": {
+        "old": [
+          "* ",
+          "Ve "
+        ],
+        "new": [
+          "* ",
+          "Ve ",
+          "Hem de ",
+          "Bir de ",
+          "Ayrıca ",
+          "İlaveten ",
+          "Buna ek olarak "
+        ]
+      },
+      "background": {
+        "old": [
+          "Geçmiş"
+        ],
+        "new": [
+          "Geçmiş",
+          "Arka Plan",
+          "Ön Koşul",
+          "Önkoşul",
+          "Önceki Durum",
+          "Giriş",
+          "Mukaddime",
+          "Mevcut Durum"
+        ]
+      },
+      "but": {
+        "old": [
+          "* ",
+          "Fakat ",
+          "Ama "
+        ],
+        "new": [
+          "* ",
+          "Fakat ",
+          "Ama ",
+          "Ancak ",
+          "Yalnız ",
+          "Lakin ",
+          "Meğer ki ",
+          "Buna mukabil ",
+          "Aksi halde "
+        ]
+      },
+      "examples": {
+        "old": [
+          "Örnekler"
+        ],
+        "new": [
+          "Örnekler",
+          "Değerler"
+        ]
+      },
+      "feature": {
+        "old": [
+          "Özellik"
+        ],
+        "new": [
+          "Özellik",
+          "İş Gereksinimi",
+          "Gereksinim",
+          "İşlev",
+          "Kullanıcı Hikayesi",
+          "Yetenek",
+          "Teknik Gereksinim"
+        ]
+      },
+      "given": {
+        "old": [
+          "* ",
+          "Diyelim ki "
+        ],
+        "new": [
+          "* ",
+          "Mevcut ",
+          "Önceden ",
+          "Geçmişte ",
+          "Daha önce ",
+          "Halihazırda ",
+          "Zaten ",
+          "Sistemde ",
+          "Diyelim ki ",
+          "Varsayalım ki ",
+          "Farz edelim ki ",
+          "Kabul edelim ki ",
+          "Başlangıçta ",
+          "Varsayılan olarak ",
+          "Biliniyor ki "
+        ]
+      },
+      "rule": {
+        "old": [
+          "Kural"
+        ],
+        "new": [
+          "Kural",
+          "İş Kuralı",
+          "Kaide",
+          "Hüküm",
+          "Madde"
+        ]
+      },
+      "scenario": {
+        "old": [
+          "Örnek",
+          "Senaryo"
+        ],
+        "new": [
+          "Örnek",
+          "Senaryo",
+          "Durum",
+          "Vaka"
+        ]
+      },
+      "scenarioOutline": {
+        "old": [
+          "Senaryo taslağı"
+        ],
+        "new": [
+          "Senaryo taslağı",
+          "Senaryo şablonu"
+        ]
+      },
+      "then": {
+        "old": [
+          "* ",
+          "O zaman "
+        ],
+        "new": [
+          "* ",
+          "Beklenen ",
+          "O zaman ",
+          "Sonuç olarak ",
+          "Böylece ",
+          "Bunun üzerine ",
+          "Bu durumda ",
+          "O takdirde ",
+          "Şu halde ",
+          "Netice itibariyle ",
+          "Buna binaen "
+        ]
+      },
+      "when": {
+        "old": [
+          "* ",
+          "Eğer ki "
+        ],
+        "new": [
+          "* ",
+          "Eğer ",
+          "Eğer ki ",
+          "Ne zaman ",
+          "Ne zaman ki ",
+          "Şayet "
+        ]
+      }
+    }
+  },
+  {
+    "language": "uz",
+    "changes": {
+      "given": {
+        "old": [
+          "* ",
+          "Агар "
+        ],
+        "new": [
+          "* ",
+          "Belgilangan "
+        ]
+      }
+    }
+  },
+  {
+    "language": "vi",
+    "changes": {
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "Quy tắc"
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh-CN",
+    "changes": {
+      "rule": {
+        "old": [
+          "Rule"
+        ],
+        "new": [
+          "Rule",
+          "规则"
+        ]
+      }
+    }
+  }
+]

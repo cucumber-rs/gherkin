@@ -29,7 +29,7 @@ impl FromStr for TagOperation {
     type Err = peg::error::ParseError<peg::str::LineCol>;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        crate::parser::gherkin_parser::tag_operation(s, &Default::default())
+        crate::parser::gherkin_parser::tag_operation(s, &Default::default(), s)
     }
 }
 

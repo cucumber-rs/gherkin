@@ -37,6 +37,10 @@ impl<'a> Keywords<'a> {
         })
     }
 
+    pub fn get_latest(key: &str) -> Option<Keywords<'a>> {
+        include!(concat!(env!("OUT_DIR"), "/latest-match.gen.rs"))
+    }
+
     pub fn all(&self) -> Vec<&'a str> {
         let mut v = [
             self.feature,
@@ -150,3 +154,5 @@ const FORMAL_SPEC_KEYWORDS: Keywords<'static> = Keywords {
 };
 
 include!(concat!(env!("OUT_DIR"), "/keywords.gen.rs"));
+
+include!(concat!(env!("OUT_DIR"), "/latest-keywords.gen.rs"));

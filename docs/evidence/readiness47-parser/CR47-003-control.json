@@ -1,0 +1,226 @@
+{
+  "case": "CR47-003",
+  "mode": "control",
+  "status": "PASS",
+  "contractDigest": "ef6360878ae5a168725f5ec56a9e86b251d1ba8f40b307397b3acaf3973f49d7",
+  "observations": [
+    {
+      "sourceIdentity": {
+        "production": {
+          "src/LICENSE-GHERKIN": "042bda2882d793c42fcd5f4d272579a432d1d52a0e5436202e5e823eae4771b6",
+          "src/keywords.rs": "f17ed92139458e81791eea5c9553a123f306e25560c651da4922d287200e1d8b",
+          "src/languages-43.json": "84c50533cce6f2fbb1c1e1eca14811000a69ef70b5b564075b50bdfa7333c329",
+          "src/languages.json": "a021693a92caf9eeefeb4fddcb8bff8cbc65c99ec46acc139144dfd1119f95a1",
+          "src/lib.rs": "b1b77ce83bbdd5bd621b9e9ed066b3814eb0bea4313ca8193a39055ae18123dc",
+          "src/markdown.rs": "a0af8a471648ee4e5256bea591a0e327db3cc604764fecb0a801f77d8c145553",
+          "src/parser.rs": "331a23355c28197547192c0125c86dcae489692f7595aec0a4c5f25d376f54d2",
+          "src/tagexpr.rs": "1ac43f218c0cd5800c36e7a3cda47d78fd619b9315abfbeb6bd6b030fd04c2a4",
+          "build.rs": "58e2dad426947023df1028d3929bcc7818b4f1bdab159171431bfe52ee705d09"
+        },
+        "manifest": {
+          "package": {
+            "name": "gherkin",
+            "version": "0.16.0",
+            "edition": "2018",
+            "rust-version": "1.88",
+            "description": "Pure Rust implementation of Gherkin language (`.feature` file) for Cucumber testing framework.",
+            "license": "MIT OR Apache-2.0",
+            "authors": [
+              "Brendan Molloy <brendan@bbqsrc.net>"
+            ],
+            "documentation": "https://docs.rs/gherkin",
+            "homepage": "https://github.com/cucumber-rs/gherkin",
+            "repository": "https://github.com/cucumber-rs/gherkin",
+            "readme": "README.md",
+            "categories": [
+              "compilers",
+              "parser-implementations"
+            ],
+            "keywords": [
+              "gherkin",
+              "cucumber",
+              "cucumber-gherkin",
+              "testing",
+              "bdd"
+            ],
+            "include": [
+              "/src/",
+              "/build.rs",
+              "/LICENSE-*",
+              "/README.md",
+              "/CHANGELOG.md"
+            ],
+            "metadata": {
+              "docs": {
+                "rs": {
+                  "all-features": true,
+                  "rustdoc-args": [
+                    "--cfg",
+                    "docsrs"
+                  ]
+                }
+              }
+            }
+          },
+          "features": {
+            "default": [
+              "parser"
+            ],
+            "parser": [
+              "dep:typed-builder"
+            ]
+          },
+          "dependencies": {
+            "peg": "0.6.3",
+            "textwrap": "0.16",
+            "thiserror": "2.0",
+            "typed-builder": {
+              "version": "0.23",
+              "optional": true
+            },
+            "serde": {
+              "version": "1.0.103",
+              "features": [
+                "derive"
+              ],
+              "optional": true
+            },
+            "juniper": {
+              "version": "0.17",
+              "default-features": false,
+              "optional": true
+            }
+          },
+          "build-dependencies": {
+            "heck": "0.5",
+            "quote": "1.0",
+            "serde": {
+              "version": "1.0",
+              "features": [
+                "derive"
+              ]
+            },
+            "serde_json": "1.0",
+            "syn": "2.0"
+          }
+        },
+        "manifestSha256": "de007075fe8ec00384321fa5b07671ee9d48265cedbac9e9eb4d54e967c90de0"
+      },
+      "vendorManifestSha256": "40ed9b86ba1530e6eb91351c815b654ebb76459c9e0526ea22442985f595f1f6",
+      "behavioralObservations": [
+        {
+          "feature": null,
+          "ok": true
+        },
+        {
+          "diagnostic": "Error at 2:1: {\"_\", \"unknown keyword\"}",
+          "ok": false
+        },
+        {
+          "feature": {
+            "name": "Tables",
+            "scenarios": [
+              {
+                "examples": [],
+                "name": "Preserve",
+                "steps": [
+                  {
+                    "docstring": null,
+                    "table": [
+                      [
+                        "a\nb",
+                        "a|b",
+                        "a\\b"
+                      ]
+                    ],
+                    "text": "payload"
+                  },
+                  {
+                    "docstring": null,
+                    "table": null,
+                    "text": "following step"
+                  }
+                ]
+              }
+            ]
+          },
+          "ok": true
+        },
+        {
+          "feature": {
+            "name": "Tables",
+            "scenarios": [
+              {
+                "examples": [],
+                "name": "Preserve",
+                "steps": [
+                  {
+                    "docstring": null,
+                    "table": [
+                      [
+                        "\\"
+                      ]
+                    ],
+                    "text": "payload"
+                  },
+                  {
+                    "docstring": null,
+                    "table": null,
+                    "text": "following step"
+                  }
+                ]
+              }
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "independentSemantics": "CR47-001 official/base comparison"
+    },
+    {
+      "control": "one-byte disposable parser mutation",
+      "rejected": "source identity differs: {\"actual\": {\"src/LICENSE-GHERKIN\": \"042bda2882d793c42fcd5f4d272579a432d1d52a0e5436202e5e823eae4771b6\", \"src/keywords.rs\": \"f17ed92139458e81791eea5c9553a123f306e25560c651da4922d287200e1d8b\", \"src/languages-43.json\": \"84c50533cce6f2fbb1c1e1eca14811000a69ef70b5b564075b50bdfa7333c329\", \"src/languages.json\": \"a021693a92caf9eeefeb4fddcb8bff8cbc65c99ec46acc139144dfd1119f95a1\", \"src/lib.rs\": \"b1b77ce83bbdd5bd621b9e9ed066b3814eb0bea4313ca8193a39055ae18123dc\", \"src/markdown.rs\": \"a0af8a471648ee4e5256bea591a0e327db3cc604764fecb0a801f77d8c145553\", \"src/parser.rs\": \"331a23355c28197547192c0125c86dcae489692f7595aec0a4c5f25d376f54d2\", \"src/tagexpr.rs\": \"1ac43f218c0cd5800c36e7a3cda47d78fd619b9315abfbeb6bd6b030fd04c2a4\", \"build.rs\": \"58e2dad426947023df1028d3929bcc7818b4f1bdab159171431bfe52ee705d09\"}, \"expected\": {\"src/LICENSE-GHERKIN\": \"042bda2882d793c42fcd5f4d272579a432d1d52a0e5436202e5e823eae4771b6\", \"src/keywords.rs\": \"f17ed92139458e81791eea5c9553a123f306e25560c651da4922d287200e1d8b\", \"src/languages-43.json\": \"84c50533cce6f2fbb1c1e1eca14811000a69ef70b5b564075b50bdfa7333c329\", \"src/languages.json\": \"a021693a92caf9eeefeb4fddcb8bff8cbc65c99ec46acc139144dfd1119f95a1\", \"src/lib.rs\": \"1b149a23cb5eb6b87e2a2a80201fe6167f3e8e56aa513cbee63b956bea1bfe01\", \"src/markdown.rs\": \"a0af8a471648ee4e5256bea591a0e327db3cc604764fecb0a801f77d8c145553\", \"src/parser.rs\": \"331a23355c28197547192c0125c86dcae489692f7595aec0a4c5f25d376f54d2\", \"src/tagexpr.rs\": \"1ac43f218c0cd5800c36e7a3cda47d78fd619b9315abfbeb6bd6b030fd04c2a4\", \"build.rs\": \"58e2dad426947023df1028d3929bcc7818b4f1bdab159171431bfe52ee705d09\"}}"
+    },
+    {
+      "control": "corrupt parser observation",
+      "rejected": "behavior differs: {\"actual\": [{\"feature\": null, \"ok\": true}, {\"diagnostic\": \"Error at 2:1: {\\\"_\\\", \\\"unknown keyword\\\"}\", \"ok\": false}, {\"feature\": {\"name\": \"Tables\", \"scenarios\": [{\"examples\": [], \"name\": \"Preserve\", \"steps\": [{\"docstring\": null, \"table\": [[\"a\\nb\", \"a|b\", \"a\\\\b\"]], \"text\": \"payload\"}, {\"docstring\": null, \"table\": null, \"text\": \"following step\"}]}]}, \"ok\": true}, {\"feature\": {\"name\": \"Tables\", \"scenarios\": [{\"examples\": [], \"name\": \"Preserve\", \"steps\": [{\"docstring\": null, \"table\": [[\"\\\\\"]], \"text\": \"payload\"}, {\"docstring\": null, \"table\": null, \"text\": \"following step\"}]}]}, \"ok\": true}], \"expected\": [{\"feature\": {\"name\": \"invented\"}, \"ok\": true}, {\"diagnostic\": \"Error at 2:1: {\\\"unknown keyword\\\", \\\"_\\\"}\", \"ok\": false}, {\"feature\": {\"name\": \"Tables\", \"scenarios\": [{\"examples\": [], \"name\": \"Preserve\", \"steps\": [{\"docstring\": null, \"table\": [[\"a\\nb\", \"a|b\", \"a\\\\b\"]], \"text\": \"payload\"}, {\"docstring\": null, \"table\": null, \"text\": \"following step\"}]}]}, \"ok\": true}, {\"feature\": {\"name\": \"Tables\", \"scenarios\": [{\"examples\": [], \"name\": \"Preserve\", \"steps\": [{\"docstring\": null, \"table\": [[\"\\\\\"]], \"text\": \"payload\"}, {\"docstring\": null, \"table\": null, \"text\": \"following step\"}]}]}, \"ok\": true}]}"
+    },
+    {
+      "cleanup": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/corrupt-parser",
+      "removed": true
+    }
+  ],
+  "originalSourcesUnchanged": true,
+  "commands": [
+    {
+      "argv": [
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0/debug/parser-fork"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:35:39.312805+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e023eda18b1797b6afa660fdb9f7d3503d69896e21b86a1bac15cfbc3a80ca67",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:35:39.320403+00:00"
+    },
+    {
+      "argv": [
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0/debug/parser-vendor"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:35:39.322424+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e023eda18b1797b6afa660fdb9f7d3503d69896e21b86a1bac15cfbc3a80ca67",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:35:39.328880+00:00"
+    }
+  ]
+}

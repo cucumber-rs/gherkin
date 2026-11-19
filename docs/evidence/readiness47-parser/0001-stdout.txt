@@ -1,0 +1,319 @@
+Feature: Portable step arguments
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "Given" step has "table-doc" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "When" step has "table-doc" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "Then" step has "table-doc" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "And" step has "table-doc" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "But" step has "table-doc" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "*" step has "table-doc" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "Given" step has "doc-table" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "When" step has "doc-table" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "Then" step has "doc-table" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "And" step has "doc-table" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "But" step has "doc-table" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve both arguments in either order for every step keyword
+   ✔  Given a feature whose "*" step has "doc-table" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with both argument values on the same step
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve existing features with fewer arguments
+   ✔  Given a feature whose "Given" step has "none" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with "none" arguments
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve existing features with fewer arguments
+   ✔  Given a feature whose "Given" step has "doc" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with "doc" arguments
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve existing features with fewer arguments
+   ✔  Given a feature whose "Given" step has "table" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing succeeds with "table" arguments
+   ✔  And the following step remains separate
+  Scenario Outline: Reject repeated argument kinds on one step
+   ✔  Given a feature whose "Given" step has "doc-doc" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing fails
+  Scenario Outline: Reject repeated argument kinds on one step
+   ✔  Given a feature whose "Given" step has "doc-table-doc" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing fails
+  Scenario Outline: Reject repeated argument kinds on one step
+   ✔  Given a feature whose "Given" step has "table-doc-table" arguments
+   ✔  When the feature is parsed
+   ✔  Then parsing fails
+  Scenario Outline: Preserve literal and recognized table escapes
+   ✔  Given a feature with the "unknown escape" table cell encoding
+   ✔  When the feature is parsed with official table semantics
+   ✔  Then the "unknown escape" table cell value is preserved exactly
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve literal and recognized table escapes
+   ✔  Given a feature with the "trailing slash" table cell encoding
+   ✔  When the feature is parsed with official table semantics
+   ✔  Then the "trailing slash" table cell value is preserved exactly
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve literal and recognized table escapes
+   ✔  Given a feature with the "escaped pipe" table cell encoding
+   ✔  When the feature is parsed with official table semantics
+   ✔  Then the "escaped pipe" table cell value is preserved exactly
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve literal and recognized table escapes
+   ✔  Given a feature with the "escaped slash" table cell encoding
+   ✔  When the feature is parsed with official table semantics
+   ✔  Then the "escaped slash" table cell value is preserved exactly
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve literal and recognized table escapes
+   ✔  Given a feature with the "escaped newline" table cell encoding
+   ✔  When the feature is parsed with official table semantics
+   ✔  Then the "escaped newline" table cell value is preserved exactly
+   ✔  And the following step remains separate
+  Scenario Outline: Preserve literal and recognized table escapes
+   ✔  Given a feature with the "mixed escapes" table cell encoding
+   ✔  When the feature is parsed with official table semantics
+   ✔  Then the "mixed escapes" table cell value is preserved exactly
+   ✔  And the following step remains separate
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "af"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "amh"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "be"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "da"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "en-old"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "en-tx"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "eo"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "fa"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "ga"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "gj"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "it"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "ja"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "ka"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "ko"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "ml"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "ne"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "nl"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "ru"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "sr-Cyrl"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "ta"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "tr"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "uz"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "vi"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario Outline: Authors use the current official dialect vocabulary explicitly
+   ✔  Given the published Gherkin 43 vocabulary cases for "zh-CN"
+   ✔  When those features are parsed with the Gherkin 43 catalogue
+   ✔  Then every published keyword retains its intended structure and text
+  Scenario: Existing consumers retain an obsolete Persian feature alias
+   ✔  Given a feature using the legacy Persian feature alias
+   ✔  When it is parsed with legacy and Gherkin 43 catalogue policies
+   ✔  Then legacy default and explicit parsing preserve the feature
+   ✔  And the Gherkin 43 policy rejects the obsolete feature alias
+  Scenario: New dialect availability is explicit
+   ✔  Given the new Amharic Belarusian and Malayalam dialects
+   ✔  When dialect availability is requested for both catalogue policies
+   ✔  Then only the Gherkin 43 policy reports those new dialects
+  Scenario Outline: Explicit official doc-string content matches the published oracle
+   ✔  Given the official Gherkin 43 doc-string fixture "docstrings.feature"
+   ✔  When it is parsed with official doc-string content semantics
+   ✔  Then every native doc-string value equals the external official AST content
+  Scenario Outline: Explicit official doc-string content matches the published oracle
+   ✔  Given the official Gherkin 43 doc-string fixture "docstrings.crlf.feature"
+   ✔  When it is parsed with official doc-string content semantics
+   ✔  Then every native doc-string value equals the external official AST content
+  Scenario Outline: Explicit official doc-string content matches the published oracle
+   ✔  Given the official Gherkin 43 doc-string fixture "step_with_datatable_and_docstring.feature"
+   ✔  When it is parsed with official doc-string content semantics
+   ✔  Then every native doc-string value equals the external official AST content
+  Scenario Outline: Existing constructors retain legacy doc-string values
+   ✔  Given a feature containing a legacy doc-string payload
+   ✔  When it is parsed using the "default" legacy-content constructor
+   ✔  Then the original delimiter-adjacent newlines remain unchanged
+  Scenario Outline: Existing constructors retain legacy doc-string values
+   ✔  Given a feature containing a legacy doc-string payload
+   ✔  When it is parsed using the "explicit legacy" legacy-content constructor
+   ✔  Then the original delimiter-adjacent newlines remain unchanged
+  Scenario Outline: Existing constructors retain legacy doc-string values
+   ✔  Given a feature containing a legacy doc-string payload
+   ✔  When it is parsed using the "English" legacy-content constructor
+   ✔  Then the original delimiter-adjacent newlines remain unchanged
+  Scenario Outline: Existing constructors retain legacy doc-string values
+   ✔  Given a feature containing a legacy doc-string payload
+   ✔  When it is parsed using the "latest dialect" legacy-content constructor
+   ✔  Then the original delimiter-adjacent newlines remain unchanged
+  Scenario Outline: Official doc-string mode rejects an unclosed block
+   ✔  Given a feature with a "missing" doc-string closure
+   ✔  When it is parsed with official doc-string content semantics
+   ✔  Then parsing fails
+  Scenario Outline: Official doc-string mode rejects an unclosed block
+   ✔  Given a feature with a "mismatched" doc-string closure
+   ✔  When it is parsed with official doc-string content semantics
+   ✔  Then parsing fails
+  Scenario Outline: Official doc-string mode rejects an unclosed block
+   ✔  Given a feature with a "same line" doc-string closure
+   ✔  When it is parsed with official doc-string content semantics
+   ✔  Then parsing fails
+  Scenario Outline: Strict table rows preserve a rectangular contract
+   ✔  Given a "step" table with a "shorter" later row
+   ✔  When the table feature uses "Gherkin 43" semantics
+   ✔  Then the table parser reports inconsistent cell count
+  Scenario Outline: Strict table rows preserve a rectangular contract
+   ✔  Given a "step" table with a "longer" later row
+   ✔  When the table feature uses "Gherkin 43" semantics
+   ✔  Then the table parser reports inconsistent cell count
+  Scenario Outline: Strict table rows preserve a rectangular contract
+   ✔  Given a "Examples" table with a "shorter" later row
+   ✔  When the table feature uses "Gherkin 43" semantics
+   ✔  Then the table parser reports inconsistent cell count
+  Scenario Outline: Strict table rows preserve a rectangular contract
+   ✔  Given a "Examples" table with a "longer" later row
+   ✔  When the table feature uses "Gherkin 43" semantics
+   ✔  Then the table parser reports inconsistent cell count
+  Scenario Outline: Rectangular tables preserve all values under strict semantics
+   ✔  Given a "step" table with a "matching" later row
+   ✔  When the table feature uses "Gherkin 43" semantics
+   ✔  Then the "step" table preserves both columns
+  Scenario Outline: Rectangular tables preserve all values under strict semantics
+   ✔  Given a "Examples" table with a "matching" later row
+   ✔  When the table feature uses "Gherkin 43" semantics
+   ✔  Then the "Examples" table preserves both columns
+  Scenario Outline: Existing constructors preserve excess-cell truncation
+   ✔  Given a "step" table with a "longer" later row
+   ✔  When the table feature uses "default" semantics
+   ✔  Then the "step" table preserves both columns
+  Scenario Outline: Existing constructors preserve excess-cell truncation
+   ✔  Given a "Examples" table with a "longer" later row
+   ✔  When the table feature uses "default" semantics
+   ✔  Then the "Examples" table preserves both columns
+  Scenario Outline: Existing constructors preserve excess-cell truncation
+   ✔  Given a "step" table with a "longer" later row
+   ✔  When the table feature uses "explicit legacy" semantics
+   ✔  Then the "step" table preserves both columns
+  Scenario Outline: Existing constructors preserve excess-cell truncation
+   ✔  Given a "Examples" table with a "longer" later row
+   ✔  When the table feature uses "explicit legacy" semantics
+   ✔  Then the "Examples" table preserves both columns
+  Scenario Outline: Existing constructors preserve excess-cell truncation
+   ✔  Given a "step" table with a "longer" later row
+   ✔  When the table feature uses "English" semantics
+   ✔  Then the "step" table preserves both columns
+  Scenario Outline: Existing constructors preserve excess-cell truncation
+   ✔  Given a "Examples" table with a "longer" later row
+   ✔  When the table feature uses "latest dialect" semantics
+   ✔  Then the "Examples" table preserves both columns
+  Scenario: Strict parsing rejects the published invalid table fixture
+   ✔  Given the official Gherkin 43 inconsistent-cell-count fixture
+   ✔  When the table feature uses "Gherkin 43" semantics
+   ✔  Then the table parser reports inconsistent cell count
+[Summary]
+1 feature
+73 scenarios (73 passed)
+241 steps (241 passed)

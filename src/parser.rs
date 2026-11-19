@@ -11,6 +11,54 @@ use std::{cell::RefCell, iter};
 use crate::{keywords::Keywords, tagexpr::TagOperation};
 use crate::{Background, Examples, Feature, LineCol, Rule, Scenario, Span, Step, StepType, Table};
 
+/// Classic token whitespace and value-trimming compatibility policy.
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum LexicalSemantics {
+    /// Preserve ASCII padding, Rust value trimming, and native byte columns.
+    #[default]
+    Legacy,
+    /// ECMAScript whitespace/trimming and scalar token columns, as in Gherkin43.
+    Gherkin43,
+}
+impl LexicalSemantics {
+    /// Whether a character is whitespace under this policy's value/tag rules.
+    pub fn is_whitespace(self, character: char) -> bool {
+        match self {
+            Self::Legacy => character.is_whitespace(),
+            Self::Gherkin43 => official_docstring_whitespace(character),
+        }
+    }
+    /// Whether a character is token padding on one source line (never LF).
+    pub fn is_padding(self, character: char) -> bool {
+        match self {
+            Self::Legacy => matches!(character, ' ' | '\t'),
+            Self::Gherkin43 => character != '\n' && self.is_whitespace(character),
+        }
+    }
+}
+
+/// Selects doc-string content semantics independently from dialect vocabulary.
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum DocStringSemantics {
+    /// Preserve the original native representation, including delimiter-adjacent
+    /// newlines and any opening media-type text.
+    #[default]
+    Legacy,
+    /// Match the adopted official Gherkin 43 line-oriented content contract.
+    /// Media-type text is excluded from content; `Step` keeps its existing shape.
+    Gherkin43,
+}
+
+/// Selects table row sizing and escapes independently from dialect and doc-string behavior.
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum TableSemantics {
+    /// Preserve legacy row truncation and reject unrecognized backslash escapes.
+    #[default]
+    Legacy,
+    /// Reject unequal row widths and preserve unrecognized backslash escapes literally.
+    Gherkin43,
+}
+
 #[derive(Debug)]
 pub struct GherkinEnv {
     keywords: RefCell<Keywords<'static>>,
@@ -20,6 +68,10 @@ pub struct GherkinEnv {
     last_keyword: RefCell<Option<String>>,
     line_offsets: RefCell<Vec<usize>>,
     was_escaped: RefCell<bool>,
+    latest_catalogue: bool,
+    docstring_semantics: DocStringSemantics,
+    table_semantics: TableSemantics,
+    lexical_semantics: LexicalSemantics,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -45,8 +97,54 @@ impl GherkinEnv {
         })
     }
 
+    /// Uses the official Gherkin 43.0.0 dialect catalogue explicitly.
+    ///
+    /// Unlike `new` and `Default`, this accepts new official dialects and omits
+    /// aliases removed upstream. Language headers preserve this catalogue choice.
+    pub fn new_latest(language: &str) -> Result<Self, EnvError> {
+        let keywords = Keywords::get_latest(language)
+            .ok_or_else(|| EnvError::UnsupportedLanguage(language.into()))?;
+        Ok(Self {
+            keywords: RefCell::new(keywords),
+            latest_catalogue: true,
+            ..Default::default()
+        })
+    }
+
+    /// Selects doc-string content semantics without changing dialect selection.
+    /// All constructors retain `Legacy` unless this builder is used explicitly.
+    pub fn with_docstring_semantics(mut self, semantics: DocStringSemantics) -> Self {
+        self.docstring_semantics = semantics;
+        self
+    }
+
+    /// Selects table row sizing without changing dialect or doc-string behavior.
+    /// All constructors retain Legacy unless explicitly overridden.
+    pub fn with_table_semantics(mut self, semantics: TableSemantics) -> Self {
+        self.table_semantics = semantics;
+        self
+    }
+
+    /// Selects classic lexical semantics independently of other policies.
+    pub fn with_lexical_semantics(mut self, semantics: LexicalSemantics) -> Self {
+        self.lexical_semantics = semantics;
+        self
+    }
+
+    fn text<'a>(&self, text: &'a str) -> &'a str {
+        match self.lexical_semantics {
+            LexicalSemantics::Legacy => text.trim_end(),
+            LexicalSemantics::Gherkin43 => text.trim_matches(official_docstring_whitespace),
+        }
+    }
+
     pub fn set_language(&self, language: &str) -> Result<(), &'static str> {
-        let keywords = Keywords::get(language).ok_or_else(|| {
+        let keywords = if self.latest_catalogue {
+            Keywords::get_latest(language)
+        } else {
+            Keywords::get(language)
+        }
+        .ok_or_else(|| {
             self.set_fatal_error(EnvError::UnsupportedLanguage(language.into()));
             "Unsupported language"
         })?;
@@ -115,7 +213,14 @@ impl GherkinEnv {
         }
     }
 
-    fn position(&self, offset: usize) -> LineCol {
+    fn position(&self, source: &str, offset: usize) -> LineCol {
+        if self.lexical_semantics == LexicalSemantics::Gherkin43 {
+            let prefix = &source[..offset];
+            return LineCol {
+                line: prefix.bytes().filter(|byte| *byte == b'\n').count() + 1,
+                col: prefix.rsplit('\n').next().unwrap_or("").chars().count() + 1,
+            };
+        }
         let line_offsets = self.line_offsets.borrow();
         let line = line_offsets
             .iter()
@@ -146,14 +251,90 @@ impl Default for GherkinEnv {
             last_keyword: RefCell::new(None),
             line_offsets: RefCell::new(vec![0]),
             was_escaped: RefCell::new(false),
+            latest_catalogue: false,
+            docstring_semantics: DocStringSemantics::Legacy,
+            table_semantics: TableSemantics::Legacy,
+            lexical_semantics: LexicalSemantics::Legacy,
         }
     }
 }
 
-peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv) for str {
+// ECMAScript WhiteSpace + LineTerminator, matching the pinned JS token matcher.
+// Rust's is_whitespace additionally includes NEL but excludes BOM, so it cannot
+// define this compatibility boundary. Newline grammar remains line-oriented.
+fn official_docstring_whitespace(character: char) -> bool {
+    matches!(character, '\u{0009}'..='\u{000d}' | ' ' | '\u{00a0}' | '\u{1680}'
+        | '\u{2000}'..='\u{200a}' | '\u{2028}' | '\u{2029}' | '\u{202f}'
+        | '\u{205f}' | '\u{3000}' | '\u{feff}')
+}
 
-rule _() = quiet!{[' ' | '\t']*}
-rule __() = quiet!{([' ' | '\t'] / nl())*}
+/// Content follows the pinned official line/token matcher: remove at most the
+/// opening indentation, unescape the active separator on each line, and join
+/// only content lines. Delimiter/header lines never become payload text.
+fn official_docstring_content(lines: Vec<&str>, indent: usize, delimiter: &str) -> String {
+    let escaped = if delimiter == "\"\"\"" {
+        "\\\"\\\"\\\""
+    } else {
+        "\\`\\`\\`"
+    };
+    lines
+        .into_iter()
+        .map(|line| {
+            let remove = line
+                .chars()
+                .take(indent)
+                .take_while(|character| official_docstring_whitespace(*character))
+                .count();
+            let content: String = line.chars().skip(remove).collect();
+            // The tagged official JavaScript token matcher replaces the first
+            // active escaped delimiter occurrence on each content line.
+            content.replacen(escaped, delimiter, 1)
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+fn official_table_cells(line: &str) -> Vec<String> {
+    let mut cells = Vec::new();
+    let mut cell = String::new();
+    let mut chars = line.chars();
+    let _ = chars.next(); // initial pipe
+    while let Some(character) = chars.next() {
+        match character {
+            '|' => {
+                cells.push(
+                    cell.trim_matches(|c| {
+                        matches!(
+                            c,
+                            ' ' | '\t' | '\u{000b}' | '\u{000c}' | '\r' | '\u{0085}' | '\u{00a0}'
+                        )
+                    })
+                    .to_owned(),
+                );
+                cell.clear();
+            }
+            '\\' => match chars.next() {
+                Some('n') => cell.push('\n'),
+                Some('|') => cell.push('|'),
+                Some('\\') => cell.push('\\'),
+                Some(other) => {
+                    cell.push('\\');
+                    cell.push(other);
+                }
+                None => cell.push('\\'),
+            },
+            other => cell.push(other),
+        }
+    }
+    cells
+}
+
+peg::parser! { pub(crate) grammar gherkin_parser(env: &GherkinEnv, source: &str) for str {
+
+rule padding_char()
+    = character:$([_]) {? if env.lexical_semantics.is_padding(character.chars().next().unwrap()) { Ok(()) } else { Err("token padding") } }
+rule _() = quiet!{padding_char()*}
+rule __() = quiet!{(padding_char() / nl())*}
 
 rule nl0() = quiet!{"\r"? "\n"}
 rule nl_no_comment() = quiet!{nl0() p:position!() {
@@ -163,21 +344,32 @@ rule nl() = quiet!{comment_no_nl()? nl0() p:position!() {
     env.increment_nl(p);
 }}
 rule eof() = quiet!{![_]}
-rule nl_eof() = quiet!{(nl() / [' ' | '\t'])+ / eof()}
-rule comment_no_nl() = quiet!{[' ' | '\t']* "#" $((!nl0()[_])*)}
+rule nl_eof() = quiet!{(nl() / padding_char())+ / eof()}
+rule comment_no_nl() = quiet!{_ "#" $((!nl0()[_])*)}
 rule comment() = quiet!{comment_no_nl() nl_eof()}
 rule not_nl() -> &'input str = n:$((!nl0()[_])+) { n }
 
 rule keyword1(list: &[&str]) -> &'input str
     = input:$([_]*<
         {list.iter().map(|x| x.chars().count()).min().unwrap()},
-        {list.iter().map(|x| x.chars().count()).max().unwrap()}
+        {if env.latest_catalogue { env.keywords().all().iter().map(|x| x.chars().count()).max().unwrap() }
+         else { list.iter().map(|x| x.chars().count()).max().unwrap() }}
     >) {?
         // println!("Input: {}", &input);
         if let Some(v) = list.iter().find(|x| input.starts_with(**x)) {
-            env.set_keyword((*v).to_string());
-            // println!("Found: {}", &v);
-            Err("success")
+            let longer_step = if env.latest_catalogue {
+                let keywords = env.keywords();
+                let steps = [keywords.given, keywords.when, keywords.then, keywords.and, keywords.but];
+                steps.iter().any(|group| std::ptr::eq(*group, list))
+                    && steps.iter().flat_map(|group| group.iter()).any(|keyword| keyword.len() > v.len() && input.starts_with(*keyword))
+            } else { false };
+            if longer_step {
+                env.clear_keyword();
+                Err("longer step keyword has another kind")
+            } else {
+                env.set_keyword((*v).to_string());
+                Err("success")
+            }
         } else {
             // println!("Unfound: {}", &input);
             env.clear_keyword();
@@ -201,11 +393,47 @@ pub(crate) rule keyword<'a>(list: &[&'a str]) -> &'a str
     }
 
 rule language_directive() -> ()
-    = ([' ' | '\t'] / nl_no_comment())* "#" _ "language" _ ":" _ l:$(not_nl()+) _ nl() {?
-        env.set_language(l)
+    = (padding_char() / nl_no_comment())* "#" _ "language" _ ":" _ l:$(not_nl()+) _ nl() {?
+        env.set_language(if env.lexical_semantics == LexicalSemantics::Gherkin43 { env.text(l) } else { l })
     }
 
+rule official_docstrings_enabled()
+    = {? if env.docstring_semantics == DocStringSemantics::Gherkin43 {
+        Ok(())
+    } else { Err("official doc-string semantics not selected") } }
+
+rule legacy_docstrings_enabled()
+    = {? if env.docstring_semantics == DocStringSemantics::Legacy {
+        Ok(())
+    } else { Err("legacy doc-string semantics not selected") } }
+
 rule docstring() -> String
+    = official_docstrings_enabled() d:official_docstring() { d }
+    / legacy_docstrings_enabled() d:legacy_docstring() { d }
+
+// Line-oriented content is separate from the legacy permissive delimiter rule.
+// The opening line contains optional media type; closing-line text is ignored,
+// matching the pinned official token matcher's separator handling.
+rule official_docstring_indent()
+    = quiet!{['\u{0009}' | '\u{000b}'..='\u{000d}' | ' ' | '\u{00a0}' | '\u{1680}'
+        | '\u{2000}'..='\u{200a}' | '\u{2028}' | '\u{2029}' | '\u{202f}'
+        | '\u{205f}' | '\u{3000}' | '\u{feff}']*}
+
+rule official_docstring() -> String
+    = pa:position!() padding:$(official_docstring_indent()) "\"\"\"" (!nl0() [_])* nl_no_comment()
+      lines:((!(official_docstring_indent() "\"\"\"") line:$((!nl0() [_])*) nl_no_comment() { line })*)
+      official_docstring_indent() "\"\"\"" (!nl0() [_])* nl_eof() {
+        // The enclosing step/table already consumed an ASCII prefix. Count
+        // newly consumed Unicode indentation in characters, not byte columns.
+        official_docstring_content(lines, env.position(source, pa).col - 1 + padding.chars().count(), "\"\"\"")
+    }
+    / pa:position!() padding:$(official_docstring_indent()) "```" (!nl0() [_])* nl_no_comment()
+      lines:((!(official_docstring_indent() "```") line:$((!nl0() [_])*) nl_no_comment() { line })*)
+      official_docstring_indent() "```" (!nl0() [_])* nl_eof() {
+        official_docstring_content(lines, env.position(source, pa).col - 1 + padding.chars().count(), "```")
+    }
+
+rule legacy_docstring() -> String
     = "\"\"\"" n:$((!"\"\"\"" (nl() / [_]))*) "\"\"\"" nl_eof() {
         textwrap::dedent(n)
     }
@@ -219,7 +447,14 @@ rule escaped_cell_char() -> &'input str
 rule table_cell() -> Vec<&'input str>
     = "|" _ !(nl0() / eof()) n:((escaped_cell_char() / $(!("|" / "\\" / nl0())[_]))*) { n }
 
+rule official_tables_enabled()
+    = {? if env.table_semantics == TableSemantics::Gherkin43 { Ok(()) } else { Err("official table semantics not selected") } }
+
 pub(crate) rule table_row() -> Vec<String>
+    = official_tables_enabled() row:$("|" (!nl0() [_])*) nl_eof() { official_table_cells(row) }
+    / legacy_table_row()
+
+rule legacy_table_row() -> Vec<String>
     = n:(table_cell() ** _) _ "|" _ nl_eof() {
         n.into_iter()
             .map(|s| {
@@ -251,7 +486,7 @@ pub(crate) rule table_row() -> Vec<String>
 
 pub(crate) rule table0() -> Vec<Vec<String>>
     = _ d:(table_row() ++ _) {
-        if d.is_empty() {
+        if d.is_empty() || env.table_semantics == TableSemantics::Gherkin43 {
             d
         } else {
             let len = d[0].len();
@@ -267,78 +502,85 @@ pub(crate) rule table() -> Table
         } else {
             Ok(Table::builder()
                 .span(Span { start: pa, end: pb })
-                .position(env.position(pa))
+                .position(env.position(source, pa))
                 .rows(t)
                 .build())
         }
     }
 
+// Gherkin 43 permits one table and one doc string in either order.
+// Keeping the two alternatives bounded prevents accepting a repeated kind.
+rule step_arguments() -> (Option<String>, Option<Table>)
+    = d:docstring() t:table()? { (Some(d), t) }
+    / t:table() d:docstring()? { (d, Some(t)) }
+    / { (None, None) }
+
 pub(crate) rule step() -> Step
     = comment()* pa:position!() k:keyword((env.keywords().given)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      arguments:step_arguments()
     {
         env.set_last_step(StepType::Given);
         Step::builder().ty(StepType::Given)
             .keyword(k.to_string())
-            .value(n.trim_end().to_string())
-            .table(t)
-            .docstring(d)
+            .value(env.text(n).to_string())
+            .table(arguments.1)
+            .docstring(arguments.0)
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
     / pa:position!() k:keyword((env.keywords().when)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      arguments:step_arguments()
     {
         env.set_last_step(StepType::When);
         Step::builder().ty(StepType::When)
             .keyword(k.to_string())
-            .value(n.trim_end().to_string())
-            .table(t)
-            .docstring(d)
+            .value(env.text(n).to_string())
+            .table(arguments.1)
+            .docstring(arguments.0)
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
     / pa:position!() k:keyword((env.keywords().then)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      arguments:step_arguments()
     {
         env.set_last_step(StepType::Then);
         Step::builder().ty(StepType::Then)
             .keyword(k.to_string())
-            .value(n.trim_end().to_string())
-            .table(t)
-            .docstring(d)
+            .value(env.text(n).to_string())
+            .table(arguments.1)
+            .docstring(arguments.0)
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
     / pa:position!() k:keyword((env.keywords().and)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      arguments:step_arguments()
     {
         let ty = env.last_step().unwrap_or(StepType::Given);
         env.set_last_step(ty);
         Step::builder().ty(ty)
             .keyword(k.to_string())
-            .value(n.trim_end().to_string())
-            .table(t)
-            .docstring(d)
+            .value(env.text(n).to_string())
+            .table(arguments.1)
+            .docstring(arguments.0)
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
     / pa:position!() k:keyword((env.keywords().but)) _ n:not_nl() pb:position!() _ nl_eof() _
-      d:docstring()? t:table()?
+      arguments:step_arguments()
     {
         let ty = env.last_step().unwrap_or(StepType::Given);
         env.set_last_step(ty);
         Step::builder().ty(ty)
             .keyword(k.to_string())
-            .value(n.trim_end().to_string())
-            .table(t)
-            .docstring(d)
+            .value(env.text(n).to_string())
+            .table(arguments.1)
+            .docstring(arguments.0)
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
 
@@ -357,11 +599,11 @@ rule background() -> Background
     {
         Background::builder()
             .keyword(k.into())
-            .name(n.unwrap_or_default().trim_end().to_string())
+            .name(env.text(n.unwrap_or_default()).to_string())
             .description(d.flatten())
             .steps(s.unwrap_or_default())
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
 
@@ -381,7 +623,7 @@ rule description_line(excluded: &[&str]) -> &'input str
 rule description(excluded: &[&str]) -> Option<String>
     = d:(description_line(excluded) ** _) __ {
         let d = d.join("\n");
-        if d.trim() == "" {
+        if d.trim_matches(|character| env.lexical_semantics.is_whitespace(character)).is_empty() {
             None
         } else {
             Some(d)
@@ -401,12 +643,12 @@ rule examples() -> Examples
     {
         Examples::builder()
             .keyword(k.into())
-            .name(n.map(|n| n.trim_end().to_string()))
+            .name(n.map(|n| env.text(n).to_string()))
             .description(d.flatten())
             .tags(t)
             .table(tb)
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
 
@@ -424,13 +666,13 @@ rule scenario() -> Scenario
     {
         Scenario::builder()
             .keyword(k.into())
-            .name(n.unwrap_or_default().trim_end().to_string())
+            .name(env.text(n.unwrap_or_default()).to_string())
             .description(d.flatten())
             .tags(t)
             .steps(s.unwrap_or_default())
             .examples(e)
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
     / comment()*
@@ -446,20 +688,20 @@ rule scenario() -> Scenario
     {
         Scenario::builder()
             .keyword(k.into())
-            .name(n.unwrap_or_default().trim_end().to_string())
+            .name(env.text(n.unwrap_or_default()).to_string())
             .description(d.flatten())
             .tags(t)
             .steps(s.unwrap_or_default())
             .examples(e)
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
 
 rule tag_char() -> &'input str
     = s:$([_]) {?
         let x = s.chars().next().unwrap();
-        if !x.is_whitespace() && x != '@' {
+        if !env.lexical_semantics.is_whitespace(x) && x != '@' {
             Ok(s)
         } else {
             Err("tag character")
@@ -517,13 +759,13 @@ rule rule_() -> Rule
     {
         Rule::builder()
             .keyword(k.into())
-            .name(n.unwrap_or_default().trim_end().to_string())
+            .name(env.text(n.unwrap_or_default()).to_string())
             .description(d.flatten())
             .tags(t)
             .background(b)
             .scenarios(s.unwrap_or_default())
             .span(Span { start: pa, end: pb })
-            .position(env.position(pa))
+            .position(env.position(source, pa))
             .build()
     }
 
@@ -533,10 +775,35 @@ rule rules() -> Vec<Rule>
 pub(crate) rule scenarios() -> Vec<Scenario>
     = _ s:(scenario() ** _)? { s.unwrap_or_default() }
 
+// Featureless sources are valid documents, but remain outside Feature::parse.
+pub(crate) rule document() -> Option<Feature>
+    = _ (!language_directive() comment() / nl_no_comment() / padding_char())* eof() {?
+        env.assert_no_error().map(|()| None)
+    }
+    / feature:feature() { Some(feature) }
+
+// A whitespace-only line consumed by tags may leave next-line indentation.
+// Latest source mode follows the official line matcher; legacy stays unchanged.
+rule latest_source_enabled()
+    = {? if env.latest_catalogue || env.lexical_semantics == LexicalSemantics::Gherkin43 { Ok(()) } else { Err("latest source mode not selected") } }
+
+rule latest_feature_padding()
+    = latest_source_enabled() _ / ""
+
+// A directive/comment preamble can leave padding before the first tag line.
+// Broaden this boundary only with the explicit lexical policy.
+rule official_lexical_enabled()
+    = {? if env.lexical_semantics == LexicalSemantics::Gherkin43 { Ok(()) } else { Err("official lexical policy not selected") } }
+
+rule lexical_feature_padding()
+    = official_lexical_enabled() _ / ""
+
 pub(crate) rule feature() -> Feature
     = _ language_directive()?
       nl()*
+      lexical_feature_padding()
       t:tags()
+      latest_feature_padding()
       pa:position!()
       k:keyword((env.keywords().feature)) ":" _ n:not_nl()? _ nl_eof()
       d:description((&env.keywords().excluded_feature()))?
@@ -551,13 +818,13 @@ pub(crate) rule feature() -> Feature
             Ok(Feature::builder()
                 .keyword(k.into())
                 .tags(t)
-                .name(n.unwrap_or_default().trim_end().to_string())
+                .name(env.text(n.unwrap_or_default()).to_string())
                 .description(d.flatten())
                 .background(b)
                 .scenarios(s)
                 .rules(r)
                 .span(Span { start: pa, end: pb })
-                .position(env.position(pa))
+                .position(env.position(source, pa))
                 .build())
         }
     }
@@ -647,7 +914,7 @@ Scenario: Meow
     #[test]
     fn smoke() {
         let env = GherkinEnv::default();
-        assert!(gherkin_parser::feature(FOO, &env).is_ok());
+        assert!(gherkin_parser::feature(FOO, &env, FOO).is_ok());
     }
 
     #[test]
@@ -655,14 +922,14 @@ Scenario: Meow
         let env = GherkinEnv::default();
         let d = env!("CARGO_MANIFEST_DIR");
         let s = fs::read_to_string(format!("{}/tests/test.feature", d)).unwrap();
-        assert!(gherkin_parser::feature(&s, &env).is_ok());
+        assert!(gherkin_parser::feature(&s, &env, &s).is_ok());
     }
 
     #[test]
     fn rule_with_background() {
         let env = GherkinEnv::default();
         assert!(
-            gherkin_parser::feature(RULE_WITH_BACKGROUND, &env).is_ok(),
+            gherkin_parser::feature(RULE_WITH_BACKGROUND, &env, RULE_WITH_BACKGROUND).is_ok(),
             "RULE_IN_BACKGROUND was not parsed correctly!"
         );
     }
@@ -671,7 +938,7 @@ Scenario: Meow
     fn docstring() {
         let env = GherkinEnv::default();
         assert!(
-            gherkin_parser::feature(DOCSTRING, &env).is_ok(),
+            gherkin_parser::feature(DOCSTRING, &env, DOCSTRING).is_ok(),
             "DOCSTRING was not parsed correctly!"
         );
     }
@@ -680,7 +947,7 @@ Scenario: Meow
     fn docstring2() {
         let env = GherkinEnv::default();
         assert!(
-            gherkin_parser::feature(DOCSTRING2, &env).is_ok(),
+            gherkin_parser::feature(DOCSTRING2, &env, DOCSTRING2).is_ok(),
             "DOCSTRING2 was not parsed correctly!"
         );
     }
@@ -693,7 +960,7 @@ Scenario: Meow
         really
 Scenario: Hello
   Given a step"#;
-        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let feature = gherkin_parser::feature(input, &env, input).unwrap();
         println!("{:#?}", feature);
         assert_eq!(feature.scenarios.len(), 1);
         assert!(feature.description.is_some());
@@ -739,7 +1006,7 @@ Rule: rule
     Scenario: Hello
         Given a step
 "#;
-        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let feature = gherkin_parser::feature(input, &env, input).unwrap();
         assert_eq!(feature.scenarios.len(), 2);
         assert!(feature.description.is_some());
         assert_eq!(feature.position.line, 3);
@@ -785,7 +1052,7 @@ Feature: First step with And
   Scenario: And as first step
     And a step
 "#;
-        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let feature = gherkin_parser::feature(input, &env, input).unwrap();
         assert_eq!(feature.scenarios.len(), 1);
         assert_eq!(feature.scenarios[0].steps.len(), 1);
         assert_eq!(feature.scenarios[0].steps[0].ty, StepType::Given);
@@ -799,7 +1066,7 @@ Feature: First step with But
   Scenario: But as first step
     But a step
 "#;
-        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let feature = gherkin_parser::feature(input, &env, input).unwrap();
         assert_eq!(feature.scenarios.len(), 1);
         assert_eq!(feature.scenarios[0].steps.len(), 1);
         assert_eq!(feature.scenarios[0].steps[0].ty, StepType::Given);
@@ -813,7 +1080,7 @@ Feature: First step with Besides
   Scenario: Besides as first step
     Besides a step
 "#;
-        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let feature = gherkin_parser::feature(input, &env, input).unwrap();
         assert_eq!(feature.scenarios.len(), 1);
         assert_eq!(feature.scenarios[0].steps.len(), 0);
     }
@@ -823,7 +1090,7 @@ Feature: First step with Besides
         let env = GherkinEnv::default();
         let input = r#"Feature: Basic functionality
         "#;
-        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let feature = gherkin_parser::feature(input, &env, input).unwrap();
         println!("{:#?}", feature);
         assert_eq!(feature.scenarios.len(), 0);
         assert!(feature.description.is_none());
@@ -846,7 +1113,7 @@ Feature: Foo
       | \\n   |
       | \\\\  |
 "#;
-        let feature = gherkin_parser::feature(input, &env).unwrap();
+        let feature = gherkin_parser::feature(input, &env, input).unwrap();
 
         assert_eq!(
             feature.scenarios[0].examples[0]
@@ -878,7 +1145,7 @@ Feature: Foo
       | value |
       | \     |
 "#;
-        assert!(gherkin_parser::feature(input, &env).is_err());
+        assert!(gherkin_parser::feature(input, &env, input).is_err());
     }
 
     #[test]
@@ -902,7 +1169,7 @@ Feature: Foo
                     let input =
                         fs::read_to_string(format!("{}/tests/fixtures/data/good/{}", d, filename,))
                             .unwrap();
-                    let feature = gherkin_parser::feature(&input, &env).unwrap();
+                    let feature = gherkin_parser::feature(&input, &env, &input).unwrap();
                     let fixture = fs::read_to_string(format!(
                         "{}/tests/fixtures/data/good/{}.ast.ndjson",
                         d, filename,
@@ -935,7 +1202,7 @@ Feature: Foo
                     let input =
                         fs::read_to_string(format!("{}/tests/fixtures/data/bad/{}", d, filename,))
                             .unwrap();
-                    gherkin_parser::feature(&input, &env).unwrap()
+                    gherkin_parser::feature(&input, &env, &input).unwrap()
                 });
 
                 assert!(res.is_err(), "{}: {:?}", filename, res.unwrap());
