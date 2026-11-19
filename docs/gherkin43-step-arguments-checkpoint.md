@@ -26,7 +26,7 @@ argument kinds remain unconsumed and are rejected by full feature parsing.
 ## Changes
 
 - `src/parser.rs`: shared argument rule allowing both orders.
-- `tests/features/compatibility/step_arguments.feature`: acceptance scenarios,
+- `tests/compatibility/step_arguments.feature`: acceptance scenarios,
   authored before implementation.
 - `tests/step_arguments.rs`: dedicated Cucumber BDD harness with real parser
   assertions, retained argument values, escaped table cell, and step boundary

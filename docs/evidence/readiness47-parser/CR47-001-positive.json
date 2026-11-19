@@ -1,0 +1,315 @@
+{
+  "case": "CR47-001",
+  "mode": "positive",
+  "status": "PASS",
+  "contractDigest": "ef6360878ae5a168725f5ec56a9e86b251d1ba8f40b307397b3acaf3973f49d7",
+  "observations": [
+    {
+      "legacyBaseRejected": 4,
+      "constructors": [
+        "default",
+        "new",
+        "latest"
+      ],
+      "explicitPolicyMatchesOfficial": true,
+      "recognizedEscapeValues": [
+        "a\nb",
+        "a|b",
+        "a\\b"
+      ]
+    }
+  ],
+  "originalSourcesUnchanged": true,
+  "commands": [
+    {
+      "argv": [
+        "cargo",
+        "generate-lockfile"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/applications/parser-base",
+      "startedAt": "2026-11-19T22:19:47.450133+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:19:47.853108+00:00"
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--locked"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/applications/parser-base",
+      "startedAt": "2026-11-19T22:19:47.853769+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:21.107379+00:00"
+    },
+    {
+      "argv": [
+        "cargo",
+        "metadata",
+        "--locked",
+        "--format-version",
+        "1"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/applications/parser-base",
+      "startedAt": "2026-11-19T22:20:21.108384+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:21.292742+00:00"
+    },
+    {
+      "argv": [
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0/debug/parser-base"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:20:21.297763+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "ad8acfa32f661fe3d6452214fb5db5b21ccf4c583a5dd593b453e6b2bab9f13c",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:28.120576+00:00"
+    },
+    {
+      "argv": [
+        "node",
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles/interop/gherkin43/oracle.mjs",
+        "readiness.feature"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:20:28.123153+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "3c41344828923c41376047dd1956a14d167fad31e202f612e7e6348f5d8cbbb5",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:28.199270+00:00"
+    },
+    {
+      "argv": [
+        "node",
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles/interop/gherkin43/oracle.mjs",
+        "readiness.feature"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:20:28.199894+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "597eaa29a810cb6bd123d22db0241fa39b41e7c689f604ae34bdb5c8f733f1ff",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:28.273680+00:00"
+    },
+    {
+      "argv": [
+        "cargo",
+        "generate-lockfile"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/applications/parser-fork",
+      "startedAt": "2026-11-19T22:20:28.275661+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:28.677402+00:00"
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--locked",
+        "--features",
+        "modern"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/applications/parser-fork",
+      "startedAt": "2026-11-19T22:20:28.677992+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:31.691776+00:00"
+    },
+    {
+      "argv": [
+        "cargo",
+        "metadata",
+        "--locked",
+        "--format-version",
+        "1",
+        "--features",
+        "modern"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/applications/parser-fork",
+      "startedAt": "2026-11-19T22:20:31.692425+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:31.768482+00:00"
+    },
+    {
+      "argv": [
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0/debug/parser-fork"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:20:31.773413+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "9d348f5107f48b8cd6868ab2609e31c3e2e10e64d7acc6de182c567032610575",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:32.009086+00:00"
+    },
+    {
+      "argv": [
+        "cargo",
+        "generate-lockfile"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/applications/parser-vendor",
+      "startedAt": "2026-11-19T22:20:32.012360+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:32.298605+00:00"
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--locked",
+        "--features",
+        "modern"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/applications/parser-vendor",
+      "startedAt": "2026-11-19T22:20:32.299289+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:35.373665+00:00"
+    },
+    {
+      "argv": [
+        "cargo",
+        "metadata",
+        "--locked",
+        "--format-version",
+        "1",
+        "--features",
+        "modern"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/applications/parser-vendor",
+      "startedAt": "2026-11-19T22:20:35.374328+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:35.446549+00:00"
+    },
+    {
+      "argv": [
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0/debug/parser-vendor"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:20:35.451188+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "9d348f5107f48b8cd6868ab2609e31c3e2e10e64d7acc6de182c567032610575",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:35.692752+00:00"
+    },
+    {
+      "argv": [
+        "node",
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles/interop/gherkin43/oracle.mjs",
+        "readiness.feature"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:20:35.693824+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "cf59d4d43ef60334beb4e6f1ff4c0d215a5a9fed4fc0b09a0e1444b300ebe1e7",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:35.768351+00:00"
+    },
+    {
+      "argv": [
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0/debug/parser-fork"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:20:35.770274+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "70c57801f27fcaa307f90a19c671b5b7a177c8db8e07b8f7d14b4f25ee1b6c1b",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:35.776826+00:00"
+    },
+    {
+      "argv": [
+        "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target-1.88.0/debug/parser-vendor"
+      ],
+      "cwd": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n",
+      "startedAt": "2026-11-19T22:20:35.778785+00:00",
+      "environment": {
+        "RUSTUP_TOOLCHAIN": "1.88.0",
+        "CARGO_TARGET_DIR": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/target",
+        "CUCUMBER_ORACLE_ROOT": "/private/var/folders/ln/0wnpd96j26z2qhvx9m6hwt2r0000gn/T/cucumber-readiness47-consumers-jamniu9n/oracles"
+      },
+      "stdinSha256": "70c57801f27fcaa307f90a19c671b5b7a177c8db8e07b8f7d14b4f25ee1b6c1b",
+      "exitCode": 0,
+      "finishedAt": "2026-11-19T22:20:35.784965+00:00"
+    }
+  ]
+}

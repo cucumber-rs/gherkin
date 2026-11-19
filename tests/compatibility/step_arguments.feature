@@ -49,7 +49,7 @@ Feature: Portable step arguments
 
   Scenario Outline: Preserve literal and recognized table escapes
     Given a feature with the "<encoding>" table cell encoding
-    When the feature is parsed
+    When the feature is parsed with official table semantics
     Then the "<encoding>" table cell value is preserved exactly
     And the following step remains separate
 

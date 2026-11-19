@@ -16,12 +16,14 @@ struct ArgumentWorld {
 
 #[given(expr = "a feature whose {string} step has {string} arguments")]
 fn feature(world: &mut ArgumentWorld, keyword: String, arguments: String) {
-    let mut source = format!("Feature: Shared arguments\n  Scenario: Preserve values\n    {keyword} a payload\n");
+    let mut source = format!(
+        "Feature: Shared arguments\n  Scenario: Preserve values\n    {keyword} a payload\n"
+    );
     for argument in arguments.split('-') {
         match argument {
             "doc" => source.push_str("      \"\"\"\n      reusable payload\n      \"\"\"\n"),
             "table" => source.push_str("      | name | value |\n      | input | a\\|b |\n"),
-            "none" => {},
+            "none" => {}
             _ => panic!("Unknown argument kind: {}", argument),
         }
     }
@@ -34,9 +36,20 @@ fn parse(world: &mut ArgumentWorld) {
     world.parsed = Some(gherkin::Feature::parse(&world.source, Default::default()));
 }
 
+#[when("the feature is parsed with official table semantics")]
+fn parse_official_tables(world: &mut ArgumentWorld) {
+    let env =
+        gherkin::GherkinEnv::default().with_table_semantics(gherkin::TableSemantics::Gherkin43);
+    world.parsed = Some(gherkin::Feature::parse(&world.source, env));
+}
+
 fn payload(world: &ArgumentWorld) -> &gherkin::Step {
-    let feature = world.parsed.as_ref().expect("parser was invoked")
-        .as_ref().expect("feature should parse");
+    let feature = world
+        .parsed
+        .as_ref()
+        .expect("parser was invoked")
+        .as_ref()
+        .expect("feature should parse");
     &feature.scenarios[0].steps[0]
 }
 
@@ -45,8 +58,10 @@ fn both(world: &mut ArgumentWorld) {
     let step = payload(world);
     assert_eq!(step.value, "a payload");
     assert_eq!(step.docstring.as_deref(), Some("\nreusable payload\n"));
-    assert_eq!(step.table.as_ref().expect("table retained").rows,
-        vec![vec!["name", "value"], vec!["input", "a|b"]]);
+    assert_eq!(
+        step.table.as_ref().expect("table retained").rows,
+        vec![vec!["name", "value"], vec!["input", "a|b"]]
+    );
 }
 
 #[then(expr = "parsing succeeds with {string} arguments")]
@@ -58,8 +73,10 @@ fn fewer(world: &mut ArgumentWorld, arguments: String) {
         assert_eq!(step.docstring.as_deref(), Some("\nreusable payload\n"));
     }
     if arguments == "table" {
-        assert_eq!(step.table.as_ref().unwrap().rows,
-            vec![vec!["name", "value"], vec!["input", "a|b"]]);
+        assert_eq!(
+            step.table.as_ref().unwrap().rows,
+            vec![vec!["name", "value"], vec!["input", "a|b"]]
+        );
     }
 }
 
@@ -75,8 +92,11 @@ fn next_step(world: &mut ArgumentWorld) {
 
 #[then("parsing fails")]
 fn rejected(world: &mut ArgumentWorld) {
-    assert!(world.parsed.as_ref().expect("parser was invoked").is_err(),
-        "Repeated arguments must not be silently accepted: {}", world.source);
+    assert!(
+        world.parsed.as_ref().expect("parser was invoked").is_err(),
+        "Repeated arguments must not be silently accepted: {}",
+        world.source
+    );
 }
 
 #[given(expr = "a feature with the {string} table cell encoding")]
@@ -111,38 +131,54 @@ fn table_value(world: &mut ArgumentWorld, encoding: String) {
     };
     let step = payload(world);
     assert_eq!(step.value, "a payload");
-    assert_eq!(step.table.as_ref().expect("table retained").rows,
-        vec![vec!["value"], vec![expected]]);
+    assert_eq!(
+        step.table.as_ref().expect("table retained").rows,
+        vec![vec!["value"], vec![expected]]
+    );
     assert!(step.docstring.is_none());
 }
 
 #[given(expr = "the published Gherkin 43 vocabulary cases for {string}")]
 fn published_vocabulary(world: &mut ArgumentWorld, language: String) {
-    let cases: Vec<serde_json::Value> = serde_json::from_str(
-        include_str!("fixtures/gherkin43-dialect-cases.json")
-    ).unwrap();
-    world.dialect_cases = cases.into_iter()
+    let cases: Vec<serde_json::Value> =
+        serde_json::from_str(include_str!("fixtures/gherkin43-dialect-cases.json")).unwrap();
+    world.dialect_cases = cases
+        .into_iter()
         .filter(|case| case["language"].as_str() == Some(language.as_str()))
         .collect();
-    assert!(!world.dialect_cases.is_empty(), "No published cases for {}", language);
+    assert!(
+        !world.dialect_cases.is_empty(),
+        "No published cases for {}",
+        language
+    );
 }
 
 #[when("those features are parsed with the Gherkin 43 catalogue")]
 fn parse_published_vocabulary(world: &mut ArgumentWorld) {
-    world.dialect_results = world.dialect_cases.iter().map(|case| {
-        // Starting in English deliberately exercises # language switching while
-        // retaining the explicitly selected catalogue, including new dialects.
-        gherkin::Feature::parse(case["source"].as_str().unwrap(),
-            gherkin::GherkinEnv::new_latest("en").unwrap())
-    }).collect();
+    world.dialect_results = world
+        .dialect_cases
+        .iter()
+        .map(|case| {
+            // Starting in English deliberately exercises # language switching while
+            // retaining the explicitly selected catalogue, including new dialects.
+            gherkin::Feature::parse(
+                case["source"].as_str().unwrap(),
+                gherkin::GherkinEnv::new_latest("en").unwrap(),
+            )
+        })
+        .collect();
 }
 
 #[then("every published keyword retains its intended structure and text")]
 fn assert_published_vocabulary(world: &mut ArgumentWorld) {
     assert_eq!(world.dialect_results.len(), world.dialect_cases.len());
     for (case, result) in world.dialect_cases.iter().zip(&world.dialect_results) {
-        let feature = result.as_ref().unwrap_or_else(|error| panic!(
-            "Official vocabulary source failed: {}\n{:?}", case["source"], error));
+        let feature = result.as_ref().unwrap_or_else(|error| {
+            panic!(
+                "Official vocabulary source failed: {}\n{:?}",
+                case["source"], error
+            )
+        });
         let kind = case["kind"].as_str().unwrap();
         let keyword = case["keyword"].as_str().unwrap();
         assert_eq!(feature.name, "Portable accounts");
@@ -159,7 +195,12 @@ fn assert_published_vocabulary(world: &mut ArgumentWorld) {
             &feature.scenarios[0]
         };
         assert_eq!(scenario.name, "Account state");
-        assert_eq!(scenario.steps.last().unwrap().value, "account remains", "{}", case["source"]);
+        assert_eq!(
+            scenario.steps.last().unwrap().value,
+            "account remains",
+            "{}",
+            case["source"]
+        );
         match kind {
             "feature" => assert_eq!(feature.keyword, keyword),
             "background" => {
@@ -169,7 +210,7 @@ fn assert_published_vocabulary(world: &mut ArgumentWorld) {
                 assert_eq!(background.steps.len(), 1);
                 assert_eq!(background.steps[0].value, "account exists");
             }
-            "rule" => {},
+            "rule" => {}
             "scenario" | "scenarioOutline" => assert_eq!(scenario.keyword, keyword),
             "examples" => assert_eq!(scenario.examples[0].keyword, keyword),
             "given" | "when" | "then" | "and" | "but" => {
@@ -181,23 +222,27 @@ fn assert_published_vocabulary(world: &mut ArgumentWorld) {
                     _ => gherkin::StepType::Given,
                 };
                 assert_eq!(step.ty, expected_type, "{}", case["source"]);
-                assert_eq!(scenario.steps.len(), if matches!(kind, "and" | "but") { 2 } else { 1 });
+                assert_eq!(
+                    scenario.steps.len(),
+                    if matches!(kind, "and" | "but") { 2 } else { 1 }
+                );
             }
             _ => panic!("Unexpected keyword kind: {}", kind),
         }
         if matches!(kind, "scenarioOutline" | "examples") {
             assert_eq!(scenario.examples.len(), 1);
-            assert_eq!(scenario.examples[0].table.as_ref().unwrap().rows,
-                vec![vec!["value"], vec!["ready"]]);
+            assert_eq!(
+                scenario.examples[0].table.as_ref().unwrap().rows,
+                vec![vec!["value"], vec!["ready"]]
+            );
         }
     }
 }
 
 #[given("a feature using the legacy Persian feature alias")]
 fn legacy_persian(world: &mut ArgumentWorld) {
-    let fixture: serde_json::Value = serde_json::from_str(
-        include_str!("fixtures/gherkin43-legacy-persian.json")
-    ).unwrap();
+    let fixture: serde_json::Value =
+        serde_json::from_str(include_str!("fixtures/gherkin43-legacy-persian.json")).unwrap();
     world.source = fixture["source"].as_str().unwrap().to_owned();
 }
 
@@ -206,7 +251,10 @@ fn parse_catalogue_policies(world: &mut ArgumentWorld) {
     world.dialect_results = vec![
         gherkin::Feature::parse(&world.source, Default::default()),
         gherkin::Feature::parse(&world.source, gherkin::GherkinEnv::new("fa").unwrap()),
-        gherkin::Feature::parse(&world.source, gherkin::GherkinEnv::new_latest("en").unwrap()),
+        gherkin::Feature::parse(
+            &world.source,
+            gherkin::GherkinEnv::new_latest("en").unwrap(),
+        ),
     ];
 }
 
@@ -214,7 +262,9 @@ fn parse_catalogue_policies(world: &mut ArgumentWorld) {
 fn legacy_retained(world: &mut ArgumentWorld) {
     assert_eq!(world.dialect_results.len(), 3);
     for result in &world.dialect_results[..2] {
-        let feature = result.as_ref().expect("legacy Persian alias remains supported");
+        let feature = result
+            .as_ref()
+            .expect("legacy Persian alias remains supported");
         assert_eq!(feature.keyword, "وِیژگی");
         assert_eq!(feature.name, "Legacy account");
         assert_eq!(feature.scenarios.len(), 1);
@@ -224,7 +274,10 @@ fn legacy_retained(world: &mut ArgumentWorld) {
 
 #[then("the Gherkin 43 policy rejects the obsolete feature alias")]
 fn official_alias_rejected(world: &mut ArgumentWorld) {
-    assert!(world.dialect_results[2].is_err(), "latest headers must not silently switch to legacy catalogue");
+    assert!(
+        world.dialect_results[2].is_err(),
+        "latest headers must not silently switch to legacy catalogue"
+    );
 }
 
 #[given("the new Amharic Belarusian and Malayalam dialects")]
@@ -234,12 +287,18 @@ fn new_dialects(world: &mut ArgumentWorld) {
 
 #[when("dialect availability is requested for both catalogue policies")]
 fn dialect_availability(world: &mut ArgumentWorld) {
-    world.availability = world.languages.iter().map(|language| (
-        gherkin::is_language_supported(language),
-        gherkin::is_latest_language_supported(language),
-        gherkin::GherkinEnv::new(language).is_ok(),
-        gherkin::GherkinEnv::new_latest(language).is_ok(),
-    )).collect();
+    world.availability = world
+        .languages
+        .iter()
+        .map(|language| {
+            (
+                gherkin::is_language_supported(language),
+                gherkin::is_latest_language_supported(language),
+                gherkin::GherkinEnv::new(language).is_ok(),
+                gherkin::GherkinEnv::new_latest(language).is_ok(),
+            )
+        })
+        .collect();
     world.formal_availability = (
         gherkin::is_language_supported("formal"),
         gherkin::is_latest_language_supported("formal"),
@@ -262,24 +321,34 @@ fn official_docstring_fixture(world: &mut ArgumentWorld, fixture: String) {
         // actual CRLF input while retaining the unmodified official content oracle.
         world.source = world.source.replace("\r\n", "\n").replace('\n', "\r\n");
     }
-    world.official_ast = Some(serde_json::from_str(
-        &std::fs::read_to_string(root.join(format!("{}.ast.ndjson", fixture))).unwrap()
-    ).unwrap());
+    world.official_ast = Some(
+        serde_json::from_str(
+            &std::fs::read_to_string(root.join(format!("{}.ast.ndjson", fixture))).unwrap(),
+        )
+        .unwrap(),
+    );
 }
 
 #[when("it is parsed with official doc-string content semantics")]
 fn parse_official_docstrings(world: &mut ArgumentWorld) {
-    let env = gherkin::GherkinEnv::new("en").unwrap()
+    let env = gherkin::GherkinEnv::new("en")
+        .unwrap()
         .with_docstring_semantics(gherkin::DocStringSemantics::Gherkin43);
     world.parsed = Some(gherkin::Feature::parse(&world.source, env));
 }
 
 #[then("every native doc-string value equals the external official AST content")]
 fn official_docstring_content_matches(world: &mut ArgumentWorld) {
-    let feature = world.parsed.as_ref().unwrap().as_ref()
+    let feature = world
+        .parsed
+        .as_ref()
+        .unwrap()
+        .as_ref()
         .expect("official doc-string fixture must parse");
     let ast = world.official_ast.as_ref().unwrap();
-    let expected = ast["gherkinDocument"]["feature"]["children"].as_array().unwrap();
+    let expected = ast["gherkinDocument"]["feature"]["children"]
+        .as_array()
+        .unwrap();
     assert_eq!(feature.scenarios.len(), expected.len());
     let mut docstrings = 0;
     for (scenario, expected) in feature.scenarios.iter().zip(expected) {
@@ -290,20 +359,40 @@ fn official_docstring_content_matches(world: &mut ArgumentWorld) {
         for (step, expected) in scenario.steps.iter().zip(steps) {
             assert_eq!(step.value, expected["text"].as_str().unwrap());
             let content = expected["docString"]["content"].as_str();
-            assert_eq!(step.docstring.as_deref(), content, "wrong doc-string value for {}", step.value);
-            if content.is_some() { docstrings += 1; }
+            assert_eq!(
+                step.docstring.as_deref(),
+                content,
+                "wrong doc-string value for {}",
+                step.value
+            );
+            if content.is_some() {
+                docstrings += 1;
+            }
             if let Some(rows) = expected["dataTable"]["rows"].as_array() {
-                let rows: Vec<Vec<&str>> = rows.iter().map(|row|
-                    row["cells"].as_array().unwrap().iter()
-                        .map(|cell| cell["value"].as_str().unwrap()).collect()
-                ).collect();
-                assert_eq!(step.table.as_ref().expect("combined table retained").rows, rows);
+                let rows: Vec<Vec<&str>> = rows
+                    .iter()
+                    .map(|row| {
+                        row["cells"]
+                            .as_array()
+                            .unwrap()
+                            .iter()
+                            .map(|cell| cell["value"].as_str().unwrap())
+                            .collect()
+                    })
+                    .collect();
+                assert_eq!(
+                    step.table.as_ref().expect("combined table retained").rows,
+                    rows
+                );
             } else {
                 assert!(step.table.is_none());
             }
         }
     }
-    assert!(docstrings > 0, "oracle must contain actual doc-string assertions");
+    assert!(
+        docstrings > 0,
+        "oracle must contain actual doc-string assertions"
+    );
 }
 
 #[given("a feature containing a legacy doc-string payload")]
@@ -326,7 +415,10 @@ fn legacy_docstring_constructor(world: &mut ArgumentWorld, policy: String) {
 
 #[then("the original delimiter-adjacent newlines remain unchanged")]
 fn legacy_docstring_unchanged(world: &mut ArgumentWorld) {
-    assert_eq!(payload(world).docstring.as_deref(), Some("\nreusable payload\n"));
+    assert_eq!(
+        payload(world).docstring.as_deref(),
+        Some("\nreusable payload\n")
+    );
     next_step(world);
 }
 
@@ -345,7 +437,7 @@ fn main() {
     futures::executor::block_on(
         ArgumentWorld::cucumber()
             .fail_on_skipped()
-            .run_and_exit("tests/features/compatibility/step_arguments.feature"),
+            .run_and_exit("tests/compatibility/step_arguments.feature"),
     );
 }
 
@@ -367,56 +459,79 @@ fn rectangular_source(world: &mut ArgumentWorld, kind: String, width: String) {
 
 #[given("the official Gherkin 43 inconsistent-cell-count fixture")]
 fn published_invalid_table(world: &mut ArgumentWorld) {
-    world.source = include_str!("fixtures/gherkin43-tables/inconsistent_cell_count.feature").to_owned();
-    let errors = include_str!("fixtures/gherkin43-tables/inconsistent_cell_count.feature.errors.ndjson")
-        .lines().map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
-        .collect::<Vec<_>>();
+    world.source =
+        include_str!("fixtures/gherkin43-tables/inconsistent_cell_count.feature").to_owned();
+    let errors =
+        include_str!("fixtures/gherkin43-tables/inconsistent_cell_count.feature.errors.ndjson")
+            .lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+            .collect::<Vec<_>>();
     assert_eq!(errors.len(), 2);
     assert_eq!(errors[0]["parseError"]["source"]["location"]["line"], 6);
     assert_eq!(errors[1]["parseError"]["source"]["location"]["line"], 14);
     assert!(errors.iter().all(|error| error["parseError"]["message"]
-        .as_str().unwrap().contains("inconsistent cell count within the table")));
+        .as_str()
+        .unwrap()
+        .contains("inconsistent cell count within the table")));
 }
 
 #[when(expr = "the table feature uses {string} semantics")]
 fn parse_table_policy(world: &mut ArgumentWorld, policy: String) {
     let env = match policy.as_str() {
-        "Gherkin 43" => gherkin::GherkinEnv::default()
-            .with_table_semantics(gherkin::TableSemantics::Gherkin43),
+        "Gherkin 43" => {
+            gherkin::GherkinEnv::default().with_table_semantics(gherkin::TableSemantics::Gherkin43)
+        }
         "default" => gherkin::GherkinEnv::default(),
-        "explicit legacy" => gherkin::GherkinEnv::default()
-            .with_table_semantics(gherkin::TableSemantics::Legacy),
+        "explicit legacy" => {
+            gherkin::GherkinEnv::default().with_table_semantics(gherkin::TableSemantics::Legacy)
+        }
         "English" => gherkin::GherkinEnv::new("en").unwrap(),
         "latest dialect" => gherkin::GherkinEnv::new_latest("en").unwrap(),
         _ => panic!("Unknown table policy: {}", policy),
     };
     world.table_parsed = Some(gherkin::Feature::parse_file_source(
-        "rectangular.feature", &world.source, env));
+        "rectangular.feature",
+        &world.source,
+        env,
+    ));
 }
 
 #[then("the table parser reports inconsistent cell count")]
 fn inconsistent_table(world: &mut ArgumentWorld) {
     match world.table_parsed.as_ref().expect("table parser invoked") {
         Err(gherkin::ParseFileError::Parsing {
-            error: Some(gherkin::EnvError::InconsistentCellCount(rows)), ..
+            error: Some(gherkin::EnvError::InconsistentCellCount(rows)),
+            ..
         }) => {
             assert!(rows.len() >= 2);
-            assert!(rows.iter().skip(1).any(|row| row.len() != rows[0].len()),
-                "The diagnostic must retain the actual inconsistent rows");
+            assert!(
+                rows.iter().skip(1).any(|row| row.len() != rows[0].len()),
+                "The diagnostic must retain the actual inconsistent rows"
+            );
         }
-        other => panic!("Expected inconsistent-cell-count parse failure, got {:?}", other),
+        other => panic!(
+            "Expected inconsistent-cell-count parse failure, got {:?}",
+            other
+        ),
     }
 }
 
 #[then(expr = "the {string} table preserves both columns")]
 fn rectangular_values(world: &mut ArgumentWorld, kind: String) {
-    let feature = world.table_parsed.as_ref().expect("table parser invoked")
-        .as_ref().expect("rectangular or legacy-truncated table accepted");
+    let feature = world
+        .table_parsed
+        .as_ref()
+        .expect("table parser invoked")
+        .as_ref()
+        .expect("rectangular or legacy-truncated table accepted");
     let scenario = &feature.scenarios[0];
     let table = match kind.as_str() {
         "step" => scenario.steps[0].table.as_ref().unwrap(),
         "Examples" => scenario.examples[0].table.as_ref().unwrap(),
         _ => panic!("Unknown table kind: {}", kind),
     };
-    assert_eq!(table.rows, vec![vec!["name", "value"], vec!["first", "second"]]);
+    assert_eq!(
+        table.rows,
+        vec![vec!["name", "value"], vec!["first", "second"]]
+    );
 }
